@@ -5,25 +5,160 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model Country {
-  country_id Int    @id @default(autoincrement())
+  country_id Int       @id @default(autoincrement())
   code       String
   name       String
-  image_url  String  @db.Text
+  image_url  String    @db.Text
+  User       User[]
+  Address    Address[]
 
   @@map("country")
 }
 
 model Currency {
-  currency_id       Int      @id @default(autoincrement())
+  currency_id       Int       @id @default(autoincrement())
   code              String
   symbol            String
   gbp_exchange_rate Float
+  User              User[]
+  Product           Product[]
+  Order             Order[]
 
   @@map("currency")
+}
+
+model User {
+  user_id    Int       @id @default(autoincrement())
+  first_name String    @db.VarChar(100)
+  user_name  String    @db.VarChar(100)
+  sub        String?   @db.VarChar(200)
+  title      String?
+  country    Country?  @relation(fields: [countryId], references: [country_id])
+  countryId  Int?
+  currency   Currency? @relation(fields: [currencyId], references: [currency_id])
+  currencyId Int?
+  image_url  String
+  Product    Product[]
+  Address    Address[]
+  Order      Order[]
+  Review     Review[]
+  Basket     Basket[]
+
+  @@map("user")
+}
+
+model Category {
+  category_id Int    @id @default(autoincrement())
+  name        String
+
+  products Product[] @relation("ProductCategories")
+
+  @@map("category")
+}
+
+model Product {
+  product_id   Int          @id @default(autoincrement())
+  seller       User?        @relation(fields: [sellerId], references: [user_id])
+  sellerId     Int?
+  title        String       @db.VarChar(100)
+  url          String?
+  description  String       @db.Text
+  image_url    String       @default("https://webneel.com/daily/sites/default/files/images/daily/08-2018/1-nature-photography-spring-season-mumtazshamsee.jpg")
+  image_alt    String       @db.VarChar(100)
+  price        Float
+  currency     Currency?    @relation(fields: [currencyId], references: [currency_id])
+  currencyId   Int?
+  review_score Float        @default(0)
+  review_count BigInt       @default(0)
+  order_count  BigInt       @default(0)
+  categories   Category[]   @relation("ProductCategories")
+  Review       Review[]
+  OrderItem    OrderItem[]
+  BasketItem   BasketItem[]
+
+  @@map("product")
+}
+
+model Address {
+  address_id  Int      @id @default(autoincrement())
+  user        User?    @relation(fields: [userId], references: [user_id])
+  userId      Int?
+  name        String
+  number      String
+  street_name String
+  postcode    String
+  county      String
+  country     Country? @relation(fields: [countryId], references: [country_id])
+  countryId   Int?
+  Order       Order[]
+
+  @@map("address")
+}
+
+model Order {
+  order_id   Int         @id @default(autoincrement())
+  user       User?       @relation(fields: [userId], references: [user_id])
+  userId     Int?
+  date       DateTime
+  currency   Currency?   @relation(fields: [currencyId], references: [currency_id])
+  currencyId Int?
+  address    Address?    @relation(fields: [addressId], references: [address_id])
+  addressId  Int?
+  OrderItem  OrderItem[]
+
+  @@map("order")
+}
+
+model OrderItem {
+  order_item_id Int      @id @default(autoincrement())
+  order         Order?   @relation(fields: [orderId], references: [order_id])
+  orderId       Int?
+  product       Product? @relation(fields: [productId], references: [product_id])
+  productId     Int?
+  price         Float
+  quantity      Int
+
+  @@map("order_item")
+}
+
+model Review {
+  review_id  Int      @id @default(autoincrement())
+  product    Product? @relation(fields: [productId], references: [product_id])
+  productId  Int?
+  user       User?    @relation(fields: [userId], references: [user_id])
+  userId     Int?
+  score      Int
+  title      String
+  content    String
+  image_urls String
+  date       DateTime
+
+  @@map("review")
+}
+
+model Basket {
+  basket_id  Int          @id @default(autoincrement())
+  user       User?        @relation(fields: [userId], references: [user_id])
+  userId     Int?
+  BasketItem BasketItem[]
+
+  @@map("basket")
+}
+
+model BasketItem {
+  item_id    Int      @id @default(autoincrement())
+  basket     Basket?  @relation(fields: [basketId], references: [basket_id])
+  basketId   Int?
+  product    Product? @relation(fields: [productId], references: [product_id])
+  productId  Int?
+  date_added DateTime
+  quantity   Int
+
+  @@map("basket_item")
 }
