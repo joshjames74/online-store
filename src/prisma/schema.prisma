@@ -28,3 +28,27 @@ model User {
   posts         Post[]
   @@map(name: "users")
 }
+
+model Address {
+  address_id Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  name       String
+  number     String
+  street_name String
+  postcode   String
+  county     String
+  country    Country?  @relation(fields: [countryId], references: [id])
+  countryId  Int?
+
+  @@map("address")
+}
+
+
+model Basket {
+  basket_id Int    @id @default(autoincrement())
+  user      User?  @relation(fields: [userId], references: [id])
+  userId    Int?
+
+  @@map("basket")
+}
