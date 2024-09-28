@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 
 // create interface theme
