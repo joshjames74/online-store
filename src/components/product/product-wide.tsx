@@ -41,7 +41,7 @@ export default function ProductWide(): JSX.Element {
                     </Text>
                 </Box>
                 </Box>
-                </Box>
+            </Box>
         </Link>
     )
 }
