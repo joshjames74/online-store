@@ -1,3 +1,5 @@
+// schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,7 +11,7 @@ datasource db {
 }
 
 model Country {
-  id         Int       @id @default(autoincrement())
+  country_id Int       @id @default(autoincrement())
   code       String
   name       String
   image_url  String    @db.Text
@@ -20,7 +22,7 @@ model Country {
 }
 
 model Currency {
-  id                Int       @id @default(autoincrement())
+  currency_id       Int       @id @default(autoincrement())
   code              String
   symbol            String
   gbp_exchange_rate Float
@@ -32,14 +34,14 @@ model Currency {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
+  user_id    Int       @id @default(autoincrement())
   first_name String    @db.VarChar(100)
   user_name  String    @db.VarChar(100)
   sub        String?   @db.VarChar(200)
   title      String?
-  country    Country?  @relation(fields: [countryId], references: [id])
+  country    Country?  @relation(fields: [countryId], references: [country_id])
   countryId  Int?
-  currency   Currency? @relation(fields: [currencyId], references: [id])
+  currency   Currency? @relation(fields: [currencyId], references: [currency_id])
   currencyId Int?
   image_url  String
   Product    Product[]
@@ -52,47 +54,47 @@ model User {
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
-  name      String
+  category_id Int    @id @default(autoincrement())
+  name        String
 
-  products  Product[] @relation("ProductCategories")
+  products Product[] @relation("ProductCategories")
 
   @@map("category")
 }
 
 model Product {
-  id            Int        @id @default(autoincrement())
-  seller        User?      @relation(fields: [sellerId], references: [id])
-  sellerId      Int?
-  title         String     @db.VarChar(100)
-  url           String?
-  description   String     @db.Text
-  image_url     String     @default("https://webneel.com/daily/sites/default/files/images/daily/08-2018/1-nature-photography-spring-season-mumtazshamsee.jpg")
-  image_alt     String     @db.VarChar(100)
-  price         Float
-  currency      Currency?  @relation(fields: [currencyId], references: [id])
-  currencyId    Int?
-  review_score  Float      @default(0)
-  review_count  BigInt     @default(0)
-  order_count   BigInt     @default(0)
-  categories    Category[] @relation("ProductCategories")
-  Review        Review[]
-  OrderItem     OrderItem[]
-  BasketItem    BasketItem[]
+  product_id   Int          @id @default(autoincrement())
+  seller       User?        @relation(fields: [sellerId], references: [user_id])
+  sellerId     Int?
+  title        String       @db.VarChar(100)
+  url          String?
+  description  String       @db.Text
+  image_url    String       @default("https://webneel.com/daily/sites/default/files/images/daily/08-2018/1-nature-photography-spring-season-mumtazshamsee.jpg")
+  image_alt    String       @db.VarChar(100)
+  price        Float
+  currency     Currency?    @relation(fields: [currencyId], references: [currency_id])
+  currencyId   Int?
+  review_score Float        @default(0)
+  review_count BigInt       @default(0)
+  order_count  BigInt       @default(0)
+  categories   Category[]   @relation("ProductCategories")
+  Review       Review[]
+  OrderItem    OrderItem[]
+  BasketItem   BasketItem[]
 
   @@map("product")
 }
 
 model Address {
-  id          Int      @id @default(autoincrement())
-  user        User?    @relation(fields: [userId], references: [id])
+  address_id  Int      @id @default(autoincrement())
+  user        User?    @relation(fields: [userId], references: [user_id])
   userId      Int?
   name        String
   number      String
   street_name String
   postcode    String
   county      String
-  country     Country?  @relation(fields: [countryId], references: [id])
+  country     Country? @relation(fields: [countryId], references: [country_id])
   countryId   Int?
   Order       Order[]
 
@@ -100,13 +102,13 @@ model Address {
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
-  user       User?       @relation(fields: [userId], references: [id])
+  order_id   Int         @id @default(autoincrement())
+  user       User?       @relation(fields: [userId], references: [user_id])
   userId     Int?
   date       DateTime
-  currency   Currency?   @relation(fields: [currencyId], references: [id])
+  currency   Currency?   @relation(fields: [currencyId], references: [currency_id])
   currencyId Int?
-  address    Address?    @relation(fields: [addressId], references: [id])
+  address    Address?    @relation(fields: [addressId], references: [address_id])
   addressId  Int?
   OrderItem  OrderItem[]
 
@@ -114,22 +116,22 @@ model Order {
 }
 
 model OrderItem {
-  id        Int      @id @default(autoincrement())
-  order     Order?   @relation(fields: [orderId], references: [id])
-  orderId   Int?
-  product   Product? @relation(fields: [productId], references: [id])
-  productId Int?
-  price     Float
-  quantity  Int
+  order_item_id Int      @id @default(autoincrement())
+  order         Order?   @relation(fields: [orderId], references: [order_id])
+  orderId       Int?
+  product       Product? @relation(fields: [productId], references: [product_id])
+  productId     Int?
+  price         Float
+  quantity      Int
 
   @@map("order_item")
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  product    Product? @relation(fields: [productId], references: [id])
+  review_id  Int      @id @default(autoincrement())
+  product    Product? @relation(fields: [productId], references: [product_id])
   productId  Int?
-  user       User?    @relation(fields: [userId], references: [id])
+  user       User?    @relation(fields: [userId], references: [user_id])
   userId     Int?
   score      Int
   title      String
@@ -141,8 +143,8 @@ model Review {
 }
 
 model Basket {
-  id         Int        @id @default(autoincrement())
-  user       User?      @relation(fields: [userId], references: [id])
+  basket_id  Int          @id @default(autoincrement())
+  user       User?        @relation(fields: [userId], references: [user_id])
   userId     Int?
   BasketItem BasketItem[]
 
@@ -150,13 +152,13 @@ model Basket {
 }
 
 model BasketItem {
-  id         Int      @id @default(autoincrement())
-  basket     Basket?  @relation(fields: [basketId], references: [id])
+  item_id    Int      @id @default(autoincrement())
+  basket     Basket?  @relation(fields: [basketId], references: [basket_id])
   basketId   Int?
-  product    Product? @relation(fields: [productId], references: [id])
+  product    Product? @relation(fields: [productId], references: [product_id])
   productId  Int?
   date_added DateTime
   quantity   Int
 
   @@map("basket_item")
-}
+} 
