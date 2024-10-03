@@ -1,20 +1,20 @@
-// app/api/country/[id]/route.ts
+// app/api/country/code/[code]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getCountryById } from '../../../../api/services/countryService';
+import { getCountryByCode } from '../../../../../api/services/countryService';
 
 interface Params {
-  id: string;
+  code: string;
 }
 
 export async function GET(req: NextRequest, { params }: { params: Params }) {
-  const { id } = params;
+  const { code } = params;
 
-  if (isNaN(Number(id))) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  if (!code || typeof code !== 'string') {
+    return NextResponse.json({ error: 'Invalid code' }, { status: 400 });
   }
 
   try {
-    const country = await getCountryById(parseInt(id));
+    const country = await getCountryByCode(code);
 
     if (!country) {
       return NextResponse.json({ error: 'Country not found' }, { status: 404 });
