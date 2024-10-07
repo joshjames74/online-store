@@ -9,7 +9,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request): Promise<NextResponse> {
 
   const body = await req.json();
-  let product: Omit<Product, 'product_id'> = body;
+  const product: Omit<Product, 'product_id'> = body;
 
   return await postHelper('product', postProduct, product);
 }

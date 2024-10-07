@@ -15,8 +15,6 @@ export async function getHelper<T extends ModelType>(
 
     try {
         const response = await func(params);
-        console.log("RESPONSE")
-        console.log(response);
 
         if (!response) {
             return NextResponse.json({ error: `${response} not found` }, { status: StatusCodes.NOT_FOUND});
@@ -24,7 +22,7 @@ export async function getHelper<T extends ModelType>(
 
         return NextResponse.json(response, { status: StatusCodes.OK})
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         return NextResponse.json({ error: 'Server error' }, { status: StatusCodes.INTERNAL_SERVER_ERROR });
     };
 }
@@ -56,7 +54,7 @@ export async function postHelper<T extends ModelType>(
             data: response
         }, { status: StatusCodes.CREATED })
     } catch (error) {
-        return NextResponse.json({ message: 'Error processing request', error: error.message}, { status: StatusCodes.INTERNAL_SERVER_ERROR })
+        return NextResponse.json({ message: 'Error processing request', error: error}, { status: StatusCodes.INTERNAL_SERVER_ERROR })
     }
 
 

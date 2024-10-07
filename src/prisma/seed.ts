@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const { readFile } = require('fs/promises');
+import { PrismaClient } from '@prisma/client';
+import { readFile } from 'fs/promises';
 
 const prisma = new PrismaClient();
 

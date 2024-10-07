@@ -6,7 +6,7 @@ interface Params {
   id: string;
 }
 
-export async function GET({ params }: { params: Params }): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: Params }): Promise<NextResponse> {
 
   // validate params
   const { id } = params;
