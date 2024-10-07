@@ -12,5 +12,4 @@ export async function POST(req: Request): Promise<NextResponse> {
   const review: Omit<Review, 'review_id'> = body;
 
   return await postHelper('review', postReview, review);
-
 }

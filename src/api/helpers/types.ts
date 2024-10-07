@@ -1,4 +1,4 @@
-import { Address, Basket, BasketItem, Category, Country, Currency, Order, OrderItem, Prisma, PrismaClient, Product, Review, User } from "@prisma/client";
+import { Address, Basket, BasketItem, Category, Country, Currency, Order, OrderItem, Prisma, PrismaClient, Product, Review, Usr } from "@prisma/client";
 
 export type ModelType = 'address'
     | 'basket' 
@@ -8,7 +8,7 @@ export type ModelType = 'address'
     | 'order' 
     | 'product' 
     | 'review' 
-    | 'user';
+    | 'usr';
 
 export type ModelMap = {
     address: Address;
@@ -21,7 +21,7 @@ export type ModelMap = {
     order_item: OrderItem;
     product: Product;
     review: Review;
-    user: User;
+    usr: Usr;
 };
 
 export type TableMap = {
@@ -35,5 +35,5 @@ export type TableMap = {
     order_item: 'id' | 'orderId' | 'productId' | 'price' | 'quantity';
     product: 'id' | 'sellerId' | 'title' | 'url' | 'description' | 'image_url' | 'image_alt' | 'price' | 'currencyId' | 'review_score' | 'review_count' | 'order_count';
     review: 'id' | 'productId' | 'userId' | 'score' | 'title' | 'content' | 'image_urls' | 'date';
-    user: 'id' | 'first_name' | 'user_name' | 'sub' | 'title' | 'countryId' | 'currencyId' | 'image_url';
+    usr: 'id' | 'first_name' | 'user_name' | 'sub' | 'title' | 'countryId' | 'currencyId' | 'image_url';
   };

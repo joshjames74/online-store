@@ -1,20 +1,20 @@
-import { User } from "@prisma/client";
+import { Usr } from "@prisma/client";
 import { getAllEntity, getOneEntityByField, postOneEntity } from "../helpers/dynamicQuery";
 
 
 // GET methods
 
-export async function getUserById(id: number): Promise<User | void> {
-    return getOneEntityByField('user', 'id', id);
+export async function getUserById(id: number): Promise<Usr | void> {
+    return getOneEntityByField('usr', 'id', id);
 }
 
-export async function getAllUsers(): Promise<User[] | void> {
-    return getAllEntity('user');
+export async function getAllUsers(): Promise<Usr[] | void> {
+    return getAllEntity('usr');
 }
 
 
 // POST methods
 
-export async function postUser(user: Omit<User, 'user_id'>): Promise<User | void> {
-    return postOneEntity('user', user);
+export async function postUser(user: Omit<Usr, 'user_id'>): Promise<Usr | void> {
+    return postOneEntity('usr', user);
 }

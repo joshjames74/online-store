@@ -89,9 +89,8 @@ model Address {
   usrId       Int?
   name        String
   number      String
-  street_name String
-  postcode    String
-  county      String
+  street      String
+  area_code   String
   country     Country?  @relation(fields: [countryId], references: [id])
   countryId   Int?
   Order       Order[]
@@ -101,9 +100,9 @@ model Address {
 
 model Order {
   id         Int         @id @default(autoincrement())
-  usr        Usr?       @relation(fields: [usrId], references: [id])
+  usr        Usr?        @relation(fields: [usrId], references: [id])
   usrId      Int?
-  date       DateTime
+  date       DateTime    @default(now())
   currency   Currency?   @relation(fields: [currencyId], references: [id])
   currencyId Int?
   address    Address?    @relation(fields: [addressId], references: [id])

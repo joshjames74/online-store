@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
     return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
 
-  return await getHelper('user', getUserById, parseInt(id));
+  return await getHelper('usr', getUserById, parseInt(id));
 }
 
 
