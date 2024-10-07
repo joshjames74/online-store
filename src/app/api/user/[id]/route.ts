@@ -13,7 +13,7 @@ interface Params {
 export async function GET(req: NextRequest, { params }: { params: Params }) {
   const { id } = params;
 
-  if (isNaN(Number(id))) {
+  if (!id || isNaN(Number(id))) {
     return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
 

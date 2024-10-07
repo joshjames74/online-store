@@ -135,7 +135,7 @@ model Review {
   title      String
   content    String
   image_urls String
-  date       DateTime
+  date       DateTime @default(now())
 
   @@map("review")
 }
