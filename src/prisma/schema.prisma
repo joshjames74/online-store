@@ -73,8 +73,8 @@ model Product {
   currency      Currency?  @relation(fields: [currencyId], references: [id])
   currencyId    Int?
   review_score  Float      @default(0)
-  review_count  BigInt     @default(0)
-  order_count   BigInt     @default(0)
+  review_count  Int        @default(0)
+  order_count   Int        @default(0)
   categories    Category[] @relation("ProductCategories")
   Review        Review[]
   OrderItem     OrderItem[]
