@@ -1,0 +1,22 @@
+INSERT INTO Usr (first_name, user_name, sub, title, "countryId", "currencyId", image_url)
+VALUES
+('John', 'john_doe', '', 'Mr', 1, 1, ''),
+('Jane', 'jane_doe', '', 'Miss', 2, 2, ''),
+('Alice', 'alice_smith', '', 'Ms', 3, 3, ''),
+('Bob', 'bob_brown', '', 'Mr', 4, 4, ''),
+('Charlie', 'charlie_johnson', '', 'Mr', 5, 5, ''),
+('Diana', 'diana_prince', '', 'Ms', 6, 6, ''),
+('Edward', 'edward_king', '', 'Mr', 7, 7, ''),
+('Fiona', 'fiona_walker', '', 'Miss', 8, 8, ''),
+('George', 'george_taylor', '', 'Mr', 9, 9, ''),
+('Hannah', 'hannah_davis', '', 'Miss', 10, 10, ''),
+('Isabella', 'isabella_lee', '', 'Ms', 11, 11, ''),
+('Jack', 'jack_wilson', '', 'Mr', 12, 12, ''),
+('Katherine', 'katherine_james', '', 'Ms', 13, 13, ''),
+('Liam', 'liam_miller', '', 'Mr', 14, 14, ''),
+('Mia', 'mia_hall', '', 'Miss', 15, 15, ''),
+('Noah', 'noah_moore', '', 'Mr', 16, 16, ''),
+('Olivia', 'olivia_rodgers', '', 'Ms', 17, 17, ''),
+('Paul', 'paul_white', '', 'Mr', 18, 18, ''),
+('Quinn', 'quinn_smith', '', 'Miss', 19, 19, ''),
+('Ryan', 'ryan_jones', '', 'Mr', 20, 20, '');

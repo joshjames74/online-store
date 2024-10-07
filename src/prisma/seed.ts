@@ -18,10 +18,14 @@ async function main() {
   // set up sql files
   const country_sql = await readFile('../database/country.sql', { encoding: 'utf8'});
   const currency_sql = await readFile('../database/currency.sql', { encoding: 'utf8'});
+  const user_sql = await readFile('../database/user.sql', { encoding: 'utf8' });
+  const product_sql = await readFile('../database/product.sql', { encoding: 'utf8' });
 
   // Add known seed data
   await prisma.$executeRawUnsafe(country_sql);
   await prisma.$executeRawUnsafe(currency_sql);
+  await prisma.$executeRawUnsafe(user_sql);
+  await prisma.$executeRawUnsafe(product_sql);
 
 }
 
