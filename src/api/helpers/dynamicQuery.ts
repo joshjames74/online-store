@@ -1,9 +1,7 @@
-import { Address, Basket, Category, Country, Currency, Order, Product, Review, User } from "@prisma/client";
 import prisma from "../../lib/prisma";
+import { FieldValuePair } from "./request";
 import { ModelType, ModelMap, TableMap } from "./types";
 
-
-// TO DO: ERROR HANDLING
 
 // GET methods
 
@@ -17,7 +15,7 @@ export async function getOneEntityByField<T extends ModelType>(
     return
 }
 
-export async function getAllEntityByField<T extends ModelType>(
+export async function getEntitiesByField<T extends ModelType>(
     modelName: Uncapitalize<T>, 
     field: TableMap[T], 
     value: any): Promise<ModelMap[T][] | void> {
@@ -42,3 +40,34 @@ export async function postOneEntity<T extends ModelType>(modelName: T, entity: P
     }
     return
 }
+
+
+// DELETE methods
+
+export async function deleteOneEntityByField<T extends ModelType>(modelName: T, field: TableMap[T], value: any): Promise<ModelMap[T] | void> {
+    if (prisma[modelName] && typeof prisma[modelName].delete == 'function') {
+        return await (prisma[modelName] as any).delete({ where: { [field]: value }});
+    };
+    return;
+}
+
+
+// PUT methods
+
+export async function putOneEntityByField<T extends ModelType>(
+    modelName: T, 
+    searchData: FieldValuePair<T>,
+    putData: FieldValuePair<T>[]
+): Promise<ModelMap[T] | void> {
+    if (prisma[modelName] && typeof prisma[modelName].update == 'function') {
+
+        const putFormatted = putData.reduce((obj: any, item: FieldValuePair<T>) => {
+            return Object.assign(obj, { [item.field]: item.value })
+        }, {})
+
+        return await (prisma[modelName] as any).update({ 
+            where: { [searchData.field]: searchData.value }, 
+            data: putFormatted
+        })
+    }
+};

@@ -9,10 +9,6 @@ export async function getCountryById(id: number): Promise<Country | void> {
   return getOneEntityByField('country', 'id', id);
 }
 
-export async function getCountryByCode(code: string): Promise<Country | void> {
-  return getOneEntityByField('country', 'code', code);
-}
-
 export async function getAllCountries(): Promise<Country[] | void> {
   return getAllEntity('country');
 }

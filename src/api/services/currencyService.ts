@@ -9,10 +9,6 @@ export async function getCurrencyById(id: number): Promise<Currency | void> {
   return getOneEntityByField('currency', 'id', id);
 }
 
-export async function getCurrencyByCode(code: string): Promise<Currency | void> {
-  return getOneEntityByField('currency', 'code', code);
-}
-
 export async function getAllCurrencies(): Promise<Currency[] | void> {
   return getAllEntity('currency');
 }

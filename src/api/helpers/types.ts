@@ -25,13 +25,13 @@ export type ModelMap = {
 };
 
 export type TableMap = {
-    address: 'id' | 'userId' | 'name' | 'number' | 'street_name' | 'postcode' | 'county' | 'countryId';
-    basket: 'id' | 'userId';
+    address: 'id' | 'usrId' | 'name' | 'number' | 'street_name' | 'postcode' | 'county' | 'countryId';
+    basket: 'id' | 'usrId';
     basket_item: 'id' | 'basketId' | 'productId' | 'date_added' | 'quantity';
     category: 'id' | 'name';
     country: 'id' | 'code' | 'name' | 'image_url';
     currency: 'id' | 'code' | 'symbol' | 'gbp_exchange_rate';
-    order: 'id' | 'userId' | 'date' | 'currencyId' | 'addressId';
+    order: 'id' | 'usrId' | 'date' | 'currencyId' | 'addressId';
     order_item: 'id' | 'orderId' | 'productId' | 'price' | 'quantity';
     product: 'id' | 'sellerId' | 'title' | 'url' | 'description' | 'image_url' | 'image_alt' | 'price' | 'currencyId' | 'review_score' | 'review_count' | 'order_count';
     review: 'id' | 'productId' | 'userId' | 'score' | 'title' | 'content' | 'image_urls' | 'date';
