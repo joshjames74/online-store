@@ -20,7 +20,8 @@ export default function ProductCompact({...product}: Product): JSX.Element {
                     <Text className={styles.price_wrapper} color={theme.colors.accent.primary}>{product.price}</Text>
                     <Box className={styles.review_wrapper}>
                         <ReviewStars value={product.review_score}></ReviewStars>
-                        <Text className={styles.review_score} fontSize="xs">{product.review_score} reviews</Text>
+                        <Text fontSize="xs" fontWeight="bold">{product.review_score.toPrecision(2).toString()}</Text>
+                        <Text className={styles.review_score} fontSize="xs">({product.review_count})</Text>
                     </Box>
                 </Box>
             </Box>

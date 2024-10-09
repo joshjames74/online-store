@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    grid-column: 1 / -1;
+}
+
+.product_area_container {
+    display: flex;
+    flex-direction: row;
+    padding: 1em;
+    gap: 0.2em;
+}

@@ -1,5 +1,7 @@
 "use client"
 import React from "react";
+import '@fontsource/open-sans';
+import '@fontsource/raleway';
 
 // create interface theme
 export interface ITheme {
@@ -32,16 +34,16 @@ export interface ITheme {
 const theme: ITheme = {
     theme: {
         fonts: {
-            primary: "Arial"
+            primary: `'Raleway', sans-serif`
         },
         colors: {
             accent: {
-                primary: "teal.500",
+                primary: "teal",
                 secondary: "yellow.100",
             },
             text: {
                 primary: "black",
-                secondary: "blue",
+                secondary: "white",
             },
             background: {
                 primary: "white",

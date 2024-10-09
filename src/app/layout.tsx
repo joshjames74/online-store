@@ -31,12 +31,12 @@ export default function RootLayout({
   children: JSX.Element;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ margin: 0, padding: 0, boxSizing: "border-box"}}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Provider>
-          <div>
+          <div style={{ gridColumn: "1/-1"}}>
             <NavBar />
             {children}
           </div>

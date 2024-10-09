@@ -1,4 +1,6 @@
 .container {
     display: grid;
     grid-template-columns: 5fr 1fr;
+    border-radius: 0.2em;
+    overflow: hidden;
 }

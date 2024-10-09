@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.review_star_container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.2em;
+}
+
+.review_star_wraper {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+}

@@ -6,6 +6,7 @@ import { Product } from "@prisma/client";
 import { useState, useEffect } from "react";
 import ProductCompact from "./product-compact";
 import styles from "./product-grid.module.css"
+import SearchResultsInfo from "./search-results-info";
 
 
 enum Width {
@@ -17,17 +18,25 @@ enum Width {
 export default function ProductGrid(): JSX.Element {
 
   const [products, setProducts] = useState<Product[]>();
+  const [width, setWidth] = useState<Width>(Width.wide);
 
   useEffect(() => {
     getAllProducts().then((res: Product[]) => setProducts(res));
   }, [])
 
-  const width: Width = Width.wide
-
   return ( products?.length ? 
-    // <Box className={width === Width.compact ? styles.container_compact : styles.container_wide}>
-    <Box className={styles.container_compact}>
-        {/* {products.map((product: Product) => <ProductCompact key={product.id} {...product}/>)} */}
-        {products.map((product: Product) => <ProductCompact key={product.id} {...product} />)}
-    </Box> : <></>);
+    (<Box className={styles.wrapper}>
+      <Box className={styles.container_wide}>
+          {width == Width.wide ? 
+          ( <Box className={styles.container_wide}>
+              {products.map((product: Product) => <ProductWide key={product.id} {...product} />)}
+            </Box> ) 
+          : ( 
+            <Box className={styles.container_compact}>
+              {products.map((product: Product) => <ProductCompact key={product.id} {...product} />)}
+            </Box> )}
+      </Box> 
+
+    </Box>)
+    : <></>);
 }
