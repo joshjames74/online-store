@@ -1,11 +1,10 @@
 'use client';
-import NavBar from "@/components/navigation";
 import ProductGrid from "@/components/product/product-grid";
 
-const Page = () => {
+const Page = async() => {
 
   return ( 
-    <ProductGrid />
+    <ProductGrid /> 
   );
 }
 

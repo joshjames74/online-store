@@ -1,45 +1,28 @@
 import { ThemeContext } from "@/contexts/theme-context"
 import Link from "next/link";
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Box, Center, Image, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import styles from "./product-wide.module.css";
+import { Product } from "@prisma/client";
+import ReviewStars from "../review/review-stars";
 
-export default function ProductWide(): JSX.Element {
+
+export default function ProductWide({...product}: Product): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
-    const image_url = "";
-    const fallback = "";
-    const alt = "";
-    const displayPrice = 10;
-    const displayReview = 10;
-    const product = {
-        title: "title",
-        description: "description",
-    }
 
     return (
         <Link href="">
             <Box className={styles.container} borderColor={theme.colors.background}>
-                <Image className={styles.image} src={image_url} fallbackSrc={fallback} 
-                    alt={alt}  />
+                <Image className={styles.image} src={product.image_url} alt={product.image_alt}  />
                 <Box className={styles.info_container}>
-                <Box className={styles.title_wrapper}>
-                    <Text noOfLines={2}>{product.title}</Text>
-                </Box>
-                <Box className={styles.price_review_container}>
-                    <Text className={styles.price_wrapper} color={theme.colors.accent.primary}>
-                    {displayPrice}
-                    </Text>
-                    <Box className={styles.review_wrapper}>
-                    {/* <ReviewStars reviewScore={product.review_score} /> */}
-                    <Text className={styles.review_score}>{displayReview}</Text>
+                    <Text noOfLines={1}>{product.title}</Text>
+                    <Text className={styles.price_wrapper} color={theme.colors.accent.primary}>{product.price}</Text>
+                    <Box className={styles.review_wrapper} fontSize="xs">
+                        <ReviewStars value={product.review_score}/>
+                        <Text className={styles.review_score}>{product.review_score} reviews</Text>
                     </Box>
-                </Box>
-                <Box className={styles.description_container}>
-                    <Text className={styles.description} noOfLines={1}>
-                    {product.description}
-                    </Text>
-                </Box>
+                    <Text className={styles.description} fontSize="xs" noOfLines={1}>{product.description}</Text>
                 </Box>
             </Box>
         </Link>

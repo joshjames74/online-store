@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { ModelMap, ModelType, TableMap } from "./types";
-import { StatusCodes } from "http-status-codes";
 
 export type FieldValuePair<T extends ModelType> = { field: TableMap[T]; value: any };
 
@@ -32,7 +31,7 @@ export async function getHelper<T extends ModelType>(
             return NextResponse.json({ error: `${response} not found` }, { status: 404});
         }
 
-        return NextResponse.json(response, { status: StatusCodes.OK})
+        return NextResponse.json(response, { status: 200})
     } catch (error) {
         console.log(error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
