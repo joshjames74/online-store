@@ -55,7 +55,7 @@ model Category {
   id        Int      @id @default(autoincrement())
   name      String
 
-  products  Product[] @relation("ProductCategories")
+  products  ProductCategory[]     @relation("CategoryToProduct")
 
   @@map("category")
 }
@@ -75,12 +75,22 @@ model Product {
   review_score  Float      @default(0)
   review_count  Int        @default(0)
   order_count   Int        @default(0)
-  categories    Category[] @relation("ProductCategories")
+  categories    ProductCategory[] @relation("ProductToCategory")
   Review        Review[]
   OrderItem     OrderItem[]
   BasketItem    BasketItem[]
 
   @@map("product")
+}
+
+model ProductCategory {
+  productId   Int
+  categoryId  Int
+
+  product     Product       @relation("ProductToCategory", fields: [productId], references: [id])
+  category    Category      @relation("CategoryToProduct", fields: [categoryId], references: [id])
+
+  @@id([productId, categoryId])
 }
 
 model Address {
