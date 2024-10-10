@@ -1,4 +1,3 @@
-import theme from "./theme";
 import { ThemeProvider } from "./theme-context"
 import { ChakraProvider } from "@chakra-ui/react";
 

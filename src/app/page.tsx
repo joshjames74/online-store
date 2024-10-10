@@ -1,12 +1,8 @@
 'use client';
-import NavBar from "@/components/navigation";
 import ProductGrid from "@/components/product/product-grid";
 import Sidebar from "@/components/sidebar";
 import { Box } from "@chakra-ui/react";
 import styles from "./page.module.css"
-import { ThemeContext } from "@emotion/react";
-import { useContext } from "react";
-import ProductReviewBox from "@/components/product/product-review-box";
 import SearchResultsInfo from "@/components/product/search-results-info";
 
 const Page = () => {

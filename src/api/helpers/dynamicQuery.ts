@@ -1,6 +1,9 @@
 import prisma from "../../lib/prisma";
+import { QueryTransformer } from "../transformers";
 import { FieldValuePair } from "./request";
 import { ModelType, ModelMap, TableMap } from "./types";
+
+
 
 
 // GET methods
@@ -31,6 +34,19 @@ export async function getAllEntity<T extends ModelType>(modelName: T): Promise<M
     }
     return
 }
+
+export async function getEntitiesByFields<T extends ModelType>(
+    modelName: T, 
+    prismaQuery: any
+): Promise<ModelMap[T][] | void> {
+    if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
+
+        return await (prisma[modelName] as any).findMany({ 
+            where: prismaQuery
+        });
+    }
+};
+
 
 // POST methods
 

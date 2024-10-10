@@ -1,6 +1,9 @@
 import { Product } from "@prisma/client";
-import { deleteOneEntityByField, getAllEntity, getOneEntityByField, postOneEntity, putOneEntityByField } from "../helpers/dynamicQuery";
+import { deleteOneEntityByField, getAllEntity, getEntitiesByFields, getOneEntityByField, postOneEntity, putOneEntityByField } from "../helpers/dynamicQuery";
 import { FieldValuePair } from "../helpers/request";
+import { QueryParams } from "@/redux/reducers/product";
+import { transformQueryToPrismaQuery } from "../transformers";
+import { productSearchTransformer } from "../transformers/productSearchTransformer";
 
 
 // GET methods
@@ -15,6 +18,11 @@ export async function getProductByUserId(id: number): Promise<Product | void> {
 
 export async function getAllProducts(): Promise<Product[] | void> {
     return getAllEntity('product');
+}
+
+export async function getProductBySearch(params: QueryParams): Promise<Product[] | void> {
+    const prismaQuery = transformQueryToPrismaQuery(params, productSearchTransformer);
+    return getEntitiesByFields('product', prismaQuery);
 }
 
 
