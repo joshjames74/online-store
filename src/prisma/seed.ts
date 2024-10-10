@@ -4,6 +4,7 @@ const { readFile } = require('fs/promises');
 const prisma = new PrismaClient();
 
 async function main() {
+  
 
   await prisma.$executeRaw`TRUNCATE TABLE Country RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE Currency RESTART IDENTITY CASCADE`;
@@ -19,7 +20,9 @@ async function main() {
   const country_sql = await readFile('../database/country.sql', { encoding: 'utf8'});
   const currency_sql = await readFile('../database/currency.sql', { encoding: 'utf8'});
   const user_sql = await readFile('../database/user.sql', { encoding: 'utf8' });
+  const category_sql = await readFile('../database/category.sql', { encoding: 'utf8' });
   const product_sql = await readFile('../database/product.sql', { encoding: 'utf8' });
+  const product_category_sql = await readFile('../database/product-category.sql', { encoding: 'utf8' });
   const review_sql = await readFile('../database/review.sql', { encoding: 'utf8'});
   const address_sql = await readFile('../database/address.sql', { encoding: 'utf8' });
   const order_sql = await readFile('../database/order.sql', { encoding: 'utf8' });
@@ -29,7 +32,9 @@ async function main() {
   await prisma.$executeRawUnsafe(country_sql);
   await prisma.$executeRawUnsafe(currency_sql);
   await prisma.$executeRawUnsafe(user_sql);
+  await prisma.$executeRawUnsafe(category_sql);
   await prisma.$executeRawUnsafe(product_sql);
+  await prisma.$executeRawUnsafe(product_category_sql);
   await prisma.$executeRawUnsafe(review_sql);
   await prisma.$executeRawUnsafe(address_sql);
   await prisma.$executeRawUnsafe(order_sql);
