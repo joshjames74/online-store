@@ -22,7 +22,8 @@ export async function getAllProducts(): Promise<Product[] | void> {
 
 export async function getProductBySearch(params: QueryParams): Promise<Product[] | void> {
     const prismaQuery = transformQueryToPrismaQuery(params, productSearchTransformer);
-    return getEntitiesByFields('product', prismaQuery);
+    const products = await getEntitiesByFields('product', prismaQuery);
+    return products
 }
 
 

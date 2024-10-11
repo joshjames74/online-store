@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 // GET request
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
 
   // to do: new function to do the parsing

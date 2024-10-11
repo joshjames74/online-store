@@ -1,13 +1,14 @@
 import { Address, Basket, BasketItem, Category, Country, Currency, Order, OrderItem, Prisma, PrismaClient, Product, Review, Usr } from "@prisma/client";
 
+
 export type ModelType = 'address'
-    | 'basket' 
-    | 'category' 
-    | 'country' 
-    | 'currency' 
-    | 'order' 
-    | 'product' 
-    | 'review' 
+    | 'basket'
+    | 'category'
+    | 'country'
+    | 'currency'
+    | 'order'
+    | 'product'
+    | 'review'
     | 'usr';
 
 export type ModelMap = {
@@ -24,6 +25,29 @@ export type ModelMap = {
     usr: Usr;
 };
 
+
+export type FieldMetadata = {
+    min: number;
+    max: number;
+}
+
+export type Metadata<T extends ModelType> = {
+    [K in keyof T]: FieldMetadata; } & {
+    count?: number;
+};
+
+
+export type SingleModelResponse<T extends ModelType> = {
+    model: ModelMap[T],
+    metadata?: Metadata<T>
+};
+
+export type MultiModelResponse<T extends ModelType> = {
+    model: ModelMap[T][],
+    metadata?: Metadata<T>
+};
+
+
 export type TableMap = {
     address: 'id' | 'usrId' | 'name' | 'number' | 'street_name' | 'postcode' | 'county' | 'countryId';
     basket: 'id' | 'usrId';
@@ -36,4 +60,4 @@ export type TableMap = {
     product: 'id' | 'sellerId' | 'title' | 'url' | 'description' | 'image_url' | 'image_alt' | 'price' | 'currencyId' | 'review_score' | 'review_count' | 'order_count' | 'categories';
     review: 'id' | 'productId' | 'userId' | 'score' | 'title' | 'content' | 'image_urls' | 'date';
     usr: 'id' | 'first_name' | 'user_name' | 'sub' | 'title' | 'countryId' | 'currencyId' | 'image_url';
-  };
+};

@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
-import { ModelMap, ModelType, TableMap } from "./types";
+import { ModelMap, ModelType, MultiModelResponse, SingleModelResponse, TableMap } from "./types";
 
 export type FieldValuePair<T extends ModelType> = { field: TableMap[T]; value: any };
 
 type getFunctionType<T extends ModelType> = (params: any) => Promise<ModelMap[T] | ModelMap[T][] | void>;
+
+// Get types
+
+type GetSingleType<T extends ModelType> = (params: any) => Promise<SingleModelResponse<T> | void>;
+type GetMultiType<T extends ModelType> = (params: any) => Promise<MultiModelResponse<T> | void>; 
+
+
 type postFunctionType<T extends ModelType> = (model: ModelMap[T]) => Promise<ModelMap[T] | void>;
 type deleteFunctionType<T extends ModelType> = (params: any) => Promise<ModelMap[T] | void>;
 type putFunctionType<T extends ModelType> = (searchParam: FieldValuePair<T>, putParam: FieldValuePair<T>[]) => Promise<ModelMap[T] | void>;

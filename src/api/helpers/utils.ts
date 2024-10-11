@@ -1,21 +1,5 @@
 import { QueryParams } from "@/redux/reducers/product";
-import { ReadonlyURLSearchParams } from "next/navigation";
 
-const getCategories = (params: URLSearchParams): number[] => {
-
-    /**
-     *  Get all entities named 'categories[]' from URLSearchParams
-     */
-
-    const categories: number[] = [];
-    for (const [key, value] of Object.entries(params)) {
-      if (key === 'categories[]') {
-        categories.push(Number(value));
-      }
-    }
-  
-    return categories; 
-  };
 
 export const parseQueryParams = (searchParams: URLSearchParams): QueryParams => {
 
