@@ -18,7 +18,7 @@ export const productSearchTransformer: ProductQueryTransformer = (params: QueryP
         searchFields.push({ 
             targets: ['title', 'description'], 
             data: params.query, 
-            relation: PrismaRelation.CONTAINS 
+            relation: [PrismaRelation.CONTAINS] 
         })
     }
 
@@ -26,7 +26,7 @@ export const productSearchTransformer: ProductQueryTransformer = (params: QueryP
         searchFields.push({
             targets: ['price'],
             data: params.max_price,
-            relation: PrismaRelation.LESS_THAN_OR_EQUAL
+            relation: [PrismaRelation.LESS_THAN_OR_EQUAL]
         });
     };
 
@@ -34,9 +34,17 @@ export const productSearchTransformer: ProductQueryTransformer = (params: QueryP
         searchFields.push({
             targets: ['review_score'],
             data: params.min_review,
-            relation: PrismaRelation.GREATHER_THAN_OR_EQUAL
+            relation: [PrismaRelation.GREATHER_THAN_OR_EQUAL]
         });
     };
+
+    if (params.categories && params.categories.length) {
+        searchFields.push({
+            targets: ['categories'],
+            data: params.categories,
+            relation: [PrismaRelation.SOME, PrismaRelation.ID, PrismaRelation.IN]
+        })
+    }
 
     return searchFields;
 }

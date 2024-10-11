@@ -33,7 +33,7 @@ export type TableMap = {
     currency: 'id' | 'code' | 'symbol' | 'gbp_exchange_rate';
     order: 'id' | 'usrId' | 'date' | 'currencyId' | 'addressId';
     order_item: 'id' | 'orderId' | 'productId' | 'price' | 'quantity';
-    product: 'id' | 'sellerId' | 'title' | 'url' | 'description' | 'image_url' | 'image_alt' | 'price' | 'currencyId' | 'review_score' | 'review_count' | 'order_count';
+    product: 'id' | 'sellerId' | 'title' | 'url' | 'description' | 'image_url' | 'image_alt' | 'price' | 'currencyId' | 'review_score' | 'review_count' | 'order_count' | 'categories';
     review: 'id' | 'productId' | 'userId' | 'score' | 'title' | 'content' | 'image_urls' | 'date';
     usr: 'id' | 'first_name' | 'user_name' | 'sub' | 'title' | 'countryId' | 'currencyId' | 'image_url';
   };

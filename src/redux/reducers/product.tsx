@@ -8,6 +8,7 @@ export interface QueryParams {
     query: string;
     max_price: number;
     min_review: number;
+    categories: number[];
 }
 
 export interface ProductState {
@@ -22,6 +23,7 @@ const initialQueryParams: QueryParams = {
     query: "",
     max_price: -1,
     min_review: 0,
+    categories: [1]
 }
 
 const initialState: ProductState = {

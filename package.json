@@ -10,9 +10,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "@chakra-ui/react": "^2.10.2",
+    "@fontsource/open-sans": "^5.1.0",
+    "@fontsource/raleway": "^5.1.0",
+    "axios": "^1.7.7",
     "next": "14.2.13",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@prisma/client": "^5.19.1",

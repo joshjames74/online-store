@@ -8,9 +8,21 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // GET request
 export async function GET(req: NextRequest): Promise<NextResponse> {
+
+  // to do: new function to do the parsing
+
   const { searchParams } = new URL(req.url);
-  const searchData = parseQueryParams(searchParams);
-  return getHelper('product', getProductBySearch, searchData)
+  
+  const query = searchParams.get('query') || '';
+  const max_price = parseFloat(searchParams.get('max_price') || '0');
+  const min_review = parseFloat(searchParams.get('min_review') || '0');
+  const categories = searchParams.getAll('categories[]').length
+                     ? searchParams.getAll('categories[]').filter(val => !isNaN(parseInt(val))).map(val => parseInt(val))
+                     : []
+
+  const params = { query, max_price, min_review, categories };
+
+  return getHelper('product', getProductBySearch, params);
 };
 
 

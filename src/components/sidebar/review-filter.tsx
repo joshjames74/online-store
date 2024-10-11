@@ -1,15 +1,31 @@
 import { Box, Text } from "@chakra-ui/react";
 import styles from "./review-filter.module.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReviewStars from "../review/review-stars";
+import { useSearchStore } from "@/zustand/store";
 
 
 export default function ReviewFilter(): JSX.Element {
 
+
+    const [selected, setSelected] = useState<number>(0);
+    const setSearchParams = useSearchStore((state) => state.setSearchParams);
+
+
+    useEffect(() => {
+        console.log(selected);
+        setSearchParams({ min_review: selected });
+    }, [selected]);
+
     const renderReviewStars = () => {
-        return [5, 4, 3, 2, 1, 0].map((val: Number) => {
+        return [5, 4, 3, 2, 1, 0].map((val: number) => {
+            const selected_styles = selected === val ? styles.review_star_selected : ""
             return (
-            <Box className={styles.review_star_container} key={val.toString()}>
+            <Box 
+            className={styles.review_star_container + " " + selected_styles}
+            key={val.toString()}
+            onClick={() => setSelected(val)}
+            cursor="pointer">
                 <ReviewStars value={val} fontSize="s"/> 
                 <Text fontSize="md">{val.toString()} stars and up</Text>
             </Box>

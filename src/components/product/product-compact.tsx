@@ -14,7 +14,7 @@ export default function ProductCompact({...product}: Product): JSX.Element {
     return (
         <Link href="">
             <Box className={styles.container} borderColor={theme.colors.background}>
-                <Image className={styles.image} src={product.image_url} alt={product.image_alt}  />
+                <Image className={styles.image} src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
                 <Box className={styles.info_container}>
                     <Text noOfLines={1}>{product.title}</Text>
                     <Text className={styles.price_wrapper} color={theme.colors.accent.primary}>{product.price}</Text>

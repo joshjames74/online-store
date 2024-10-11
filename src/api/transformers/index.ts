@@ -12,14 +12,36 @@ export enum PrismaRelation {
     GREATER_THAN = "gt",
     GREATHER_THAN_OR_EQUAL = "gte",
     EQUALS = "equals",
-    NOT = "not"
+    NOT = "not",
+    SOME = "some",
+    ID = "categoryId",
+    IN = "in"
 }
 
 export type SearchFieldType<T extends ModelType> = {
     data: any,
     targets: TableMap[T][],
-    relation: PrismaRelation,
+    relation: PrismaRelation[],
 }
+
+
+export function createDynamicRelationObject(relations: PrismaRelation[], data: any) {
+    /**
+     *  Convert an array of relations [relation 1, relation 2, ...] to nested structure
+     *  { 
+     *    [relation 1]: 
+     *    {
+     *      [relation 2]: 
+     *      {
+     *                ....: data
+     *      }
+     *    }
+     *  }
+     */
+    return relations.reduceRight((acc, relation) => {
+        return { [relation]: acc };
+    }, data);
+};
 
 
 export function transformSearchFieldToPrismaQuery<T extends ModelType>(searchFields: SearchFieldType<T>[]) {
@@ -32,7 +54,8 @@ export function transformSearchFieldToPrismaQuery<T extends ModelType>(searchFie
 
     for (const searchField of searchFields) {
         for (const target of searchField.targets) {
-            const query = { [target]: { [searchField.relation]: searchField.data } }
+            const nestedRelation = createDynamicRelationObject(searchField.relation, searchField.data);
+            const query = { [target]: nestedRelation }
             Object.assign(out, query);
         };
     }
