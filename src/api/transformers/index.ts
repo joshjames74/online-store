@@ -64,6 +64,6 @@ export function transformSearchFieldToPrismaQuery<T extends ModelType>(searchFie
 };
 
 
-export function transformQueryToPrismaQuery<T extends ModelType>(query: QueryParams, transformer: QueryTransformer) {
+export function transformQueryToPrismaQuery<T extends ModelType>(query: Partial<QueryParams>, transformer: QueryTransformer) {
     return transformSearchFieldToPrismaQuery(transformer(query));
 };

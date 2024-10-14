@@ -23,7 +23,7 @@ export async function getAllProducts(): Promise<Product[] | void> {
     return getAllEntity('product');
 }
 
-export async function getProductBySearch(params: QueryParams): Promise<ModelsResponse<'product'> | void> {
+export async function getProductBySearch(params: Partial<QueryParams>): Promise<ModelsResponse<'product'> | void> {
 
     const prismaQuery = transformQueryToPrismaQuery(params, productSearchTransformer);
     const products = await getEntitiesByFields('product', prismaQuery);

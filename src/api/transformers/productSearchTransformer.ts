@@ -3,10 +3,10 @@ import { PrismaRelation, SearchFieldType } from ".";
 import { ModelType } from "../helpers/types";
 
 
-export type ProductQueryTransformer= (query: QueryParams) => SearchFieldType<'product'>[];
+export type ProductQueryTransformer= (query: Partial<QueryParams>) => SearchFieldType<'product'>[];
 
 
-export const productSearchTransformer: ProductQueryTransformer = (params: QueryParams): SearchFieldType<'product'>[] => {
+export const productSearchTransformer: ProductQueryTransformer = (params: Partial<QueryParams>): SearchFieldType<'product'>[] => {
 
     /**
      *  Transform search parameters into a custom seach field type for a particular search

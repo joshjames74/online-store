@@ -21,7 +21,7 @@ export async function getAllProducts(): Promise<Product[]> {
     return response.json();
 }
 
-export async function getProductsBySearchParams(params: QueryParams): Promise<ModelsResponse<'product'>> {
+export async function getProductsBySearchParams(params: Partial<QueryParams>): Promise<ModelsResponse<'product'>> {
     const response = await axios(`/api/product`, {
         method: "GET",
         params: {...params}

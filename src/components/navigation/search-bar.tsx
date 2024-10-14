@@ -16,6 +16,9 @@ export default function SearchBar(): JSX.Element {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<number>();
+
+    const setSearchParams = useSearchStore((state) => state.setSearchParams);
 
     useEffect(() => {
         getAllCategories().then(res => {
@@ -29,6 +32,10 @@ export default function SearchBar(): JSX.Element {
     const urlSearchParams = useSearchStore((state) => state.getURLSearchParams);
 
     const updateURL = () => {
+        // search bar category overrides all other categories, so is set last
+        if (selectedCategory) {
+            setSearchParams({ categories: [selectedCategory]})
+        }
         const params = urlSearchParams();
         router.push(`?${params}`); 
     }
@@ -36,8 +43,12 @@ export default function SearchBar(): JSX.Element {
     return (
         <InputGroup className={styles.container} bgColor={theme.colors.background.secondary} color={theme.colors.text.primary}>
             <InputLeftAddon className={styles.input_left_addon}>
-                <Select placeholder="All" className={styles.select_container} variant="unstyled">
-                    {isLoading ? <></> : categories.map((category) => <option>{category.name}</option>)}
+                <Select 
+                    onChange={e => setSelectedCategory(parseInt(e.target.value))}
+                    placeholder="All"
+                    className={styles.select_container}
+                    variant="unstyled">
+                    {isLoading ? <></> : categories.map((category) => <option value={category.id}>{category.name}</option>)}
                 </Select>
             </InputLeftAddon>
             <Input placeholder="Search" />

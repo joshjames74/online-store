@@ -13,30 +13,29 @@ export default function PriceFilter(): JSX.Element {
 
     const min = 0;
 
-    const [sliderValue, setSliderValue] = useState<number>(0);
+    const [sliderValue, setSliderValue] = useState<number>();
     const [maxPrice, setMaxPrice] = useState<number>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const setSearchParams = useSearchStore((state) => state.setSearchParams);
 
 
-
-    // max price ? what if wanna change the parameters
-
-    const params = useSearchParams();
-
     useEffect(() => {
+
+        // set the max price when no filters are applied
+
         setIsLoading(true);
-
-        const parsedParams = parseQueryParams(params);
-
-        getProductsBySearchParams(parsedParams).then((res: ModelsResponse<'product'>) => {
+        getProductsBySearchParams({}).then((res: ModelsResponse<'product'>) => {
             if (res.metadata && res.metadata["price"]) {
                 setMaxPrice(res.metadata["price"]?.max);
             }
             setIsLoading(false);
         })
-    }, [params]);
+    }, []);
+
+    useEffect(() => {
+        setSliderValue(maxPrice)
+    }, [maxPrice]);
 
     const handlePriceChange = (newPrice: number) => {
         setSliderValue(newPrice);
