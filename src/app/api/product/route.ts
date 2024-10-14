@@ -23,7 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   const params = { query, max_price, min_review, categories };
 
-  return getHelper('product', getProductBySearch, params);
+  return getHelper(getProductBySearch, params);
 };
 
 

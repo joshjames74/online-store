@@ -10,12 +10,9 @@ import { useSearchParams } from "next/navigation";
 import { parseQueryParams } from "@/api/helpers/utils";
 import ProductWideSkeleton from "./product-wide-skeleton";
 import ProductCompactSkeleton from "./product-compact-skeleton";
-
-
-enum Width {
-  wide = "WIDE",
-  compact = "COMPACT"
-}
+import { ModelsResponse } from "@/api/helpers/types";
+import { Width } from "@/redux/reducers/product";
+import { useSearchStore } from "@/zustand/store";
 
 
 export default function ProductGrid(): JSX.Element {
@@ -24,9 +21,9 @@ export default function ProductGrid(): JSX.Element {
   const searchParams = useSearchParams();
   
   const [products, setProducts] = useState<Product[]>();
-  const [width, setWidth] = useState<Width>(Width.compact);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   
+  const width = useSearchStore((state) => state.searchParams.width);
   
   // load categories
   
@@ -35,8 +32,8 @@ export default function ProductGrid(): JSX.Element {
     const searchData = parseQueryParams(searchParams);
 
     setIsLoading(true);
-    getProductsBySearchParams(searchData).then((res: Product[]) => {
-        setProducts(res)
+    getProductsBySearchParams(searchData).then((res: ModelsResponse<'product'>) => {
+        setProducts(res.data)
         setIsLoading(false);
     });
   }, [searchParams]);
@@ -62,7 +59,7 @@ export default function ProductGrid(): JSX.Element {
   }
 
   const renderSkeleton = (): JSX.Element => {
-    return width === Width.compact ? renderCompactSkeleton() : renderWideSkeleton()
+    return width === Width.COMPACT ? renderCompactSkeleton() : renderWideSkeleton()
   };
 
 
@@ -75,7 +72,7 @@ export default function ProductGrid(): JSX.Element {
       products?.length ?
         (<Box className={styles.wrapper}>
           <Box className={styles.container_wide}>
-            {width == Width.wide ?
+            {width == Width.WIDE ?
               (<Box className={styles.container_wide}>
                 {products.map((product: Product) => <ProductWide key={product.id} {...product} />)}
               </Box>

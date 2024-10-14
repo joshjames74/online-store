@@ -1,6 +1,11 @@
 import { Product } from "@prisma/client";
 import { Reducer } from "redux";
 
+export enum Width {
+    WIDE = 20,
+    COMPACT = 60
+}
+
 
 // State types
 
@@ -9,6 +14,7 @@ export interface QueryParams {
     max_price: number;
     min_review: number;
     categories: number[];
+    width: Width;
 }
 
 export interface ProductState {
@@ -23,7 +29,8 @@ const initialQueryParams: QueryParams = {
     query: "",
     max_price: -1,
     min_review: 0,
-    categories: [1]
+    categories: [1],
+    width: Width.WIDE
 }
 
 const initialState: ProductState = {

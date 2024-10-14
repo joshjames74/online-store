@@ -6,5 +6,5 @@ import { NextRequest, NextResponse } from "next/server";
 // GET method
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-    return getHelper('category', getAllCategories, null);
+    return getHelper(getAllCategories, null);
   }

@@ -7,5 +7,5 @@ import { NextRequest, NextResponse } from 'next/server';
 // GET request
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  return await getHelper('product', getAllProducts, null);
+  return await getHelper(getAllProducts, null);
 }

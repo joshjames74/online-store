@@ -32,19 +32,19 @@ export type FieldMetadata = {
 }
 
 export type Metadata<T extends ModelType> = {
-    [K in keyof T]: FieldMetadata; } & {
+    [K in keyof ModelMap[T]]?: FieldMetadata; } & {
     count?: number;
 };
 
 
-export type SingleModelResponse<T extends ModelType> = {
-    model: ModelMap[T],
-    metadata?: Metadata<T>
+export type ModelResponse<T extends ModelType> = {
+    data: ModelMap[T];
+    metadata?: Metadata<T>;
 };
 
-export type MultiModelResponse<T extends ModelType> = {
-    model: ModelMap[T][],
-    metadata?: Metadata<T>
+export type ModelsResponse<T extends ModelType> = {
+    data: ModelMap[T][];
+    metadata?: Metadata<T>;
 };
 
 

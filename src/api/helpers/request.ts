@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ModelMap, ModelType, MultiModelResponse, SingleModelResponse, TableMap } from "./types";
+import { ModelMap, ModelResponse, ModelsResponse, ModelType, TableMap } from "./types";
 
 export type FieldValuePair<T extends ModelType> = { field: TableMap[T]; value: any };
 
@@ -7,9 +7,11 @@ type getFunctionType<T extends ModelType> = (params: any) => Promise<ModelMap[T]
 
 // Get types
 
-type GetSingleType<T extends ModelType> = (params: any) => Promise<SingleModelResponse<T> | void>;
-type GetMultiType<T extends ModelType> = (params: any) => Promise<MultiModelResponse<T> | void>; 
-
+type GetModelWithMetadata<T extends ModelType> = (params: any) => Promise<ModelResponse<T> | void>;
+type GetModelsWithMetadata<T extends ModelType> = (params: any) => Promise<ModelsResponse<T> | void>;
+type GetModel<T extends ModelType> = (params: any) => Promise<ModelMap[T] | void>; 
+type GetModels<T extends ModelType> = (params: any) => Promise<ModelMap[T][] | void>;
+type GetType<T extends ModelType> = GetModelWithMetadata<T> | GetModelsWithMetadata<T> | GetModel<T> | GetModels<T>;
 
 type postFunctionType<T extends ModelType> = (model: ModelMap[T]) => Promise<ModelMap[T] | void>;
 type deleteFunctionType<T extends ModelType> = (params: any) => Promise<ModelMap[T] | void>;
@@ -26,18 +28,12 @@ export function formatBodyToField<T extends ModelType>(body: any): FieldValuePai
 
 // GET method
 
-export async function getHelper<T extends ModelType>(
-    entity: T, 
-    func: getFunctionType<T>, 
-    params: any): Promise<NextResponse> {
-
+export async function getHelper<T extends ModelType>(func: GetType<T>, params: any): Promise<NextResponse> {
     try {
         const response = await func(params);
-
         if (!response) {
             return NextResponse.json({ error: `${response} not found` }, { status: 404});
         }
-
         return NextResponse.json(response, { status: 200})
     } catch (error) {
         console.log(error);

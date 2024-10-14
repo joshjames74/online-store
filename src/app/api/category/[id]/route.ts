@@ -14,5 +14,5 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
     }
   
-    return getHelper('category', getCategoryById, parseInt(id))
+    return getHelper(getCategoryById, parseInt(id))
   }

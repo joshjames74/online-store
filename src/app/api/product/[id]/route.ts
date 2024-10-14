@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
     }
 
-    return await getHelper('product', getProductById, parseInt(id));
+    return await getHelper(getProductById, parseInt(id));
 }
 
 

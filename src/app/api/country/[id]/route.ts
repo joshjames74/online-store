@@ -13,5 +13,5 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 
 
-  return await getHelper('country', getCountryById, parseInt(id))
+  return await getHelper(getCountryById, parseInt(id))
 }

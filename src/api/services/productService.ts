@@ -4,6 +4,9 @@ import { FieldValuePair } from "../helpers/request";
 import { QueryParams } from "@/redux/reducers/product";
 import { transformQueryToPrismaQuery } from "../transformers";
 import { productSearchTransformer } from "../transformers/productSearchTransformer";
+import { Metadata, ModelsResponse } from "../helpers/types";
+
+import { TableMap } from "../helpers/types";
 
 
 // GET methods
@@ -20,10 +23,23 @@ export async function getAllProducts(): Promise<Product[] | void> {
     return getAllEntity('product');
 }
 
-export async function getProductBySearch(params: QueryParams): Promise<Product[] | void> {
+export async function getProductBySearch(params: QueryParams): Promise<ModelsResponse<'product'> | void> {
+
     const prismaQuery = transformQueryToPrismaQuery(params, productSearchTransformer);
     const products = await getEntitiesByFields('product', prismaQuery);
-    return products
+
+    // get metadata
+    const count = products?.length;
+    const max_price = Math.max(...products?.length ? products?.map(product => product.price) : [])
+
+    const metadata: Metadata<'product'> = {
+        count: count,
+        "price": { max: max_price, min: 0 }
+    }
+
+    const response: ModelsResponse<'product'> = { data: products, metadata: metadata };
+
+    return response
 }
 
 
