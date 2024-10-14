@@ -51,7 +51,7 @@ const theme: ITheme = {
             },
             border: {
                 primary: "black",
-                background: "white",
+                background: "gray",
             }
         }
     }

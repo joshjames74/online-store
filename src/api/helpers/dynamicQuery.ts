@@ -37,13 +37,17 @@ export async function getAllEntity<T extends ModelType>(modelName: T): Promise<M
 
 export async function getEntitiesByFields<T extends ModelType>(
     modelName: T, 
-    prismaQuery: any
+    whereQuery: any,
+    orderQuery?: any,
 ): Promise<ModelMap[T][] | void> {
     if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
 
-        return await (prisma[modelName] as any).findMany({ 
-            where: prismaQuery
-        });
+        var query = {}
+
+        Object.assign(query, { where: whereQuery });
+        if (orderQuery) { Object.assign(query, { orderBy: orderQuery }) };
+
+        return await (prisma[modelName] as any).findMany(query);
     }
 };
 

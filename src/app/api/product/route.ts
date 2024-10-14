@@ -1,6 +1,7 @@
 import { getHelper, postHelper } from '@/api/helpers/request';
 import { parseQueryParams } from '@/api/helpers/utils';
 import { getProductBySearch, postProduct } from '@/api/services/productService';
+import { ProductFilter } from '@/api/transformers/productSearchTransformer';
 import { QueryParams } from '@/redux/reducers/product';
 import { Product } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
@@ -21,7 +22,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                      ? searchParams.getAll('categories[]').filter(val => !isNaN(parseInt(val))).map(val => parseInt(val))
                      : []
 
-  const params = { query, max_price, min_review, categories };
+  // parse enum
+  const product_filter_raw = parseInt(searchParams.get('product_filter') || '');
+  var product_filter: ProductFilter;
+
+  if (product_filter_raw && Object.values(ProductFilter).includes(product_filter_raw as ProductFilter)) {
+    product_filter = product_filter_raw as ProductFilter;
+  }
+
+  const params = { query, max_price, min_review, categories, product_filter };
 
   return getHelper(getProductBySearch, params);
 };

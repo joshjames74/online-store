@@ -1,50 +1,97 @@
 import { QueryParams } from "@/redux/reducers/product";
-import { PrismaRelation, SearchFieldType } from ".";
-import { ModelType } from "../helpers/types";
+import { OrderField, OrderRelation, PrismaRelation, QueryField, SearchFieldType, WhereField, WhereRelation } from ".";
+import { ModelType, TableMap } from "../helpers/types";
 
 
-export type ProductQueryTransformer= (query: Partial<QueryParams>) => SearchFieldType<'product'>[];
+export type ProductQueryTransformer= (params: Partial<ProductParams>) => QueryField<'product'>;
 
 
-export const productSearchTransformer: ProductQueryTransformer = (params: Partial<QueryParams>): SearchFieldType<'product'>[] => {
+export enum ProductFilter {
+    PRICE_LOW_TO_HIGH = 1,
+    PRICE_HIGH_TO_LOW = 2
+}
 
-    /**
-     *  Transform search parameters into a custom seach field type for a particular search
-     */
 
-    var searchFields: SearchFieldType<'product'>[] = [];
+export enum Width {
+    WIDE = 20,
+    COMPACT = 60
+}
+
+export type ProductParams = {
+    query: string;
+    max_price: number;
+    min_review: number;
+    categories: number[];
+    width: Width;
+    product_filter: ProductFilter; 
+}
+
+
+export const productQueryTransformer: ProductQueryTransformer = (params: Partial<ProductParams>): QueryField<'product'> => {
+
+    var whereFields:  WhereField<'product'>[] = [];
+    var orderFields: OrderField<'product'>[] = [];
 
     if (params.query) {
-        searchFields.push({ 
+        whereFields.push({ 
             targets: ['title', 'description'], 
             data: params.query, 
-            relation: [PrismaRelation.CONTAINS] 
+            relation: [WhereRelation.CONTAINS] 
         })
     }
 
     if (params.max_price) {
-        searchFields.push({
+        whereFields.push({
             targets: ['price'],
             data: params.max_price,
-            relation: [PrismaRelation.LESS_THAN_OR_EQUAL]
+            relation: [WhereRelation.LESS_THAN_OR_EQUAL]
         });
     };
 
     if (params.min_review) {
-        searchFields.push({
+        whereFields.push({
             targets: ['review_score'],
             data: params.min_review,
-            relation: [PrismaRelation.GREATHER_THAN_OR_EQUAL]
+            relation: [WhereRelation.GREATHER_THAN_OR_EQUAL]
         });
     };
 
     if (params.categories && params.categories.length) {
-        searchFields.push({
+        whereFields.push({
             targets: ['categories'],
             data: params.categories,
-            relation: [PrismaRelation.SOME, PrismaRelation.ID, PrismaRelation.IN]
+            relation: [WhereRelation.SOME, WhereRelation.ID, WhereRelation.IN]
         })
     }
 
-    return searchFields;
+    if (params.product_filter) {
+        
+        var relation: OrderRelation = OrderRelation.ASC;
+        var targets: TableMap['product'][] = [];
+
+        // if descending order
+        if (params.product_filter === ProductFilter.PRICE_HIGH_TO_LOW) {
+            relation = OrderRelation.DESC;
+        };
+
+        // if ascending order
+        if (params.product_filter === ProductFilter.PRICE_LOW_TO_HIGH) {
+            relation = OrderRelation.ASC
+        };
+
+        // if relating to price
+        if (params.product_filter === ProductFilter.PRICE_HIGH_TO_LOW || params.product_filter === ProductFilter.PRICE_LOW_TO_HIGH) {
+            targets = ['price'];
+        };
+
+        orderFields.push({
+            relation: relation,
+            targets: targets
+        })
+    }
+
+    return {
+        whereFields: whereFields,
+        orderFields: orderFields
+    };
 }

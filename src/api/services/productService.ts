@@ -2,8 +2,8 @@ import { Product } from "@prisma/client";
 import { deleteOneEntityByField, getAllEntity, getEntitiesByFields, getOneEntityByField, postOneEntity, putOneEntityByField } from "../helpers/dynamicQuery";
 import { FieldValuePair } from "../helpers/request";
 import { QueryParams } from "@/redux/reducers/product";
-import { transformQueryToPrismaQuery } from "../transformers";
-import { productSearchTransformer } from "../transformers/productSearchTransformer";
+import { queryParamsToPrismaQuery, transformQueryToPrismaQuery } from "../transformers";
+import { ProductParams, productQueryTransformer, productSearchTransformer } from "../transformers/productSearchTransformer";
 import { Metadata, ModelsResponse } from "../helpers/types";
 
 import { TableMap } from "../helpers/types";
@@ -23,10 +23,10 @@ export async function getAllProducts(): Promise<Product[] | void> {
     return getAllEntity('product');
 }
 
-export async function getProductBySearch(params: Partial<QueryParams>): Promise<ModelsResponse<'product'> | void> {
+export async function getProductBySearch(params: Partial<ProductParams>): Promise<ModelsResponse<'product'> | void> {
 
-    const prismaQuery = transformQueryToPrismaQuery(params, productSearchTransformer);
-    const products = await getEntitiesByFields('product', prismaQuery);
+    const { whereQuery, orderQuery } = queryParamsToPrismaQuery(params, productQueryTransformer);
+    const products = await getEntitiesByFields('product', whereQuery, orderQuery)
 
     // get metadata
     const count = products?.length;

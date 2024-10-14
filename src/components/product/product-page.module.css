@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    border: 1px solid red;
+    margin: 20px;
+}
+
+.info_container {
+    display: grid;
+    grid-template-rows: 4fr 2fr 1fr 15fr;
+    width: 100%;
+
+}
+
+.review_container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.2em;
+}
+
+.ratings_link:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    height: 1px;
+}
