@@ -18,13 +18,19 @@ export async function getReviewsByUserId(id: number): Promise<Review[] | void> {
     return getEntitiesByField('review', 'usrId', id);
 }
 
-// get reviews by product id and by rating
-
 export async function getReviewsBySearch(params: Partial<ReviewParams>): Promise<Review[] | void> {
     const { whereQuery, orderQuery} = queryParamsToPrismaQuery(params, reviewQueryTransformer);
-    const reviews = await getEntitiesByFields('review', whereQuery, orderQuery);
-    return reviews
+    return await getEntitiesByFields('review', whereQuery, orderQuery);
 }
+
+export async function getReviewCountsByProductId(id: number): Promise<number[] | void> {
+    const arr: number[] = Array.from( { length: 6 } );
+    return await Promise.all(arr.map(async (_, index) => {
+        const reviews = await getEntitiesByFields('review', { score: index, productId: id })
+        return reviews ? reviews.length : 0;
+    }));
+}
+
 
 // POST methods
 

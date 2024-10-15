@@ -15,9 +15,9 @@ export default function ProductPage(product: Product): JSX.Element {
             <Image 
             className={styles.image}
             src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
-            <Box className={styles.info_container}>
+            <Box className={styles.body}>
 
-                <Text fontSize="5xl">{product.title}</Text>
+                <Text className={styles.title}>{product.title}</Text>
 
                 <Box className={styles.review_container}>
                     <Text>{product.review_score}</Text>

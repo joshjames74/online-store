@@ -17,9 +17,13 @@ export default function SearchBar(): JSX.Element {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number>();
+    const [query, setQuery] = useState<string>('');
 
     const setSearchParams = useSearchStore((state) => state.setSearchParams);
-
+    const urlSearchParams = useSearchStore((state) => state.getURLSearchParams);
+    
+    const router = useRouter();
+    
     useEffect(() => {
         getAllCategories().then(res => {
             setCategories(res);
@@ -27,17 +31,14 @@ export default function SearchBar(): JSX.Element {
         })
     }, [])
 
-    const router = useRouter();
-
-    const urlSearchParams = useSearchStore((state) => state.getURLSearchParams);
+    useEffect(() => {
+        setSearchParams({ query: query});
+    }, [query]);
 
     const updateURL = () => {
         // search bar category overrides all other categories, so is set last
-        if (selectedCategory) {
-            setSearchParams({ categories: [selectedCategory]})
-        }
-        const params = urlSearchParams();
-        router.push(`?${params}`); 
+        if (selectedCategory) { setSearchParams({ categories: [selectedCategory]}) }
+        router.replace(`/?${urlSearchParams()}`); 
     }
 
     return (
@@ -51,8 +52,8 @@ export default function SearchBar(): JSX.Element {
                     {isLoading ? <></> : categories.map((category) => <option value={category.id}>{category.name}</option>)}
                 </Select>
             </InputLeftAddon>
-            <Input placeholder="Search" />
-            <InputRightElement onClick={() => updateURL()}bgColor={theme.colors.accent.primary} color={theme.colors.text.secondary} >
+            <Input placeholder="Search" onChange={e => setQuery(e.target.value)} />
+            <InputRightElement onClick={() => updateURL()} bgColor={theme.colors.accent.primary} color={theme.colors.text.secondary} >
                 <SearchOutlined />
             </InputRightElement>
         </InputGroup>

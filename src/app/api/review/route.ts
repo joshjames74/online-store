@@ -11,15 +11,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
 
   const productId = parseInt(searchParams.get('productId') || '');
-  const review_filter_raw = parseInt(searchParams.get('review_filter') || '');
+  const score = parseInt(searchParams.get('score') || '');
+  const review_filter = parseInt(searchParams.get('review_filter') || '');
 
-  var review_filter: ReviewFilter;
-
-  if (review_filter_raw && Object.values(ReviewFilter).includes(review_filter_raw as ReviewFilter)) {
-    review_filter = review_filter_raw as ReviewFilter;
-  };
-
-  const params: Partial<ReviewParams> = { productId, review_filter }  
+  const params: Partial<ReviewParams> = { productId, review_filter, score };  
 
   return getHelper(getReviewsBySearch, params)
 };

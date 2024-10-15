@@ -52,7 +52,6 @@ export const reviewQueryTransformer: ReviewQueryTransformer = (params: Partial<R
         var relation: OrderRelation = OrderRelation.ASC;
         var targets: TableMap['review'][] = [];
 
-
         // if descending order
         if (params.review_filter === ReviewFilter.DATE_NEW_TO_OLD || params.review_filter === ReviewFilter.SCORE_HIGH_TO_LOW) {
             relation = OrderRelation.DESC;

@@ -2,15 +2,30 @@
     display: flex;
     flex-direction: row;
     gap: 1em;
-    border: 1px solid red;
     margin: 20px;
+    padding: 10px;
 }
 
-.info_container {
-    display: grid;
-    grid-template-rows: 4fr 2fr 1fr 15fr;
-    width: 100%;
+@media screen and (max-width: 1000px) {
+    .container {
+        flex-direction: column;
+    }
+}
 
+.image {
+    max-height: 100%;
+    width: auto;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    width: 100%;
+}
+
+.title {
+    font-size: 3em;
 }
 
 .review_container {

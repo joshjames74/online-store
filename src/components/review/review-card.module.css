@@ -7,13 +7,22 @@
 }
 
 .user_image {
-    width: 20px;
-    height: 20px;
+    height: 30px;
+    border-radius: 100%;
     background-color: black;
 }
 
 .review_container {
     display: flex;
     flex-direction: row;
-    gap: 0.2em;
+    gap: 0.4em;
+}
+
+.delete_text {
+    text-align: right;
+}
+
+.delete_text:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }

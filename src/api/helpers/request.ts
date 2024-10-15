@@ -11,7 +11,7 @@ type GetModelWithMetadata<T extends ModelType> = (params: any) => Promise<ModelR
 type GetModelsWithMetadata<T extends ModelType> = (params: any) => Promise<ModelsResponse<T> | void>;
 type GetModel<T extends ModelType> = (params: any) => Promise<ModelMap[T] | void>; 
 type GetModels<T extends ModelType> = (params: any) => Promise<ModelMap[T][] | void>;
-type GetType<T extends ModelType> = GetModelWithMetadata<T> | GetModelsWithMetadata<T> | GetModel<T> | GetModels<T>;
+type GetType<T extends ModelType> = (params: any) => Promise<ModelMap[T] | ModelMap[T][] | ModelResponse<T> | ModelsResponse<T> | number[] | void>;
 
 type postFunctionType<T extends ModelType> = (model: ModelMap[T]) => Promise<ModelMap[T] | void>;
 type deleteFunctionType<T extends ModelType> = (params: any) => Promise<ModelMap[T] | void>;

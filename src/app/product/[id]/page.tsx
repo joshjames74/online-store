@@ -1,6 +1,7 @@
 "use client";
 import { getProductById } from "@/api/request/productRequest";
 import ProductPage from "@/components/product/product-page";
+import ProductPageSkeleton from "@/components/product/product-page-skeleton";
 import ReviewCard from "@/components/review/review-card";
 import ReviewGrid from "@/components/review/review-grid";
 import { Box } from "@chakra-ui/react";
@@ -27,10 +28,11 @@ export default function Page({ params }: { params: { id: string }}): JSX.Element
         });
     }, [])
 
-    return ( (isLoading || !product) ? <Box>IS LOADING....</Box> :
+    return (
         <Box>
-            <ProductPage {...product}/>
-            <ReviewGrid params={{id: parseInt(id)}}/>
+            {isLoading || !product ? <ProductPageSkeleton /> 
+            : <ProductPage {...product}/>}
+            <ReviewGrid id={parseInt(id)} score={product?.review_score ? product?.review_score : 0} />
         </Box>
     )
 }
