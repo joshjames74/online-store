@@ -24,6 +24,8 @@ export type ProductParams = {
     categories: number[];
     width: Width;
     product_filter: ProductFilter; 
+    skip?: number;
+    take?: number;
 }
 
 
@@ -92,6 +94,8 @@ export const productQueryTransformer: ProductQueryTransformer = (params: Partial
 
     return {
         whereFields: whereFields,
-        orderFields: orderFields
+        orderFields: orderFields,
+        take: params.take,
+        skip: params.skip
     };
 }

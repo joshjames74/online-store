@@ -17,7 +17,6 @@ import { useSearchStore } from "@/zustand/store";
 
 export default function ProductGrid(): JSX.Element {
 
-
   const searchParams = useSearchParams();
   
   const [products, setProducts] = useState<Product[]>();

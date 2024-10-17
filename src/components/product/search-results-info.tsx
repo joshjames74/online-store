@@ -9,6 +9,8 @@ import { parseQueryParams } from "@/api/helpers/utils";
 import { Width } from "@/redux/reducers/product";
 import { useSearchStore } from "@/zustand/store";
 
+
+
 export default function SearchResultsInfo({ showing, total }: { showing: number, total: number }): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
@@ -18,12 +20,16 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
     const [productCount, setProductCount] = useState<number>(0);
 
     const setSearchParams = useSearchStore((state) => state.setSearchParams);
+    const params = useSearchStore((state) => state.searchParams);
+
     const width = useSearchStore((state) => state.searchParams.width);
 
     const handleChangeWidth = (width: Width) => {
         setSearchParams({ width: width });
     }
 
+
+    // get product count when params change
     useEffect(() => {
         const searchData = parseQueryParams(searchParams);
         setIsLoading(true);
@@ -35,9 +41,13 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
         });
     }, [searchParams])
 
+
+    const lowerBound: number = params.skip ? params.skip + 1 : 1;
+    const upperBound: number = params.take ? lowerBound + params.take : 1;
+
     return ( isLoading ? <></> :
         <Box className={styles.container} bgColor={theme.colors.background.secondary}>
-            <Text>Showing {Math.min(showing, productCount)} of {productCount} results</Text>
+            <Text>Showing {lowerBound} - {upperBound} of {productCount} results</Text>
             <Box className={styles.results_container} fontSize="lg">
                 <Text>Results per page</Text>
                 <Text onClick={() => handleChangeWidth(Width.WIDE)} textDecoration={width === Width.WIDE ? "underline" : ""}>{Width.WIDE}</Text>

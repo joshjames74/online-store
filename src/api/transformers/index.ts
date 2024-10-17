@@ -93,8 +93,10 @@ export type WhereField<T extends ModelType> = {
 
 export type QueryField<T extends ModelType> = {
     whereFields: WhereField<T>[],
-    orderFields: OrderField<T>[]
-}
+    orderFields: OrderField<T>[],
+    skip?: number,
+    take?: number
+};
 
 
 

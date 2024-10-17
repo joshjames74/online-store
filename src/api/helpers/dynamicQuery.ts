@@ -39,13 +39,18 @@ export async function getEntitiesByFields<T extends ModelType>(
     modelName: T, 
     whereQuery: any,
     orderQuery?: any,
+    skip?: number,
+    take?: number,
 ): Promise<ModelMap[T][] | void> {
     if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
 
         var query = {}
 
+        
         Object.assign(query, { where: whereQuery });
         if (orderQuery) { Object.assign(query, { orderBy: orderQuery }) };
+        if (skip && !isNaN(skip)) { Object.assign(query, { skip: skip })};
+        if (take && !isNaN(take)) { Object.assign(query, { take: take })};
 
         return await (prisma[modelName] as any).findMany(query);
     }

@@ -1,14 +1,13 @@
 "use client"
+import { ProductParams } from "@/api/transformers/productSearchTransformer";
 import { ReviewParams } from "@/api/transformers/reviewSearchTransformer";
-import { QueryParams } from "@/redux/reducers/product";
-import { useRouter } from "next/navigation";
 import { create } from "zustand";
 
 
 
 export interface SearchState {
-    searchParams: Partial<QueryParams>;
-    setSearchParams: (params: Partial<QueryParams>) => void;
+    searchParams: Partial<ProductParams>;
+    setSearchParams: (params: Partial<ProductParams>) => void;
     getURLSearchParams: () => string;
     isLoading: boolean;
     setIsLoading: (status: boolean) => void;

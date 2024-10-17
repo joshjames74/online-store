@@ -18,6 +18,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const query = searchParams.get('query') || '';
   const max_price = parseFloat(searchParams.get('max_price') || '0');
   const min_review = parseFloat(searchParams.get('min_review') || '0');
+  const take = parseInt(searchParams.get('take') || '');
+  const skip = parseInt(searchParams.get('skip') || '');
   const categories = searchParams.getAll('categories[]').length
                      ? searchParams.getAll('categories[]').filter(val => !isNaN(parseInt(val))).map(val => parseInt(val))
                      : []
@@ -30,7 +32,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     product_filter = product_filter_raw as ProductFilter;
   }
 
-  const params = { query, max_price, min_review, categories, product_filter };
+  const params = { query, max_price, min_review, categories, product_filter, skip, take };
 
   return getHelper(getProductBySearch, params);
 };
