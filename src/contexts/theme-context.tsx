@@ -39,7 +39,7 @@ const theme: ITheme = {
         colors: {
             accent: {
                 primary: "teal",
-                secondary: "yellow.100",
+                secondary: "orange.700",
             },
             text: {
                 primary: "black",

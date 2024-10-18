@@ -11,8 +11,8 @@
 }
 
 .star_container {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 7fr 1fr;
     white-space: nowrap;
     gap: 0.4em;
     align-items: center;

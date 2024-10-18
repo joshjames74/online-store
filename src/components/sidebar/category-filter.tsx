@@ -49,7 +49,8 @@ export default function CategoryFilter(): JSX.Element {
                             <Checkbox
                                 key={category.id}
                                 isChecked={selectedCategories.includes(category.id)}
-                                onChange={() => handleCategoryChange(category.id)}>
+                                onChange={() => handleCategoryChange(category.id)}
+                                fontWeight="semibold">
                                 {category.name}
                             </Checkbox>)
                     })}

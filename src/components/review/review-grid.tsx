@@ -1,5 +1,5 @@
 import { getReviewById, getReviewsByProductId } from "@/api/request/reviewRequest";
-import { Box, Select, Skeleton, SkeletonText, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Select, Skeleton, SkeletonText, Stack, Text } from "@chakra-ui/react";
 import { Review } from "@prisma/client";
 import { useEffect, useState } from "react";
 import ReviewCard from "./review-card";
@@ -13,11 +13,13 @@ import { useReviewSearchStore } from "@/zustand/store";
 import { ReviewFilter, ReviewParams } from "@/api/transformers/reviewSearchTransformer";
 import { getReviewsBySearch } from "@/api/request/reviewRequest";
 import { useRouter } from "next/navigation";
+import { CaretDownOutlined, CaretRightOutlined, PlusOutlined } from "@ant-design/icons";
 
 export default function ReviewGrid({ id, score }: { id: number, score: number } ): JSX.Element {
 
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [showForm, setShowForm] = useState<boolean>(false);
 
     const setParams = useReviewSearchStore((state) => state.setParams);
     const params = useReviewSearchStore((state) => state.params);
@@ -31,6 +33,10 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
         setParams({ review_filter: filter });
         router.push(`?${getAsUrl()}`)
     };
+
+    const handleClickButton = () => {
+        setShowForm(!showForm);
+    }
 
 
     const fetchData = () => {
@@ -81,11 +87,12 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
 
     return (
 
-        isLoading ? renderSkeleton() :
+        isLoading ? renderSkeleton() : (
             <Box className={styles.container}>
                 <ReviewSummary id={id} score={score} />
                 <Box className={styles.review_container}>
-                    <Box className={styles.review_header}>
+                    <HStack className={styles.review_header}>
+                        <Heading fontWeight="semibold" fontSize="xl" whiteSpace="nowrap">Top Reviews</Heading>
                         <Select 
                         placeholder="Filter By"
                         value={params.review_filter}
@@ -96,15 +103,23 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
                             <option value={ReviewFilter.DATE_NEW_TO_OLD}>Recent</option>
                             <option value={ReviewFilter.DATE_OLD_TO_NEW}>Oldest</option>
                         </Select>
-                        <Text fontWeight="semibold" fontSize="xl">Top Reviews</Text>
-                    </Box>
+                    </HStack>
                     <Box className={styles.grid_container}>
-                        {reviews?.length ? reviews.map((review: Review) => <ReviewCard {...review} />) : <></>}
+                        {reviews?.length ? reviews.map((review: Review) => <ReviewCard {...review} />) : <Box>No reviews</Box>}
                     </Box>  
-                    <ReviewForm />
+                    <Stack>
+                        <Button onClick={handleClickButton} w="fit-content" gap={2}>
+                            <PlusOutlined />
+                            <Text>Add Review</Text>
+                            {showForm ? <CaretRightOutlined /> : <CaretDownOutlined />}
+                        </Button>
+                        <Box display={showForm ? "block" : "none"}>
+                            <ReviewForm id={id}/>
+                        </Box>  
+                    </Stack>
                 </Box>
             </Box>
-
+        )
     )
 
 }

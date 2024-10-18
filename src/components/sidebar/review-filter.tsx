@@ -27,7 +27,7 @@ export default function ReviewFilter(): JSX.Element {
             onClick={() => setSelected(val)}
             cursor="pointer">
                 <ReviewStars value={val} fontSize="s"/> 
-                <Text fontSize="md">{val.toString()} stars and up</Text>
+                <Text fontSize="md" fontWeight="semibold">{val.toString()} stars and up</Text>
             </Box>
             )
         })

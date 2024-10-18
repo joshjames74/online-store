@@ -49,7 +49,7 @@ export default function PriceFilter(): JSX.Element {
             <Text fontWeight="bold">Price</Text>
             {isLoading ? <SkeletonText noOfLines={2}/> : (
                 <>
-                    <Text fontWeight="bold">{min} - {sliderValue}</Text>
+                    <Text fontWeight="semibold">£{min} - £{sliderValue}</Text>
                     <Slider onChange={handlePriceChange} min={min} max={maxPrice} defaultValue={maxPrice}>
                         <SliderTrack><SliderFilledTrack /></SliderTrack>
                         <SliderThumb />

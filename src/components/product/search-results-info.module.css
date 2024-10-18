@@ -10,3 +10,9 @@
     flex-direction: row;
     gap: 1em;
 }
+
+.heading {
+    font-size: small !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+}

@@ -1,5 +1,5 @@
 import { AppstoreOutlined, BarsOutlined } from "@ant-design/icons";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Heading, HStack, Select, Text } from "@chakra-ui/react";
 import styles from "./search-results-info.module.css";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
@@ -8,6 +8,7 @@ import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { parseQueryParams } from "@/api/helpers/utils";
 import { Width } from "@/redux/reducers/product";
 import { useSearchStore } from "@/zustand/store";
+import { ProductFilter } from "@/api/transformers/productSearchTransformer";
 
 
 
@@ -46,14 +47,21 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
     const upperBound: number = params.take ? lowerBound + params.take : 1;
 
     return ( isLoading ? <></> :
-        <Box className={styles.container} bgColor={theme.colors.background.secondary}>
-            <Text>Showing {lowerBound} - {upperBound} of {productCount} results</Text>
-            <Box className={styles.results_container} fontSize="lg">
-                <Text>Results per page</Text>
-                <Text onClick={() => handleChangeWidth(Width.WIDE)} textDecoration={width === Width.WIDE ? "underline" : ""}>{Width.WIDE}</Text>
-                <Text onClick={() => handleChangeWidth(Width.COMPACT)} textDecoration={width === Width.COMPACT ? "underline" : ""}>{Width.COMPACT}</Text>
-            </Box>
-        </Box>
+        <HStack bgColor={theme.colors.background.secondary} justify="space-between" paddingX={2}>
+            <Heading className={styles.heading}>Showing {lowerBound} - {upperBound} of {productCount} results</Heading>
+            <HStack gap={2}>
+                <HStack fontSize="lg">
+                    <Heading className={styles.heading}>Results per page</Heading>
+                    <Heading className={styles.heading} onClick={() => handleChangeWidth(Width.WIDE)} textDecoration={width === Width.WIDE ? "underline" : ""}>
+                        {Width.WIDE}
+                    </Heading>
+                    <Heading className={styles.heading} onClick={() => handleChangeWidth(Width.COMPACT)} textDecoration={width === Width.COMPACT ? "underline" : ""}>{Width.COMPACT}</Heading>
+                </HStack>
+                <Select placeholder="Filter by">
+                    {Object.keys(ProductFilter).map(val => <option>{val}</option>)}
+                </Select>
+            </HStack>
+        </HStack>
     )
 
 }

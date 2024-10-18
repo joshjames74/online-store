@@ -1,10 +1,12 @@
-import { Box, Text, Image, useToast } from "@chakra-ui/react";
+import { Box, Text, Image, useToast, Card, CardHeader, Avatar, Heading, CardBody, Divider, HStack, CardFooter, IconButton } from "@chakra-ui/react";
 import { Review } from "@prisma/client";
 import styles from "./review-card.module.css"
 import ReviewStars from "./review-stars";
 import { deleteReviewById } from "@/api/request/reviewRequest";
 import { useRouter } from "next/navigation";
 import { useReviewSearchStore } from "@/zustand/store";
+import { DeleteOutlined } from "@ant-design/icons";
+
 
 export default function ReviewCard(review: Review): JSX.Element {
 
@@ -46,23 +48,49 @@ export default function ReviewCard(review: Review): JSX.Element {
         }
     }
 
+    // return (
+
+    //     <Box className={styles.container}>
+    //         <Box className={styles.user_container}>
+    //             <Image className={styles.user_image} src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
+    //             <Text>{review.usrId}</Text>
+    //         </Box>
+    //         <Box className={styles.review_container}>
+    //             <ReviewStars value={review.score} fontSize="md" />
+    //             <Text fontWeight="semibold">{review.title}</Text>
+    //         </Box>
+    //         <Text>{review.content}</Text>
+    //         <Text 
+    //             className={styles.delete_text} 
+    //             display={isLoggedIn ? 'block' : 'none'}
+    //             onClick={handleDelete}>Delete</Text>
+    //     </Box>
+
+    // )
+    
     return (
 
-        <Box className={styles.container}>
-            <Box className={styles.user_container}>
-                <Image className={styles.user_image} src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
-                <Text>{review.usrId}</Text>
-            </Box>
-            <Box className={styles.review_container}>
-                <ReviewStars value={review.score} fontSize="md" />
-                <Text fontWeight="semibold">{review.title}</Text>
-            </Box>
+        <Card className={styles.container} minW="md">
+
+            <CardHeader className={styles.user_container}>
+                <Avatar size="sm" name={"Random User"} src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
+                <Heading fontSize="sm">{review.usrId}</Heading>
+            </CardHeader>
+
+            <Divider />
+
+            <CardBody>
+                <HStack>
+                    <ReviewStars value={review.score} fontSize="md" />
+                    <Heading fontWeight="semibold" fontSize="lg">{review.title}</Heading>
+                </HStack>
             <Text>{review.content}</Text>
-            <Text 
-                className={styles.delete_text} 
-                display={isLoggedIn ? 'block' : 'none'}
-                onClick={handleDelete}>Delete</Text>
-        </Box>
+            </CardBody>
+
+            <CardFooter justify="right">
+                <IconButton aria-label="Delete" display={isLoggedIn ? 'block' : 'none'} onClick={handleDelete} icon={<DeleteOutlined />}></IconButton>
+            </CardFooter>
+        </Card>
 
     )
 
