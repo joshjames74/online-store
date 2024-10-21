@@ -42,7 +42,7 @@ export default function SearchBar(): JSX.Element {
     }
 
     return (
-        <InputGroup className={styles.container} bgColor={theme.colors.background.secondary} color={theme.colors.text.primary}>
+        <InputGroup className={styles.container} bgColor={theme.colors.background.primary} color={theme.colors.text.primary}>
             <InputLeftAddon className={styles.input_left_addon}>
                 <Select 
                     onChange={e => setSelectedCategory(parseInt(e.target.value))}

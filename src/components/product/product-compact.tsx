@@ -40,7 +40,7 @@ export default function ProductCompact({...product}: Product): JSX.Element {
                     <Stack>
                             <Image w="100%" h="150px" objectFit="cover" borderRadius="md" src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
                             <Heading noOfLines={1} fontSize="lg">{product.title}</Heading>
-                            <Heading fontSize="md" color={theme.colors.accent.primary}>£{product.price}</Heading>
+                            <Heading fontSize="md" color={theme.colors.accent.tertiary}>£{product.price}</Heading>
                             <HStack gap={1}>
                                 <ReviewStars value={product.review_score}></ReviewStars>
                                 <Text fontSize="xs" fontWeight="bold">{product.review_score.toPrecision(2).toString()}</Text>

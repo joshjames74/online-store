@@ -47,7 +47,7 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
     const upperBound: number = params.take ? lowerBound + params.take : 1;
 
     return ( isLoading ? <></> :
-        <HStack bgColor={theme.colors.background.secondary} justify="space-between" paddingX={2}>
+        <HStack bgColor={theme.colors.accent.tertiary} justify="space-between" paddingX={2}>
             <Heading className={styles.heading}>Showing {lowerBound} - {upperBound} of {productCount} results</Heading>
             <HStack gap={2}>
                 <HStack fontSize="lg">

@@ -10,13 +10,19 @@ export interface ITheme {
             primary: string;
         },
         colors: {
+            semantic: {
+                success: string,
+                error: string,
+            },
             accent: {
                 primary: string;
                 secondary: string;
+                tertiary: string;
             },
             text: {
                 primary: string;
                 secondary: string;
+                focus: string;
             },
             background: {
                 primary: string;
@@ -25,6 +31,10 @@ export interface ITheme {
             border: {
                 primary: string;
                 background: string;
+            },
+            antCompatible: {
+                accent: string,
+                primary: string
             }
         }
     }
@@ -37,21 +47,31 @@ const theme: ITheme = {
             primary: `'Raleway', sans-serif`
         },
         colors: {
+            semantic: {
+                success: "green.500",
+                error: "red.500"
+            },
             accent: {
-                primary: "teal",
-                secondary: "orange.700",
+                primary: "orange.300",
+                secondary: "yellow.300",
+                tertiary: "teal.600"
             },
             text: {
                 primary: "black",
                 secondary: "white",
+                focus: "orange.300",
             },
             background: {
                 primary: "white",
-                secondary: "teal.100",
+                secondary: "grey.300",
             },
             border: {
                 primary: "black",
                 background: "gray",
+            },
+            antCompatible: {
+                accent: "orange",
+                primary: "grey",
             }
         }
     }

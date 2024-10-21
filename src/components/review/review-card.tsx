@@ -6,6 +6,8 @@ import { deleteReviewById } from "@/api/request/reviewRequest";
 import { useRouter } from "next/navigation";
 import { useReviewSearchStore } from "@/zustand/store";
 import { DeleteOutlined } from "@ant-design/icons";
+import { useContext } from "react";
+import { ThemeContext } from "@/contexts/theme-context";
 
 
 export default function ReviewCard(review: Review): JSX.Element {
@@ -13,6 +15,7 @@ export default function ReviewCard(review: Review): JSX.Element {
     const isLoggedIn = true;
 
     const clearParams = useReviewSearchStore((store) => store.clearParams);
+    const { theme } = useContext(ThemeContext);
 
     const toast = useToast();
     const router = useRouter();
@@ -88,7 +91,7 @@ export default function ReviewCard(review: Review): JSX.Element {
             </CardBody>
 
             <CardFooter justify="right">
-                <IconButton aria-label="Delete" display={isLoggedIn ? 'block' : 'none'} onClick={handleDelete} icon={<DeleteOutlined />}></IconButton>
+                <IconButton _hover={{ bgColor: theme.colors.semantic.error}} aria-label="Delete" display={isLoggedIn ? 'block' : 'none'} onClick={handleDelete} icon={<DeleteOutlined />}></IconButton>
             </CardFooter>
         </Card>
 

@@ -167,15 +167,15 @@ export default function ReviewSummary({ id, score }: { id: number, score: number
                     return (
                         <Box className={styles.star_container + ' ' + (isSelected ? styles.selected : '')}
                             onClick={() => handleClickReviewScore(index)}>
-                            <Text className={styles.star_text}>{index} star</Text>
+                            <Text className={styles.star_text} color={theme.colors.accent.tertiary}>{index} star</Text>
                             <Box
                                 style={{ gridTemplateColumns: `${percentages[index]}fr ${1 - percentages[index]}fr` }}
                                 className={styles.star_content}
                                 bgColor={theme.colors.border.primary}>
                                 <Box bgColor={theme.colors.accent.primary}></Box>
-                                <Box bgColor={theme.colors.background.secondary}></Box>
+                                <Box bgColor={theme.colors.background.primary}></Box>
                             </Box>
-                            <Text>{Math.round(percentages[index] * 100)}%</Text>
+                            <Text color={theme.colors.accent.tertiary}>{Math.round(percentages[index] * 100)}%</Text>
                         </Box>)
                 })}
             </CardBody>

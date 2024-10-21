@@ -43,7 +43,7 @@ export default function ProductWide({...product}: Product): JSX.Element {
                             <Stack gap={1}>
                                 <Heading noOfLines={1}>{product.title}</Heading>
                                 <ProductReviewBox {...product} />
-                                <Heading fontSize="lg" color={theme.colors.accent.primary}>£{product.price}</Heading>
+                                <Heading fontSize="lg" color={theme.colors.accent.tertiary}>£{product.price}</Heading>
                                 <Text fontSize="xs" noOfLines={1}>{product.description}</Text>
                             </Stack>
                         </GridItem>

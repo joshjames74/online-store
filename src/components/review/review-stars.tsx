@@ -13,7 +13,7 @@ export default function ReviewStars(props: { value: Number, fontSize?: string })
     return (
         <Box className={styles.container} fontSize={fontSize ? fontSize : "2xs"}>
             {[1, 2, 3, 4, 5].map((x: Number) => <StarFilled key={x.toString()} style={{
-                color: x <= value ? theme.colors.accent.primary.toString() : theme.colors.background.toString() 
+                color: x <= value ? theme.colors.antCompatible.accent.toString() : theme.colors.antCompatible.primary.toString() 
             }}/>)}
         </Box>
     )
