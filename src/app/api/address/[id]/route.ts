@@ -12,7 +12,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
     }
   
-    return await getHelper('address', getAddressById, parseInt(id));
+    return await getHelper(getAddressById, parseInt(id));
 }
   
 

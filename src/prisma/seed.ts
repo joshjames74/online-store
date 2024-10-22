@@ -27,6 +27,7 @@ async function main() {
   const address_sql = await readFile('../database/address.sql', { encoding: 'utf8' });
   const order_sql = await readFile('../database/order.sql', { encoding: 'utf8' });
   const orderItem_sql = await readFile('../database/orderItem.sql', { encoding: 'utf8' });
+  const basketItem_sql = await readFile('../database/basket-item.sql', { encoding: 'utf8' });
 
   // Add known seed data
   await prisma.$executeRawUnsafe(country_sql);
@@ -39,6 +40,7 @@ async function main() {
   await prisma.$executeRawUnsafe(address_sql);
   await prisma.$executeRawUnsafe(order_sql);
   await prisma.$executeRawUnsafe(orderItem_sql);
+  await prisma.$executeRawUnsafe(basketItem_sql);
 
 }
 

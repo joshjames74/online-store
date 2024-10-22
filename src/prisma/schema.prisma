@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -46,7 +47,7 @@ model Usr {
   Address    Address[]
   Order      Order[]
   Review     Review[]
-  Basket     Basket[]
+  BasketItem BasketItem[]
 
   @@map("usr")
 }
@@ -149,22 +150,13 @@ model Review {
   @@map("review")
 }
 
-model Basket {
-  id         Int        @id @default(autoincrement())
-  usr        Usr?       @relation(fields: [usrId], references: [id])
-  usrId      Int?
-  BasketItem BasketItem[]
-
-  @@map("basket")
-}
-
 model BasketItem {
   id         Int      @id @default(autoincrement())
-  basket     Basket?  @relation(fields: [basketId], references: [id])
-  basketId   Int?
+  usr        Usr?     @relation(fields: [usrId], references: [id])
+  usrId      Int?
   product    Product? @relation(fields: [productId], references: [id])
   productId  Int?
-  date_added DateTime
+  date_added DateTime @default(now())
   quantity   Int
 
   @@map("basket_item")

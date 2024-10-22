@@ -32,6 +32,7 @@ export async function getHelper<T extends ModelType>(func: GetType<T>, params: a
     try {
         const response = await func(params);
         if (!response) {
+            console.log(response);
             return NextResponse.json({ error: `${response} not found` }, { status: 404});
         }
         return NextResponse.json(response, { status: 200})

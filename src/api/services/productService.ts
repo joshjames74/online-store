@@ -1,13 +1,9 @@
-import { Product } from "@prisma/client";
+import { Prisma, Product } from "@prisma/client";
 import { deleteOneEntityByField, getAllEntity, getEntitiesByFields, getOneEntityByField, postOneEntity, putOneEntityByField } from "../helpers/dynamicQuery";
 import { FieldValuePair } from "../helpers/request";
-import { QueryParams } from "@/redux/reducers/product";
-import { queryParamsToPrismaQuery, transformQueryToPrismaQuery } from "../transformers";
-import { ProductParams, productQueryTransformer, productSearchTransformer } from "../transformers/productSearchTransformer";
-import { Metadata, ModelsResponse } from "../helpers/types";
-
-import { TableMap } from "../helpers/types";
-
+import { queryParamsToPrismaQuery } from "../transformers";
+import { ProductParams, productQueryTransformer } from "../transformers/productSearchTransformer";
+import { Metadata, ModelsResponse, ResultType } from "../helpers/types";
 
 // GET methods
 

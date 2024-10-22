@@ -1,41 +1,55 @@
+import { Args, Select } from "@prisma/client/runtime/library";
 import prisma from "../../lib/prisma";
 import { QueryTransformer } from "../transformers";
 import { FieldValuePair } from "./request";
-import { ModelType, ModelMap, TableMap } from "./types";
-
-
+import { ModelType, ModelMap, TableMap, IncludeMap, ResultType } from "./types";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 
 // GET methods
 
-export async function getOneEntityByField<T extends ModelType>(
+export async function getOneEntityByField<T extends keyof TableMap>(
     modelName: T, 
     field: TableMap[T], 
-    value: any): Promise<ModelMap[T] | void> {
+    value: any,
+    include?: IncludeMap[T]): Promise<ResultType<T, IncludeMap[T]> | void> {
     if (prisma[modelName] && typeof prisma[modelName].findFirst === 'function') {
-        return await (prisma[modelName] as any).findFirst({ where: { [field]: value } })
+
+        var query = {}
+
+        Object.assign(query, { where: { [field]: value }})
+        if (include) { Object.assign(query, { include: include }); };
+
+        return await (prisma[modelName] as any).findFirst(query);
     } 
     return
 }
 
-export async function getEntitiesByField<T extends ModelType>(
-    modelName: Uncapitalize<T>, 
+export async function getEntitiesByField<T extends keyof TableMap>(
+    modelName: T, 
     field: TableMap[T], 
-    value: any): Promise<ModelMap[T][] | void> {
+    value: any, 
+    include?: IncludeMap[T]): Promise<T[] | void> {
     if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
-        return await (prisma[modelName] as any).findMany({ where: { [field]: value } })
+
+        var query = {};
+
+        Object.assign(query, { where: { [field]: value }});
+        if (include) { Object.assign(query, { include: include })};
+        return await (prisma[modelName] as any).findMany(query);
     }
     return
 }
 
-export async function getAllEntity<T extends ModelType>(modelName: T): Promise<ModelMap[T][] | void> {
+// to do: remove ModelName
+export async function getAllEntity<T extends keyof TableMap>(modelName: T): Promise<ModelMap[T][] | void> {
     if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
         return await (prisma[modelName] as any).findMany({ where: {  } })
     }
     return
 }
 
-export async function getEntitiesByFields<T extends ModelType>(
+export async function getEntitiesByFields<T extends keyof TableMap>(
     modelName: T, 
     whereQuery: any,
     orderQuery?: any,
@@ -45,7 +59,6 @@ export async function getEntitiesByFields<T extends ModelType>(
     if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
 
         var query = {}
-
         
         Object.assign(query, { where: whereQuery });
         if (orderQuery) { Object.assign(query, { orderBy: orderQuery }) };
@@ -56,6 +69,25 @@ export async function getEntitiesByFields<T extends ModelType>(
     }
 };
 
+
+export async function getEntityViewByField<T extends keyof TableMap>(
+    modelName: T,
+    field: TableMap[T],
+    param: any,
+    viewField: any,
+): Promise<any> {
+    if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
+        return await (prisma[modelName] as any).findMany({
+            where: { [field]: param},
+            include: {
+                [viewField]: true
+            }
+        })
+    }
+}
+
+
+// TO DO: change to from ModelType to keyof TableMap
 
 // POST methods
 
