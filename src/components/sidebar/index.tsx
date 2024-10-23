@@ -13,7 +13,7 @@ export default function Sidebar(): JSX.Element {
     const { theme } = useContext(ThemeContext);
 
     const clearFilters = useSearchStore((state) => state.clearParams);
-    const params = useSearchStore((state) => state.searchParams);
+    const params = useSearchStore((state) => state.params);
 
     const router = useRouter();
 

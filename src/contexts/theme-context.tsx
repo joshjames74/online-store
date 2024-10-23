@@ -63,7 +63,7 @@ const theme: ITheme = {
             },
             background: {
                 primary: "white",
-                secondary: "grey.300",
+                secondary: "gray.200",
             },
             border: {
                 primary: "black",

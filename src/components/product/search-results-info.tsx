@@ -18,29 +18,16 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
     const searchParams = useSearchParams();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [productCount, setProductCount] = useState<number>(0);
 
-    const setSearchParams = useSearchStore((state) => state.setSearchParams);
-    const params = useSearchStore((state) => state.searchParams);
+    const setSearchParams = useSearchStore((state) => state.setParams);
+    const params = useSearchStore((state) => state.params);
+    const resultsCount = useSearchStore((state) => state.resultsCount);
 
-    const width = useSearchStore((state) => state.searchParams.width);
+    const width = useSearchStore((state) => state.params.width);
 
     const handleChangeWidth = (width: Width) => {
         setSearchParams({ width: width });
     }
-
-
-    // get product count when params change
-    useEffect(() => {
-        const searchData = parseQueryParams(searchParams);
-        setIsLoading(true);
-        getProductsBySearchParams(searchData).then(res => {
-            if (res.metadata && res.metadata.count) {
-                setProductCount(res.metadata?.count)
-                setIsLoading(false);
-            }
-        });
-    }, [searchParams])
 
 
     const lowerBound: number = params.skip ? params.skip + 1 : 1;
@@ -48,7 +35,7 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
 
     return ( isLoading ? <></> :
         <HStack bgColor={theme.colors.accent.tertiary} justify="space-between" paddingX={2}>
-            <Heading className={styles.heading}>Showing {lowerBound} - {upperBound} of {productCount} results</Heading>
+            <Heading className={styles.heading}>Showing {lowerBound} - {upperBound} of {resultsCount} results</Heading>
             <HStack gap={2}>
                 <HStack fontSize="lg">
                     <Heading className={styles.heading}>Results per page</Heading>

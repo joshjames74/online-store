@@ -1,17 +1,53 @@
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Heading, HStack, Image, Select, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, CircularProgress, Divider, Heading, HStack, Image, Select, Stack, Text } from "@chakra-ui/react";
 import { Product } from "@prisma/client";
 import styles from "./product-page.module.css"
 import { ThemeContext } from "@/contexts/theme-context";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import ReviewStars from "../review/review-stars";
-import AddBasketCard from "../basket/add-basket-card";
+import { postBasketItem } from "@/api/request/basketRequest";
+import { CheckCircleFilled, CheckOutlined, CloseCircleOutlined } from "@ant-design/icons";
+
 
 export default function ProductPage(product: Product): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
 
+
+    const [quantity, setQuantity] = useState<number>(0);
+
+
+    // define success/error message params
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [showSuccess, setShowSuccess] = useState<boolean>(false);
+    const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
+
+    const usrId = 1;
     const maxQuantity = 30;
     const isInStock = true;
+
+
+    const handleClick = async () => {
+        setIsLoading(true);
+        try {
+            await postBasketItem({ usrId: usrId, productId: product.id, quantity: quantity });
+        } catch (error) {
+            setIsSuccessful(false);
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+            setShowSuccess(true)
+            setTimeout(() => setShowSuccess(false), 1000);
+        }
+    }
+
+    const renderStatus = (successful: boolean): JSX.Element => {
+        return (
+            <Box color={successful ? theme.colors.semantic.success : theme.colors.semantic.error}>
+                {successful ? <CheckCircleFilled  /> : <CloseCircleOutlined />}
+            </Box>
+        )
+    }
+
 
     return (
     
@@ -53,10 +89,17 @@ export default function ProductPage(product: Product): JSX.Element {
 
             <CardFooter>
                 <Stack w="full">
-                    <Select placeholder="Select quantity">
-                        {Array.from({length: maxQuantity}).map((_, index: number) => <option>{index+1}</option>)}
+                    <Select placeholder="Select quantity" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))}>
+                        {Array.from({length: maxQuantity}).map((_, index: number) => (
+                            <option value={index + 1}>{index+1}</option>
+                        ))}
                     </Select>
-                    <Button bgColor={theme.colors.accent.secondary}>Add to basket</Button>
+                    <Button 
+                    rightIcon={isLoading ? <CircularProgress size="1em" isIndeterminate /> : showSuccess ? renderStatus(isSuccessful): <></>}
+                    bgColor={theme.colors.accent.secondary} 
+                    onClick={handleClick}>
+                        Add to basket
+                    </Button>
                     <Button bgColor={theme.colors.accent.primary}>Buy now</Button>
                 </Stack>
             </CardFooter>

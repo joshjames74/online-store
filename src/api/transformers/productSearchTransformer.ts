@@ -1,5 +1,5 @@
 import { QueryParams } from "@/redux/reducers/product";
-import { OrderField, OrderRelation, PrismaRelation, QueryField, SearchFieldType, WhereField, WhereRelation } from ".";
+import { getSkipTakeFromPage, OrderField, OrderRelation, PrismaRelation, QueryField, SearchFieldType, WhereField, WhereRelation } from ".";
 import { ModelType, TableMap } from "../helpers/types";
 
 
@@ -24,8 +24,8 @@ export type ProductParams = {
     categories: number[];
     width: Width;
     product_filter: ProductFilter; 
-    skip?: number;
-    take?: number;
+    pageNumber?: number;
+    perPage?: number;
 }
 
 
@@ -92,10 +92,7 @@ export const productQueryTransformer: ProductQueryTransformer = (params: Partial
         })
     }
 
-    return {
-        whereFields: whereFields,
-        orderFields: orderFields,
-        take: params.take,
-        skip: params.skip
-    };
+    const { take, skip } = getSkipTakeFromPage(params.perPage || 0, params.pageNumber || 0);
+
+    return { whereFields: whereFields, orderFields: orderFields, take: take, skip: skip };
 }

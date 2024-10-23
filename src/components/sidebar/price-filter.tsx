@@ -17,7 +17,7 @@ export default function PriceFilter(): JSX.Element {
     const [maxPrice, setMaxPrice] = useState<number>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const setSearchParams = useSearchStore((state) => state.setSearchParams);
+    const setSearchParams = useSearchStore((state) => state.setParams);
 
 
     useEffect(() => {

@@ -1,39 +1,38 @@
 import { ThemeContext } from "@/contexts/theme-context"
-import { Card, CardBody, CardFooter, CardHeader, Divider, Heading, Stack, Text } from "@chakra-ui/react"
+import { Card, CardBody, CardFooter, CardHeader, CircularProgress, Divider, Heading, Stack, Text } from "@chakra-ui/react"
 import { useContext } from "react"
 import BasketProductCard from "./basket-product-card";
-import { BasketItem } from "@prisma/client";
+import { Basket, BasketItemWithProduct } from "@/api/services/basketItemService";
+import { useBasketStore } from "@/zustand/store";
 
-export default function BasketPage({ params }: { params: { basket: BasketItem[] } }): JSX.Element {
+export default function BasketPage({ params }: { params: { basket: Basket } }): JSX.Element {
 
 
     const { theme } = useContext(ThemeContext);
     const { basket } = params;
 
-    console.log("basket at basket")
-    console.log(basket);
-    console.log(basket.length);
+    const isLoading = useBasketStore((state) => state.isLoading);
 
-    return (    
-        <Card maxW="4xl">
+    return ( basket && 
+        <Card minW="4xl" marginLeft="auto" marginRight="auto" marginY="20px" w="fit-content">
 
             <CardHeader>
-                <Heading fontWeight="semibold" fontSize="3xl">Shopping Basket</Heading>
+                <Heading fontWeight="semibold" fontSize="3xl">Shopping Basket {isLoading ? <CircularProgress size="1em" isIndeterminate /> : <></>}</Heading>
                 <Text color={theme.colors.accent.tertiary}>Delect All</Text>
             </CardHeader>
 
             <Divider />
 
-            <CardBody maxH="lg" overflowY="scroll">
+            <CardBody>
                 <Stack>
-                    {basket.length && basket.map(basketItem => <BasketProductCard {...basketItem} />)}
+                    {basket.items && basket.items.map(basketItem => <BasketProductCard basketItem={basketItem} />)}
                 </Stack>
             </CardBody>
 
             <Divider />
 
             <CardFooter marginRight={0} marginLeft="auto">
-                <Heading fontWeight="normal" fontSize="xl">Subtotal (3 items): <b>£224.97</b></Heading>
+                <Heading fontWeight="normal" fontSize="xl">Subtotal ({basket.metadata && basket.metadata.total.quantity} items): <b>{basket.metadata && basket.metadata.total.price}</b></Heading>
             </CardFooter>
 
         </Card>

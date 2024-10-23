@@ -2,6 +2,7 @@ import { QueryParams } from "@/redux/reducers/product";
 import { ModelType, TableMap } from "../helpers/types";
 import { ProductParams, ProductQueryTransformer } from "./productSearchTransformer";
 import { ReviewParams, ReviewQueryTransformer } from "./reviewSearchTransformer";
+import { OrderParams, OrderQueryTransformer } from "./orderSearchTransformer";
 
 
 export type QueryTransformer = ProductQueryTransformer;
@@ -14,7 +15,7 @@ export type TransformerMap = {
     country: null,
     currency: null,
     order: null,
-    order_item: null,
+    order_item: OrderQueryTransformer,
     product: ProductQueryTransformer,
     review: ReviewQueryTransformer,
     usr: null,
@@ -28,7 +29,7 @@ export type ParamMap = {
     country: null,
     currency: null,
     order: null,
-    order_item: null,
+    order_item: OrderParams,
     product: ProductParams,
     review: ReviewParams,
     usr: null,
@@ -102,7 +103,20 @@ export type QueryField<T extends ModelType> = {
 
 
 
+export function getSkipTakeFromPage(perPage: number, pageNumber: number): { skip: number, take: number } {
 
+    const error = { skip: NaN, take: NaN };
+
+    if (!perPage || isNaN(parseInt(perPage.toString()))) { return error };
+    if (!pageNumber || isNaN(parseInt(pageNumber.toString()))) { return error };
+    if (pageNumber < 1 || perPage < 1) { return error }; 
+
+    const take = perPage;
+    const skip = (pageNumber - 1) * perPage; 
+
+    return { take: take, skip: skip };
+
+} 
 
 
 export function createDynamicRelationObject(relations: WhereRelation[], data: any) {
@@ -170,12 +184,12 @@ export function transformOrderFieldToQuery<T extends ModelType>(orderFields: Ord
 
 export function queryParamsToPrismaQuery<T extends ModelType>(params: Partial<ParamMap[T]>, transformer: TransformerMap[T]) {
     
-    const { whereFields, orderFields } = transformer(params);
+    const { whereFields, orderFields, skip, take } = transformer(params);
     
     const whereQuery = transformWhereFieldToQuery(whereFields);
     const orderQuery = transformOrderFieldToQuery(orderFields);
 
-    return { whereQuery: whereQuery, orderQuery: orderQuery}
+    return { whereQuery: whereQuery, orderQuery: orderQuery, skip: skip, take: take }
 }
 
 export function transformQueryToPrismaQuery<T extends ModelType>(query: Partial<QueryParams>, transformer: QueryTransformer) {

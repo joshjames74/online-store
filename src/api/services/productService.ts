@@ -21,8 +21,8 @@ export async function getAllProducts(): Promise<Product[] | void> {
 
 export async function getProductBySearch(params: Partial<ProductParams>): Promise<ModelsResponse<'product'> | void> {
 
-    const { whereQuery, orderQuery } = queryParamsToPrismaQuery(params, productQueryTransformer);
-    const products = await getEntitiesByFields('product', whereQuery, orderQuery, params.skip, params.take);
+    const { whereQuery, orderQuery, skip, take } = queryParamsToPrismaQuery(params, productQueryTransformer);
+    const products = await getEntitiesByFields('product', whereQuery, orderQuery, skip, take);
 
     // get metadata
     const count = products?.length;

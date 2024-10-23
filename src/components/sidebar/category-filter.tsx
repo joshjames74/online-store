@@ -4,19 +4,20 @@ import { Category } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useSearchStore } from "@/zustand/store";
 import { getAllCategories } from "@/api/request/categoryRequest";
+import { useSearchParams } from "next/navigation";
+import { parseQueryParams } from "@/api/helpers/utils";
 
 
 export default function CategoryFilter(): JSX.Element {
 
     // to do: make categories appear as selected in query params on first load
+    const searchParams = useSearchParams();
 
-    const setSearchParams = useSearchStore((state) => state.setSearchParams);
+    const setSearchParams = useSearchStore((state) => state.setParams);
     
     const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-
 
     useEffect(() => {
         getAllCategories().then(res => {
@@ -24,6 +25,10 @@ export default function CategoryFilter(): JSX.Element {
             setIsLoading(false);
         });
     }, []);
+
+    useEffect(() => {
+        setSelectedCategories(parseQueryParams(searchParams).categories);
+    }, [searchParams]);
 
 
     useEffect(() => {

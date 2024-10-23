@@ -2,8 +2,11 @@ import { Box, Button, Image } from "@chakra-ui/react";
 import styles from "./index.module.css";
 import DeliveryButton from "./delivery-button";
 import SearchBar from "./search-bar";
+import Link from "next/link";
 
 export default function NavBar(): JSX.Element {
+
+    const userId = 1;
 
     return (
         <Box className={styles.container}>
@@ -11,7 +14,9 @@ export default function NavBar(): JSX.Element {
             <DeliveryButton />
             <SearchBar />
             <Button className={styles.min_width_500}>Account</Button>
-            <Button className={styles.min_width_500}>Basket</Button>
+            <Link href={`/user/${userId}/basket`} className={styles.min_width_500}>
+                <Button>Basket</Button>
+            </Link>
         </Box>
     )
 
