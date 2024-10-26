@@ -8,6 +8,7 @@ export async function getOrderViewById(id: number): Promise<any> {
 
 // should be under user?
 export async function getOrderViewsBySearch(params: OrderParams): Promise<any> {
+    console.log(params);
     const response = await axios(`/api/order`, { 
         method: "GET",
         params: {...params}

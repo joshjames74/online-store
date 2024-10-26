@@ -3,6 +3,18 @@ import { ProductParams } from "../transformers/productSearchTransformer";
 import { OrderFilter, OrderParams } from "../transformers/orderSearchTransformer";
 
 
+export const objectToQueryParams = (params: any): string => {
+    return Object.entries(params)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)   
+        .join("&")
+};
+
+
+export const buildUrl = (route: string, params: any): string => {
+    return `${route}?${objectToQueryParams(params)}`;
+}
+
+
 export const parseDate = (searchParams: URLSearchParams, key: string): Date | undefined => {
 
     const date_raw = searchParams.get(key);

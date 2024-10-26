@@ -28,15 +28,23 @@ export default function SearchBar(): JSX.Element {
     
     
     useEffect(() => {
+
+        setIsLoading(true);
+
         getAllCategories().then(res => {
             setCategories(res);
-            setIsLoading(false);
+        }).catch(error => {
+            console.error(error);
+        }).finally(() => {
+            setIsLoading(false)
         });
+
         // if only one category, set as selected
         const searchCategories = parseQueryParams(searchParams).categories;
         if (searchCategories.length === 1) {
             setSelectedCategory(searchCategories[0])
         };
+
     }, [])
 
     useEffect(() => {
@@ -44,13 +52,13 @@ export default function SearchBar(): JSX.Element {
     }, [query]);
 
     const updateURL = () => {
+
         // search bar category overrides all other categories, so is set last
-        if (selectedCategory) { setSearchParams({ categories: [selectedCategory]}) }
+        if (selectedCategory) { setSearchParams({ categories: [selectedCategory]})}
+
         // set page back to 1
         setSearchParams({ pageNumber: 1 });
         router.push(`/?${getURLSearchParams()} `); 
-
-        //router.refresh();
     }
 
     return (
@@ -62,7 +70,7 @@ export default function SearchBar(): JSX.Element {
                     className={styles.select_container}
                     variant="unstyled"
                     value={selectedCategory}>
-                    {isLoading ? <></> : categories.map((category) => <option value={category.id}>{category.name}</option>)}
+                    {isLoading || !categories.length ? <></> : categories.map((category, index) => <option key={index} value={category.id}>{category.name}</option>)}
                 </Select>
             </InputLeftAddon>
             <Input placeholder="Search" onChange={e => setQuery(e.target.value)} />

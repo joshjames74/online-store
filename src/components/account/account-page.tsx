@@ -2,20 +2,18 @@ import { Box, Grid, Heading, Stack } from "@chakra-ui/react";
 import AccountCard, { AccountCardProps } from "./account-card";
 import Link from "next/link";
 
-export default function AccountPage({ params }: { params: { id: number }}): JSX.Element {
-
-    const { id } = params;
+export default function AccountPage(): JSX.Element {
 
     const pages: AccountCardProps[] = [
         { 
             title: "Your orders", 
             subtitle: "Track, return, cancel an order, download invoice or buy again",
-            href: `/user/${id}/orders`
+            href: "/user/orders"
         },
         { 
             title: "Your addresses", 
             subtitle: "Edit, remove, or set default addresses",
-            href: `/user/${id}/addresses`
+            href: "/user/addresses"
         }
     ]
 

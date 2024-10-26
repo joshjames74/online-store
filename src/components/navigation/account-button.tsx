@@ -1,22 +1,20 @@
 "use client";
 import { Box, Button, HStack, Image, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
 
 export default function AccountButton(): JSX.Element {
 
-    const { user, isAuthenticated, isLoading } = useContext(UserContext);
-    const { theme } = useContext(ThemeContext);
+    const { isAuthenticated, isLoading, user: { image_url } } = useContext(UserContext);
 
     if (isAuthenticated) {
         return (
-        <Link href={`/user/${user?.id}/account`}>
+        <Link href="/user/account">
             <Button gap="1em">
                 <Text>Account</Text>
-                <Image h="30px" w="30px" borderRadius="100%" src={user?.image_url || ''}/>
+                <Image h="30px" w="30px" borderRadius="100%" src={image_url || ''}/>
             </Button>
         </Link>)
     }

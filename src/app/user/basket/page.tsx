@@ -4,26 +4,38 @@ import { Basket } from "@/api/services/basketItemService";
 import BasketPage from "@/components/basket/basket-page";
 import EmptyBasket from "@/components/basket/empty-basket";
 import { ThemeContext } from "@/contexts/theme-context";
+import { UserContext } from "@/contexts/user-context";
 import { useBasketStore } from "@/zustand/store";
 import { Box, Card, CardBody, CardFooter, CardHeader, Divider, Heading, Text } from "@chakra-ui/react";
 import { BasketItem } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
 
-export default function Page({ params }: { params: { id: string }}): JSX.Element {
+export default function Page(): JSX.Element {
 
-    const { id } = params;
 
     const basket = useBasketStore((state) => state.basket);
     const loadData = useBasketStore((state) => state.loadData);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    if (!id || isNaN(parseInt(id))) {
-        return <Box>404 not found</Box>
-    }
+    const { user, isAuthenticated } = useContext(UserContext);
 
     useEffect(() => {
-        loadData(parseInt(id)).then(res => setIsLoading(false));
+        if (!user || !user?.id) { return };
+        loadData(user.id).then(res => setIsLoading(false));
     }, [])
+    
+    // create loading skeleton
+    // if (isLoading) return <Box>Loading... </Box>
+
+    // to do: redirect to 404 page
+    //if (!isLoading && !isAuthenticated) return <Box>404 not found</Box>
+
+    // to do: redirect to sign in?
+    if (!isAuthenticated) return <Box>Sign in to view basket</Box>
+
+    // redirect this
+    if (!user) return <Box>User not found</Box>
+
 
     return (
     <Box>

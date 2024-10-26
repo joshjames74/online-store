@@ -5,9 +5,13 @@ import axios from "axios";
 // POST methods 
 
 export async function findOrPostUser(user: Partial<Omit<Usr, 'usr_id'>>): Promise<Usr> {
-    const request = await axios(`/api/user/by-email`, {
+    const response = await fetch(`/api/user/by-email`, {
         method: "POST",
-        data: user
+        body: JSON.stringify(user),
+        cache: "force-cache"
     });
-    return request.data.data;
+    if (!response) {
+        throw new Error('Error in find or post user');
+    }
+    return response.json();
 }

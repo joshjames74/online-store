@@ -2,6 +2,7 @@ import { QueryParams } from "@/redux/reducers/product";
 import { Product } from "@prisma/client";
 import axios from "axios";
 import { ModelsResponse } from "../helpers/types";
+import { buildUrl } from "../helpers/utils";
 
 
 export async function getProductById(id: number): Promise<Product> {
@@ -22,9 +23,13 @@ export async function getAllProducts(): Promise<Product[]> {
 }
 
 export async function getProductsBySearchParams(params: Partial<QueryParams>): Promise<ModelsResponse<'product'>> {
-    const response = await axios(`/api/product`, {
+    const url = buildUrl("/api/product", params);
+    const response = await fetch(url, { 
         method: "GET",
-        params: {...params}
-    });
-    return response.data;
+        cache: "force-cache"
+     });
+    if (!response.ok) {
+        throw new Error('Error fetching product by search params')
+    }
+    return response.json();
 }

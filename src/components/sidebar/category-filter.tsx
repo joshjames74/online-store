@@ -22,6 +22,9 @@ export default function CategoryFilter(): JSX.Element {
     useEffect(() => {
         getAllCategories().then(res => {
             setCategories(res)
+        }).catch(error => {
+            console.error(error);
+        }).finally(() => {
             setIsLoading(false);
         });
     }, []);
@@ -47,18 +50,18 @@ export default function CategoryFilter(): JSX.Element {
     return (
         <Box className={styles.container}>
             <Text fontWeight="bold">Categories</Text>
-            {isLoading ? <SkeletonText noOfLines={10} />:
+            {isLoading ? <SkeletonText noOfLines={10} /> :
                 <Box className={styles.checkbox_container}>
-                    {categories.map((category: Category) => {
+                    {categories.length ? categories.map((category: Category, index: number) => {
                         return (
                             <Checkbox
-                                key={category.id}
+                                key={index}
                                 isChecked={selectedCategories.includes(category.id)}
                                 onChange={() => handleCategoryChange(category.id)}
                                 fontWeight="semibold">
                                 {category.name}
                             </Checkbox>)
-                    })}
+                    }) : <></>}
                 </Box>}
         </Box>
     )

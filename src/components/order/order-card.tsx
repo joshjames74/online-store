@@ -6,13 +6,13 @@ import { useContext } from "react";
 import ProductWide from "../product/product-wide";
 import OrderProductCard from "./order-product-card";
 
-export default function OrderCard({ params }: { params: { orderView: OrderView } }): JSX.Element {
+export default function OrderCard({ params }: { params: { orderView: OrderView, key: number } }): JSX.Element {
 
-    const { orderView } = params;
+    const { orderView, key } = params;
     const { theme } = useContext(ThemeContext);
 
     return (
-        <Card minW="2xl" w="4xl" borderRadius="1em" overflow="hidden">
+        <Card minW="2xl" w="4xl" borderRadius="1em" overflow="hidden" key={key}>
 
             <CardHeader bgColor={theme.colors.background.secondary}>
                 <HStack>
@@ -35,8 +35,8 @@ export default function OrderCard({ params }: { params: { orderView: OrderView }
 
             <CardBody>
                 <Stack>
-                    {orderView.OrderItem.map(orderItemView => (
-                        <Grid templateColumns="4fr 1fr">
+                    {orderView['OrderItem'].map((orderItemView, index: number) => (
+                        <Grid templateColumns="4fr 1fr" key={index}>
                             <GridItem>
                                 <OrderProductCard {...orderItemView.product}/>
                             </GridItem>

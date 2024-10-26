@@ -7,7 +7,6 @@ import AccountButton from "./account-button";
 
 
 export default function NavBar(): JSX.Element {
-    const userId = 1;
 
     return (
         <Box className={styles.container}>
@@ -15,7 +14,7 @@ export default function NavBar(): JSX.Element {
             <DeliveryButton />
             <SearchBar />
             <AccountButton />
-            <Link href={`/user/${userId}/basket`} className={styles.min_width_500}>
+            <Link href={"/user/basket"} className={styles.min_width_500}>
                 <Button>Basket</Button>
             </Link>
         </Box>

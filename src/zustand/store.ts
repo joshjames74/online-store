@@ -4,8 +4,6 @@ import { Basket } from "@/api/services/basketItemService";
 import { OrderParams } from "@/api/transformers/orderSearchTransformer";
 import { ProductParams } from "@/api/transformers/productSearchTransformer";
 import { ReviewParams } from "@/api/transformers/reviewSearchTransformer";
-import { Width } from "@/redux/reducers/product";
-import { BasketItem } from "@prisma/client";
 import { create } from "zustand";
 
 export type BasketItemCoreProperties = { [key: number]: number };
@@ -58,7 +56,13 @@ export interface BasketState {
 
 export const useSearchStore = create<SearchState>((set, get) => {
     return ({
-        params: {},
+        params: {
+            query: '',
+            min_review: 0,
+            max_price: 0,
+            perPage: NaN,
+            pageNumber: NaN
+        },
         setParams: (params) => set({ params: { ...get().params, ...params} }),
         getURLSearchParams: () => {
             const searchParams = get().params;
@@ -120,6 +124,9 @@ export const useBasketStore = create<BasketState>((set) => {
             set({ isLoading: true });
             getBasketByUserId(id).then(res => {
                 set({ basket: res });
+            }).catch(error => {
+                console.error(error);
+            }).finally(() => {
                 set({ isLoading: false });
             });
         },

@@ -20,6 +20,9 @@ export default function AddressesPage({ params }: { params: { id: number } }): J
     useEffect(() => {
         getAddressesByUserId(id).then(res => {
             setAddresses(res);
+        }).catch(error => {
+            console.error(error);
+        }).finally(() => {
             setIsLoading(false);
         });
     }, []);
@@ -35,7 +38,7 @@ export default function AddressesPage({ params }: { params: { id: number } }): J
                         <Box>
                             <Breadcrumb separator=">">
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink>Your Account</BreadcrumbLink>
+                                    <BreadcrumbLink href="/user/account">Your Account</BreadcrumbLink>
                                 </BreadcrumbItem>
 
                                 <BreadcrumbItem isCurrentPage={true}>
@@ -50,11 +53,11 @@ export default function AddressesPage({ params }: { params: { id: number } }): J
                             <GridItem>
                                 <AddAddressCard />
                             </GridItem>
-                            {addresses.length && addresses.map(address => (
+                            {addresses.length ? addresses.map(address => (
                                 <GridItem>
                                     <AddressCard {...address} />
                                 </GridItem>
-                            ))}
+                            )) : <></>}
                         </Grid>
 
                     </Stack>
