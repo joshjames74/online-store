@@ -1,5 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { ThemeProvider } from "./theme-context"
+import { UserProvider } from "./user-context";
 
 
 
@@ -8,7 +9,9 @@ export const Provider = (props: { children : JSX.Element}): JSX.Element => {
     return (
         <ChakraProvider>
             <ThemeProvider>
-                {children}
+                <UserProvider>
+                    {children}
+                </UserProvider>
             </ThemeProvider>
         </ChakraProvider>
     )

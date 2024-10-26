@@ -7,10 +7,17 @@ import { useSearchStore } from "@/zustand/store";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
+import { UserContext } from "@/contexts/user-context";
 
 export default function Sidebar(): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
+    const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        console.log("AT component");
+        console.log(user);
+    }, [user]);
 
     const clearFilters = useSearchStore((state) => state.clearParams);
     const params = useSearchStore((state) => state.params);
@@ -22,14 +29,6 @@ export default function Sidebar(): JSX.Element {
         router.refresh();
     }
 
-    // return (
-    //     <Box className={styles.container}>
-    //         <PriceFilter />
-    //         <ReviewFilter />
-    //         <CategoryFilter />
-    //         <Text className={styles.delete_text} onClick={handleDelete}>Clear Filters</Text>
-    //     </Box>
-    // )
     return (
         <Card className={styles.container} h="fit-content" minW="2xs">
             <CardHeader paddingBottom={2}>

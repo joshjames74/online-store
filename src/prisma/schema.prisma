@@ -34,15 +34,13 @@ model Currency {
 
 model Usr {
   id         Int       @id @default(autoincrement())
-  first_name String    @db.VarChar(100)
-  user_name  String    @db.VarChar(100)
-  sub        String?   @db.VarChar(200)
-  title      String?
+  name       String    @db.VarChar(100) @default("")
+  email      String    @db.VarChar(100) @default("") @unique
   country    Country?  @relation(fields: [countryId], references: [id])
   countryId  Int?
   currency   Currency? @relation(fields: [currencyId], references: [id])
   currencyId Int?
-  image_url  String
+  image_url  String?
   Product    Product[]
   Address    Address[]
   Order      Order[]

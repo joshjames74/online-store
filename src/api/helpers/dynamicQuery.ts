@@ -79,8 +79,6 @@ export async function getEntitiesByFields<T extends keyof TableMap, I extends In
         if (skip && !isNaN(skip)) { Object.assign(query, { skip: skip }) };
         if (take && !isNaN(take)) { Object.assign(query, { take: take }) };
 
-        console.log(query);
-
         return await (prisma[modelName] as any).findMany(query);
     }
 };
@@ -144,3 +142,28 @@ export async function putOneEntityByField<T extends ModelType>(
         })
     }
 };
+
+export interface GetOneByField {
+    <T extends keyof TableMap, I extends keyof IncludeMap[T]>(modelName: T, field: TableMap[T], value: any, include?: I)
+        : Promise<ResultType<T, I> | void>
+}
+
+export async function upsertOneEntityByField<T extends ModelType>(
+    modelName: T,
+    whereQuery: any,
+    updateQuery: any,
+    createQuery: any
+): Promise<ModelMap[T] | void> {
+    
+    if (prisma[modelName] && typeof prisma[modelName].upsert == 'function') {
+
+        var query = {}
+
+        Object.assign(query, { where: whereQuery });
+        Object.assign(query, { update: updateQuery });
+        Object.assign(query, { create: createQuery });
+
+        return await (prisma[modelName] as any).upsert(query);
+
+    }
+}
