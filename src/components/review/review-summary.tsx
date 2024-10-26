@@ -104,19 +104,19 @@ export default function ReviewSummary({ id, score }: { id: number, score: number
     const [total, setTotal] = useState<number>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    //
     useEffect(() => {
         setIsLoading(true);
         getReviewCountsByProductId(id).then((res: number[]) => {
-
             // compute total and percentages
             const total = res.reduce((partialSum, curr) => partialSum + curr, 0)
             const percentages = res.map((count: number) => (total && total > 0) ? count / total : 0)
 
-            // save
             setCounts(res);
             setTotal(total);
             setPercentages(percentages);
+        }).catch(error => {
+            console.log(error);
+        }).finally(() => {
             setIsLoading(false);
         });
     }, [])
@@ -161,11 +161,11 @@ export default function ReviewSummary({ id, score }: { id: number, score: number
             </CardHeader>
 
             <CardBody className={styles.body}>
-                {Array.from({ length: 6 }).reverse().map((_, index) => {
+                {Array.from({ length: 6 }).reverse().map((_, index: number) => {
                     index = 5 - index;
                     const isSelected = index === params.score;
                     return (
-                        <Box className={styles.star_container + ' ' + (isSelected ? styles.selected : '')}
+                        <Box className={styles.star_container + ' ' + (isSelected ? styles.selected : '')} key={index}
                             onClick={() => handleClickReviewScore(index)}>
                             <Text className={styles.star_text} color={theme.colors.accent.tertiary}>{index} star</Text>
                             <Box

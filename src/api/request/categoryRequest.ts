@@ -4,7 +4,10 @@ import { NextResponse } from "next/server";
 
 export async function getAllCategories(): Promise<Category[]> {
     console.log("Called all categories once");
-    const response = await fetch("/api/category/all");
+    const response = await fetch("/api/category/all", {
+        method: "GET",
+        cache: "force-cache"
+    });
     if (!response.ok) {
         throw new Error('Error fetching all categories');
     }

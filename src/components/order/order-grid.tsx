@@ -46,7 +46,7 @@ export default function OrderGrid({ params }: { params: { id: number }}): JSX.El
         : 
         <Stack alignItems="center" marginTop="20px">
             {orders.length ? orders.map((orderView, index) => (
-                <OrderCard params={{orderView: orderView, key: index}} />
+                <OrderCard params={{orderView: orderView}} key={index} />
             )) : <></>}
         </Stack>
     )

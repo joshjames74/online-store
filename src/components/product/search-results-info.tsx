@@ -45,7 +45,7 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
                     <Heading className={styles.heading} onClick={() => handleChangeWidth(Width.COMPACT)} textDecoration={width === Width.COMPACT ? "underline" : ""}>{Width.COMPACT}</Heading>
                 </HStack>
                 <Select placeholder="Filter by">
-                    {Object.keys(ProductFilter).map(val => <option>{val}</option>)}
+                    {Object.keys(ProductFilter).map((val, index: number) => <option key={index}>{val}</option>)}
                 </Select>
             </HStack>
         </HStack>

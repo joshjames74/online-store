@@ -40,6 +40,9 @@ export default function ProductGrid(): JSX.Element {
       setIsLoading(true);
       getProductsBySearchParams(parseQueryParams(searchParams)).then((res: ModelsResponse<'product'>) => {
         setProducts(res.data);
+      }).catch(error => {
+        console.error(error);
+      }).finally(() => {
         setIsLoading(false);
       });
   };
@@ -59,7 +62,7 @@ export default function ProductGrid(): JSX.Element {
   const renderWideSkeleton = () => {
     return (
     <Box className={styles.container_wide}>
-      {Array.from({ length: 20 }).map(() => <ProductWideSkeleton />)}
+      {Array.from({ length: 20 }).map((_, index: number) => <ProductWideSkeleton key={index}/>)}
     </Box>
     )
   };
@@ -67,7 +70,7 @@ export default function ProductGrid(): JSX.Element {
   const renderCompactSkeleton = () => {
     return (
       <Box className={styles.container_compact}>
-        {Array.from({ length: 20 }).map(() => <ProductCompactSkeleton />)}
+        {Array.from({ length: 20 }).map((_, index: number) => <ProductCompactSkeleton key={index}/>)}
       </Box>
     )
   }

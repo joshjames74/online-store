@@ -24,7 +24,7 @@ export default function AccountPage(): JSX.Element {
             <Stack maxW="1200px" w="fit-content" gap="1em">
                 <Heading fontWeight="semibold">Your account</Heading>
                 <Grid gridTemplateColumns="repeat(5, 1fr)" gap="1em">
-                    {pages.map(page => <AccountCard {...page}/>)}
+                    {pages.map((page, index: number) => <AccountCard {...page} key={index}/>)}
                 </Grid>
             </Stack>
         </Box>

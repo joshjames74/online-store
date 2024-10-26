@@ -27,8 +27,8 @@ export const reviewQueryTransformer: ReviewQueryTransformer = (params: Partial<R
      *  Transform search parameters into a custom seach field type for a particular search
      */
 
-    var whereFields: WhereField<'review'>[] = [];
-    var orderFields: OrderField<'review'>[] = []
+    const whereFields: WhereField<'review'>[] = [];
+    const orderFields: OrderField<'review'>[] = []
 
     if (params.productId) {
         whereFields.push({
@@ -49,8 +49,8 @@ export const reviewQueryTransformer: ReviewQueryTransformer = (params: Partial<R
 
     if (params.review_filter) {
         
-        var relation: OrderRelation = OrderRelation.ASC;
-        var targets: TableMap['review'][] = [];
+        let relation: OrderRelation = OrderRelation.ASC;
+        let targets: TableMap['review'][] = [];
 
         // if descending order
         if (params.review_filter === ReviewFilter.DATE_NEW_TO_OLD || params.review_filter === ReviewFilter.SCORE_HIGH_TO_LOW) {

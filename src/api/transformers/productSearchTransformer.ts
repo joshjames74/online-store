@@ -31,8 +31,8 @@ export type ProductParams = {
 
 export const productQueryTransformer: ProductQueryTransformer = (params: Partial<ProductParams>): QueryField<'product'> => {
 
-    var whereFields:  WhereField<'product'>[] = [];
-    var orderFields: OrderField<'product'>[] = [];
+    const whereFields:  WhereField<'product'>[] = [];
+    const orderFields: OrderField<'product'>[] = [];
 
     if (params.query) {
         whereFields.push({ 
@@ -68,8 +68,8 @@ export const productQueryTransformer: ProductQueryTransformer = (params: Partial
 
     if (params.product_filter) {
         
-        var relation: OrderRelation = OrderRelation.ASC;
-        var targets: TableMap['product'][] = [];
+        let relation: OrderRelation = OrderRelation.ASC;
+        let targets: TableMap['product'][] = [];
 
         // if descending order
         if (params.product_filter === ProductFilter.PRICE_HIGH_TO_LOW) {

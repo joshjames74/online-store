@@ -49,7 +49,7 @@ export const parseOrderSearchParams = (searchParams: URLSearchParams): OrderPara
     const take = parseInt(searchParams.get('take') || '');
 
     const order_filter_raw = parseInt(searchParams.get('order_filter') || '');
-    var order_filter: OrderFilter;
+    let order_filter: OrderFilter;
 
     if (order_filter_raw && Object.values(OrderFilter).includes(order_filter_raw as OrderFilter)) {
         order_filter = order_filter_raw as OrderFilter;

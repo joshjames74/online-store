@@ -25,8 +25,8 @@ export type OrderParams = {
 
 export const orderQueryTransformer: OrderQueryTransformer = (params: Partial<OrderParams>): QueryField<'order'> => {
 
-    var whereFields:  WhereField<'order'>[] = [];
-    var orderFields: OrderField<'order'>[] = [];
+    const whereFields:  WhereField<'order'>[] = [];
+    const orderFields: OrderField<'order'>[] = [];
 
     if (params.min_date) {
         whereFields.push({
@@ -54,8 +54,8 @@ export const orderQueryTransformer: OrderQueryTransformer = (params: Partial<Ord
 
     if (params.order_filter) {
         
-        var relation: OrderRelation = OrderRelation.ASC;
-        var targets: TableMap['order'][] = [];
+        let relation: OrderRelation = OrderRelation.ASC;
+        let targets: TableMap['order'][] = [];
 
         // if descending order
         if (params.order_filter === OrderFilter.DATE_NEW_OLD || params.order_filter === OrderFilter.TOTAL_HIGH_LOW) {

@@ -15,18 +15,23 @@ export default function Page({ params }: { params: { id: string }}): JSX.Element
     const [product, setProduct] = useState<Product>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    useEffect(() => {
+        setIsLoading(true);
+        getProductById(parseInt(id)).then(res => {
+            setProduct(res)
+        }).catch(error => {
+            console.error(error);
+        }).finally(() => {
+            setIsLoading(false);
+        });
+    }, [])
+
+    
     if (!id || isNaN(parseInt(id))) {
         //redirect to 404
         return <Box>Page not found</Box>
     }
 
-    useEffect(() => {
-        setIsLoading(true);
-        getProductById(parseInt(id)).then(res => {
-            setProduct(res)
-            setIsLoading(false);
-        });
-    }, [])
 
     return (
         <Box>
@@ -35,4 +40,5 @@ export default function Page({ params }: { params: { id: string }}): JSX.Element
             <ReviewGrid id={parseInt(id)} score={product?.review_score ? product?.review_score : 0} />
         </Box>
     )
-}
+};
+

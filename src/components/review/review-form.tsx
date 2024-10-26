@@ -123,8 +123,9 @@ export default function ReviewForm({ id }: { id: number }): JSX.Element {
 
                     <Box>
                         <FormLabel>Overall rating</FormLabel>
-                        {Array.from({ length: 5 }).map((_, index) => (
+                        {Array.from({ length: 5 }).map((_, index: number) => (
                             <StarFilled
+                            key={index}
                             style={{ color: index + 1 <= rating ? theme.colors.accent.primary : theme.colors.text.primary }}
                             onClick={() => setRating(index + 1)} />
                         ))}

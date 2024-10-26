@@ -3,7 +3,7 @@ import styles from "./product-review-box.module.css"
 import ReviewStars from "../review/review-stars";
 
 
-export default function ProductReviewBox({review_score, review_count}: { review_score: Number, review_count: Number }): JSX.Element {    
+export default function ProductReviewBox({review_score, review_count}: { review_score: number, review_count: number }): JSX.Element {    
 
     return (
         <Box className={styles.container}>

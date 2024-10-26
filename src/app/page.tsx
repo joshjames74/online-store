@@ -9,7 +9,6 @@ import { useSearchStore } from "@/zustand/store";
 import { parseQueryParams } from "@/api/helpers/utils";
 import { useEffect, useState } from "react";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
-import { Product } from "@prisma/client";
 
 const Page = () => {
 

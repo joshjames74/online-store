@@ -145,7 +145,7 @@ export function transformSearchFieldToPrismaQuery<T extends ModelType>(searchFie
      *  Convert a search field to a prisma query-usable object of relations
      */
 
-    var out = {}
+    const out = {}
 
     for (const searchField of searchFields) {
         for (const target of searchField.targets) {
@@ -160,7 +160,7 @@ export function transformSearchFieldToPrismaQuery<T extends ModelType>(searchFie
 
 
 export function transformWhereFieldToQuery<T extends ModelType>(whereFields: WhereField<T>[]) {
-    var whereQuery = {}
+    const whereQuery = {}
     for (const whereField of whereFields) {
         for (const target of whereField.targets) {
             const nestedRelation = createDynamicRelationObject(whereField.relation, whereField.data);
@@ -172,7 +172,7 @@ export function transformWhereFieldToQuery<T extends ModelType>(whereFields: Whe
 
 
 export function transformOrderFieldToQuery<T extends ModelType>(orderFields: OrderField<T>[]) {
-    var orderQuery = {}
+    const orderQuery = {}
     for (const orderField of orderFields) {
         for (const target of orderField.targets) {
             Object.assign(orderQuery, { [target]: orderField.relation });

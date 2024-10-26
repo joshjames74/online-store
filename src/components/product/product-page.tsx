@@ -91,7 +91,7 @@ export default function ProductPage(product: Product): JSX.Element {
                 <Stack w="full">
                     <Select placeholder="Select quantity" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))}>
                         {Array.from({length: maxQuantity}).map((_, index: number) => (
-                            <option value={index + 1}>{index+1}</option>
+                            <option value={index + 1} key={index}>{index+1}</option>
                         ))}
                     </Select>
                     <Button 

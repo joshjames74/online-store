@@ -29,7 +29,7 @@ export function getBasketItemsByUserId(id: number): Promise<BasketItemWithProduc
 
 export async function getBasketByUserId(id: number): Promise<Basket | void> {
 
-    var basket: Basket = { items: [], metadata: { count: NaN, total: { quantity: NaN, price: NaN }}}
+    let basket: Basket = { items: [], metadata: { count: NaN, total: { quantity: NaN, price: NaN }}}
 
     const items = await getEntitiesByField('basketItem', 'usrId', id, "product", { 'id': OrderRelation.ASC });
     if (!items) { return }

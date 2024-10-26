@@ -78,7 +78,7 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
                 <ReviewSummarySkeleton />
                 <Box className={styles.review_container}>
                     <Box className={styles.grid_container}>
-                        {Array.from({length: 10}).map((_, index) => <ReviewCardSkeleton />)}
+                        {Array.from({length: 10}).map((_, index: number) => <ReviewCardSkeleton key={index} />)}
                     </Box>
                 </Box>
             </Box>
@@ -105,7 +105,7 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
                         </Select>
                     </HStack>
                     <Box className={styles.grid_container}>
-                        {reviews?.length ? reviews.map((review: Review) => <ReviewCard {...review} />) : <Box>No reviews</Box>}
+                        {reviews?.length ? reviews.map((review: Review, index: number) => <ReviewCard {...review} key={index} />) : <Box>No reviews</Box>}
                     </Box>  
                     <Stack>
                         <Button onClick={handleClickButton} w="fit-content" gap={2}>

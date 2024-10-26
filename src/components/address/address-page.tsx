@@ -13,7 +13,6 @@ export default function AddressesPage({ params }: { params: { id: number } }): J
     const { id } = params;
     const { theme } = useContext(ThemeContext);
 
-
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -53,8 +52,8 @@ export default function AddressesPage({ params }: { params: { id: number } }): J
                             <GridItem>
                                 <AddAddressCard />
                             </GridItem>
-                            {addresses.length ? addresses.map(address => (
-                                <GridItem>
+                            {addresses.length ? addresses.map((address, index: number) => (
+                                <GridItem key={index}>
                                     <AddressCard {...address} />
                                 </GridItem>
                             )) : <></>}

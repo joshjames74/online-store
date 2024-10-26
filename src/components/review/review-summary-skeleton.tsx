@@ -7,8 +7,8 @@ export default function ReviewSummarySkeleton(): JSX.Element {
 
         <Box className={styles.container}>
             <Box className={styles.stars_container}>
-                {Array.from({ length: 6}).map(() => (
-                    <SkeletonText noOfLines={1}/>
+                {Array.from({ length: 6}).map((_, index: number) => (
+                    <SkeletonText noOfLines={1} key={index}/>
                 ))}
             </Box>
         </Box>

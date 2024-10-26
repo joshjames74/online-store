@@ -7,8 +7,8 @@ function createQueryFromField<T extends keyof TableMap, I extends keyof IncludeM
     field: TableMap[T],
     value: any,
     include?: I,
-    orderQuery?: any): Object {
-    var query = { where: { [field]: value } };
+    orderQuery?: any): any {
+    const query = { where: { [field]: value } };
     if (include) { Object.assign(query, { include: { [include]: true } }) };
     if (orderQuery) { Object.assign(query, { orderBy: orderQuery })};
     return query
@@ -71,7 +71,7 @@ export async function getEntitiesByFields<T extends keyof TableMap, I extends In
 ): Promise<ResultType<T, I>[] | void> {
     if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
 
-        var query = {}
+        const query = {}
 
         Object.assign(query, { where: whereQuery });
         if (orderQuery) { Object.assign(query, { orderBy: orderQuery }) };
@@ -95,7 +95,7 @@ export const getCountByField: GetMetadata = async (modelName, field, value) => {
 
 export const getSumByField: GetMetadata = async (modelName, field, value, actionField) => {
     if (prisma[modelName] && typeof prisma[modelName].aggregate == "function") {
-        var query = createQueryFromField(field, value);
+        const query = createQueryFromField(field, value);
         Object.assign(query, { _sum: { [actionField]: true }});
         return await (prisma[modelName] as any).aggregate(query);
     }
@@ -157,7 +157,7 @@ export async function upsertOneEntityByField<T extends ModelType>(
     
     if (prisma[modelName] && typeof prisma[modelName].upsert == 'function') {
 
-        var query = {}
+        const query = {}
 
         Object.assign(query, { where: whereQuery });
         Object.assign(query, { update: updateQuery });

@@ -25,7 +25,7 @@ export default function BasketPage({ params }: { params: { basket: Basket } }): 
 
             <CardBody>
                 <Stack>
-                    {basket.items && basket.items.map(basketItem => <BasketProductCard basketItem={basketItem} />)}
+                    {basket.items && basket.items.map((basketItem, index: number) => <BasketProductCard key={index} basketItem={basketItem} />)}
                 </Stack>
             </CardBody>
 
