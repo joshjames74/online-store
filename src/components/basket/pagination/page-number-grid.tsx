@@ -14,9 +14,10 @@ export default function PageNumberGrid({ params }: { params: PageNumberParams })
     const { pageNumber, onClickPageNumber, maxPages } = params;
     const { theme } = useContext(ThemeContext);
 
-    const PageBox = (value: number, isSelected: boolean) => {
+    const PageBox = (value: number, isSelected: boolean, key: number) => {
         return (
             <Button 
+                key={key}
                 bgColor={isSelected ? theme.colors.accent.primary : theme.colors.background.secondary}
                 onClick={() => onClickPageNumber(value)}>
                     {value}
@@ -27,7 +28,7 @@ export default function PageNumberGrid({ params }: { params: PageNumberParams })
     return (
         <Box w="full" padding="1em">
             <HStack justifyContent="center">
-                {Array.from({ length: maxPages }).map((_, index) => PageBox(index + 1, pageNumber === index + 1))}
+                {Array.from({ length: maxPages }).map((_, index) => PageBox(index + 1, pageNumber === index + 1, index))}
             </HStack>
         </Box>
     )

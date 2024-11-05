@@ -5,11 +5,15 @@ import { Order, OrderItem } from "@prisma/client";
 import { useContext } from "react";
 import ProductWide from "../product/product-wide";
 import OrderProductCard from "./order-product-card";
+import { formatDate } from "@/api/helpers/utils";
+import { ResultType } from "@/api/helpers/types";
 
 export default function OrderCard({ params }: { params: { orderView: OrderView } }): JSX.Element {
 
-    const { orderView, key } = params;
+    const { orderView } = params;
     const { theme } = useContext(ThemeContext);
+
+    type OrderItemView = ResultType<'orderItem', { product: { include: { currency: true } } }>
 
     return (
         <Card minW="2xl" w="4xl" borderRadius="1em" overflow="hidden">
@@ -18,7 +22,7 @@ export default function OrderCard({ params }: { params: { orderView: OrderView }
                 <HStack>
                     <Stack>
                         <Heading fontSize="md">ORDER PLACED</Heading>
-                        <Heading fontSize="md">{orderView.date}</Heading>
+                        <Heading fontSize="md">{formatDate(orderView.date.toString())}</Heading>
                     </Stack>
                     <Stack>
                         <Heading fontSize="md">TOTAL</Heading>
@@ -35,10 +39,11 @@ export default function OrderCard({ params }: { params: { orderView: OrderView }
 
             <CardBody>
                 <Stack>
-                    {orderView['OrderItem'].map((orderItemView, index: number) => (
+                    {orderView.OrderItem.map(
+                        (item: OrderItemView, index: number) => (
                         <Grid templateColumns="4fr 1fr" key={index}>
                             <GridItem>
-                                <OrderProductCard {...orderItemView.product}/>
+                                <OrderProductCard {...item.product}/>
                             </GridItem>
                             <GridItem>
                                 <Button 
@@ -47,7 +52,9 @@ export default function OrderCard({ params }: { params: { orderView: OrderView }
                                     padding="0.4em 1em"
                                     fontSize="xs"
                                     borderRadius="1em"
-                                    >Write a review</Button>
+                                    >
+                                        Write a review
+                                    </Button>
                             </GridItem>
                         </Grid>
                     ))}

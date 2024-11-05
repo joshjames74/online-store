@@ -4,6 +4,7 @@ import DeliveryButton from "./delivery-button";
 import SearchBar from "./search-bar";
 import Link from "next/link";
 import AccountButton from "./account-button";
+import CurrencyCountryButton from "./currency-country-button";
 
 
 export default function NavBar(): JSX.Element {
@@ -13,6 +14,7 @@ export default function NavBar(): JSX.Element {
             <Image className={styles.min_width_500} />
             <DeliveryButton />
             <SearchBar />
+            <CurrencyCountryButton />
             <AccountButton />
             <Link href={"/user/basket"} className={styles.min_width_500}>
                 <Button>Basket</Button>

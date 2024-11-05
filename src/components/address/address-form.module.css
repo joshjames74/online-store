@@ -1,0 +1,9 @@
+.form label {
+    font-weight: bold;
+}
+
+.form input {
+    border: 1px solid gray;
+    border-radius: 0.2em;
+    padding: 0.4em 0.8em;
+}

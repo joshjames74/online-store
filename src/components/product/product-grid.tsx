@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { parseQueryParams } from "@/api/helpers/utils";
 import ProductWideSkeleton from "./product-wide-skeleton";
 import ProductCompactSkeleton from "./product-compact-skeleton";
-import { ModelsResponse } from "@/api/helpers/types";
+import { ManyWithMetadata, ModelsResponse, ResultType } from "@/api/helpers/types";
 import { Width } from "@/redux/reducers/product";
 import { useSearchStore } from "@/zustand/store";
 import PageNumberGrid from "../basket/pagination/page-number-grid";
@@ -21,7 +21,7 @@ export default function ProductGrid(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const [products, setProducts] = useState<Product[]>();
+  const [products, setProducts] = useState<ResultType<'product', { currency: true}>[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const width = useSearchStore((state) => state.params.width);
@@ -38,7 +38,7 @@ export default function ProductGrid(): JSX.Element {
   
   const loadData = () => {
       setIsLoading(true);
-      getProductsBySearchParams(parseQueryParams(searchParams)).then((res: ModelsResponse<'product'>) => {
+      getProductsBySearchParams(parseQueryParams(searchParams)).then((res: ManyWithMetadata<'product', { currency: true }>) => {
         setProducts(res.data);
       }).catch(error => {
         console.error(error);
@@ -93,10 +93,10 @@ export default function ProductGrid(): JSX.Element {
 
             {width == Width.WIDE 
               ? (<Box className={styles.container_wide}>
-                   {products.map((product: Product) => <ProductWide key={product.id} {...product} />)}
+                   {products.map((product: ResultType<'product', { currency: true }>) => <ProductWide key={product.id} {...product} />)}
                  </Box>)
               : (<Box className={styles.container_compact}>
-                  {products.map((product: Product) => <ProductCompact key={product.id} {...product} />)}
+                  {products.map((product: ResultType<'product', { currency: true }>) => <ProductCompact key={product.id} {...product} />)}
                 </Box>)}
           </Box>
           <PageNumberGrid params={{ pageNumber: parseQueryParams(searchParams).pageNumber || 0, onClickPageNumber: handleClickPageNumber, maxPages: getMaxPages() }}/>

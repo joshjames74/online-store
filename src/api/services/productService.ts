@@ -3,26 +3,26 @@ import { deleteOneEntityByField, getAllEntity, getEntitiesByFields, getOneEntity
 import { FieldValuePair } from "../helpers/request";
 import { queryParamsToPrismaQuery } from "../transformers";
 import { ProductParams, productQueryTransformer } from "../transformers/productSearchTransformer";
-import { Metadata, ModelsResponse, ResultType } from "../helpers/types";
+import { ManyWithMetadata, Metadata, ModelsResponse, ResultType } from "../helpers/types";
 
 // GET methods
 
 export async function getProductById(id: number): Promise<Product | void> {
     return getOneEntityByField('product', 'id', id);
-}
+};
 
 export async function getProductByUserId(id: number): Promise<Product | void> {
     return getOneEntityByField('product', 'sellerId', id);
-}
+};
 
 export async function getAllProducts(): Promise<Product[] | void> {
     return getAllEntity('product');
-}
+};
 
-export async function getProductBySearch(params: Partial<ProductParams>): Promise<ModelsResponse<'product'> | void> {
+export async function getProductBySearch(params: Partial<ProductParams>): Promise<ManyWithMetadata<'product', { currency: true }> | void> {
 
     const { whereQuery, orderQuery, skip, take } = queryParamsToPrismaQuery(params, productQueryTransformer);
-    const products = await getEntitiesByFields('product', whereQuery, orderQuery, skip, take);
+    const products = await getEntitiesByFields('product', whereQuery, orderQuery, skip, take, { currency: true });
 
     // get metadata
     const count = products?.length;

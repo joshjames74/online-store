@@ -5,6 +5,7 @@ import AddressCard from "@/components/address/address-card";
 import { ThemeContext } from "@/contexts/theme-context";
 import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, Grid, GridItem, Heading, Stack } from "@chakra-ui/react";
 import { Address } from "@prisma/client";
+import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 
 
@@ -50,7 +51,9 @@ export default function AddressesPage({ params }: { params: { id: number } }): J
 
                         <Grid gridTemplateColumns="repeat(3, 1fr)" gap="1em">
                             <GridItem>
-                                <AddAddressCard />
+                                <Link href="/user/addresses/add">
+                                    <AddAddressCard />
+                                </Link>
                             </GridItem>
                             {addresses.length ? addresses.map((address, index: number) => (
                                 <GridItem key={index}>

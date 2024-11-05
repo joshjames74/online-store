@@ -1,6 +1,9 @@
 import { QueryParams } from "@/redux/reducers/product";
 import { ProductParams } from "../transformers/productSearchTransformer";
 import { OrderFilter, OrderParams } from "../transformers/orderSearchTransformer";
+import { ResultType } from "./types";
+import { Currency } from "@prisma/client";
+import { UserWithCurrencyAndCountry } from "../services/userService";
 
 
 export const objectToQueryParams = (params: any): string => {
@@ -25,6 +28,9 @@ export const parseDate = (searchParams: URLSearchParams, key: string): Date | un
 
 export const parseQueryParams = (searchParams: URLSearchParams): ProductParams => {
 
+
+    // to do: only add to params if truthy
+
     const query = searchParams.get('query') || '';
     const max_price = parseFloat(searchParams.get('max_price') || '0');
     const min_review = parseFloat(searchParams.get('min_review') || '0');
@@ -38,24 +44,58 @@ export const parseQueryParams = (searchParams: URLSearchParams): ProductParams =
 }
 
 
-export const parseOrderSearchParams = (searchParams: URLSearchParams): OrderParams => {
+export const parseOrderSearchParams = (searchParams: URLSearchParams): Omit<OrderParams, 'usrId'> => {
 
-    // to do: relook at parsing date
-
-    const usrId = parseInt(searchParams.get('usrId') || '');
     const min_date = parseDate(searchParams, 'min_date');
     const max_date = parseDate(searchParams, 'max_date');
     const skip = parseInt(searchParams.get('skip') || '');
     const take = parseInt(searchParams.get('take') || '');
+
+    let params = {}
+    if (min_date) { Object.assign(params, { min_date })};
+    if (max_date) { Object.assign(params, { max_date })};
+    if (skip) { Object.assign(params, { skip })};
+    if (take) { Object.assign(params, { take })};
 
     const order_filter_raw = parseInt(searchParams.get('order_filter') || '');
     let order_filter: OrderFilter;
 
     if (order_filter_raw && Object.values(OrderFilter).includes(order_filter_raw as OrderFilter)) {
         order_filter = order_filter_raw as OrderFilter;
-    }
+        Object.assign(params, { order_filter });
+    };
 
-    return { usrId, min_date, max_date, order_filter, skip, take }
+    return params as OrderParams;
 
 }
 
+
+
+export function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-UK', {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    }).format(date);
+}
+
+export function formatPrice(price: number, currency: string): string {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(price);
+};
+
+export function convertPrice(priceInGBP: number, exchangeRate: number): number {
+    return priceInGBP / exchangeRate;
+}
+
+export function getProductPrice(price: number, productExchangeRate: number, user: UserWithCurrencyAndCountry): string {
+    const currency = user && user.currency ? user.currency : { symbol: "$", code: "USD", id: "1", gbp_exchange_rate: 1 };
+    const productPriceGBP = convertPrice(price, productExchangeRate);
+    const userPrice = convertPrice(productPriceGBP, currency.gbp_exchange_rate);
+    return formatPrice(userPrice, currency.code);
+}

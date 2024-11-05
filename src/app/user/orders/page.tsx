@@ -17,9 +17,7 @@ export default function OrderPage(): JSX.Element {
     if (!isLoading && !isAuthenticated) return <Box>404 not found</Box>
 
     // redirect this
-    if (!user) return <Box>User not found</Box>
-
-    console.log(user);
+    if (!user || !user.id)  return <Box>User not found</Box>
 
     return <OrderGrid params={{ id: user.id }} />
 

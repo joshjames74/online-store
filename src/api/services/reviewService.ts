@@ -2,6 +2,7 @@ import { Review } from "@prisma/client";
 import { deleteOneEntityByField, getEntitiesByField, getEntitiesByFields, getOneEntityByField, postOneEntity } from "../helpers/dynamicQuery";
 import { ReviewParams, reviewQueryTransformer } from "../transformers/reviewSearchTransformer";
 import { queryParamsToPrismaQuery, transformQueryToPrismaQuery } from "../transformers";
+import { ResultType } from "../helpers/types";
 
 
 // GET methods
@@ -18,9 +19,9 @@ export async function getReviewsByUserId(id: number): Promise<Review[] | void> {
     return getEntitiesByField('review', 'usrId', id);
 }
 
-export async function getReviewsBySearch(params: Partial<ReviewParams>): Promise<Review[] | void> {
+export async function getReviewsBySearch(params: Partial<ReviewParams>): Promise<ResultType<'review', { usr: true}>[] | void> {
     const { whereQuery, orderQuery} = queryParamsToPrismaQuery(params, reviewQueryTransformer);
-    return await getEntitiesByFields('review', whereQuery, orderQuery);
+    return await getEntitiesByFields('review', whereQuery, orderQuery, undefined, undefined, { usr: true });
 }
 
 export async function getReviewCountsByProductId(id: number): Promise<number[] | void> {

@@ -3,55 +3,52 @@ import { FieldValuePair } from "./request";
 import { ModelType, ModelMap, TableMap, IncludeMap, ResultType } from "./types";
 
 
-function createQueryFromField<T extends keyof TableMap, I extends keyof IncludeMap[T]>(
+function createQueryFromField<T extends keyof TableMap, I extends IncludeMap[T]>(
     field: TableMap[T],
     value: any,
     include?: I,
-    orderQuery?: any): any {
+    orderQuery?: any,
+    skip?: number,
+    take?: number): any {
     const query = { where: { [field]: value } };
-    if (include) { Object.assign(query, { include: { [include]: true } }) };
+    if (include) { Object.assign(query, { include: include }) };
     if (orderQuery) { Object.assign(query, { orderBy: orderQuery })};
+    if (skip && !isNaN(skip)) { Object.assign(query, { skip: skip })};
+    if (take && !isNaN(take)) { Object.assign(query, { take: take })};
     return query
 }
 
 
-export interface GetOneByField {
-    <T extends keyof TableMap, I extends keyof IncludeMap[T]>(modelName: T, field: TableMap[T], value: any, include?: I)
-        : Promise<ResultType<T, I> | void>
-}
-
-export interface GetSeveralByField {
-    <T extends keyof TableMap, I extends keyof IncludeMap[T]>(modelName: T, field: TableMap[T], value: any, include?: I, orderQuery?: any)
-        : Promise<ResultType<T, I>[] | void>
-}
-
-export interface GetMetadata {
-    <T extends keyof TableMap>(modelName: T, field: TableMap[T], value: any, actionField?: TableMap[T])
-        : Promise<any | void>
-}
-
-
-
 // GET methods
 
-export const getOneEntityByField: GetOneByField = async (modelName, field, value, include?) => {
-    if (prisma[modelName] && typeof prisma[modelName].findFirst === 'function') {
-        const query = createQueryFromField(field, value, include);
+export async function getOneEntityByField<T extends keyof TableMap, I extends IncludeMap[T]>
+    (modelName: T, 
+    field: TableMap[T],
+    value: any,
+    include?: I
+    ): Promise<ResultType<T, I> | void> {
+    if (prisma[modelName] && typeof prisma[modelName].findFirst == 'function') {
+        const query = createQueryFromField(field, value, include)
+        console.log(query);
         return await (prisma[modelName] as any).findFirst(query);
     }
     return
 }
 
-
-export const getEntitiesByField: GetSeveralByField = async (modelName, field, value, include?, orderQuery?) => {
+export async function getEntitiesByField<T extends keyof TableMap, I extends IncludeMap[T]>
+    (modelName: T, 
+    field: TableMap[T],
+    value: any,
+    include?: I,
+    orderQuery?: any
+    ): Promise<ResultType<T, I>[] | void> {
     if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
-        const query = createQueryFromField(field, value, include, orderQuery);
+        const query = createQueryFromField(field, value, include, orderQuery)
         return await (prisma[modelName] as any).findMany(query);
     }
     return
 }
 
-// to do: remove ModelName
 export async function getAllEntity<T extends keyof TableMap>(modelName: T): Promise<ModelMap[T][] | void> {
     if (prisma[modelName] && typeof prisma[modelName].findMany == 'function') {
         return await (prisma[modelName] as any).findMany({ where: {} })
@@ -59,8 +56,28 @@ export async function getAllEntity<T extends keyof TableMap>(modelName: T): Prom
     return
 }
 
+export async function getOneEntityByFields<T extends keyof TableMap, I extends IncludeMap[T]>(
+    modelName: T,
+    whereQuery: any,
+    orderQuery?: any,
+    skip?: number,
+    take?: number,
+    include?: I
+): Promise<ResultType<T, I> | void> {
+    if (prisma[modelName] && typeof prisma[modelName].findFirst == 'function') {
 
-// to do: update with include
+        const query = {}
+
+        Object.assign(query, { where: whereQuery });
+        if (orderQuery) { Object.assign(query, { orderBy: orderQuery }) };
+        if (include) { Object.assign(query, { include })}
+        if (skip && !isNaN(skip)) { Object.assign(query, { skip: skip }) };
+        if (take && !isNaN(take)) { Object.assign(query, { take: take }) };
+
+        return await (prisma[modelName] as any).findFirst(query);
+    }
+};
+
 export async function getEntitiesByFields<T extends keyof TableMap, I extends IncludeMap[T]>(
     modelName: T,
     whereQuery: any,
@@ -86,17 +103,17 @@ export async function getEntitiesByFields<T extends keyof TableMap, I extends In
 
 // Metadata methods
 
-export const getCountByField: GetMetadata = async (modelName, field, value) => {
+export async function getCountByField<T extends keyof ModelMap>(modelName: T, field: TableMap[T], value: any, actionField?: TableMap[T]): Promise<any | void> {
     if (prisma[modelName] && typeof prisma[modelName].count == 'function') {
         const query = createQueryFromField(field, value);
         return await (prisma[modelName] as any).count(query);
     }
 }
 
-export const getSumByField: GetMetadata = async (modelName, field, value, actionField) => {
+export async function getSumByField<T extends keyof ModelMap>(modelName: T, field: TableMap[T], value: any, actionField?: TableMap[T]): Promise<any | void> {
     if (prisma[modelName] && typeof prisma[modelName].aggregate == "function") {
         const query = createQueryFromField(field, value);
-        Object.assign(query, { _sum: { [actionField]: true }});
+        if (actionField) { Object.assign(query, { _sum: { [actionField]: true }}); }
         return await (prisma[modelName] as any).aggregate(query);
     }
 }
@@ -105,7 +122,7 @@ export const getSumByField: GetMetadata = async (modelName, field, value, action
 // TO DO: change to from ModelType to keyof TableMap
 // POST methods
 
-export async function postOneEntity<T extends ModelType>(modelName: T, entity: Partial<ModelMap[T]>): Promise<ModelMap[T] | void> {
+export async function postOneEntity<T extends ModelType, I extends IncludeMap[T]>(modelName: T, entity: Partial<ModelMap[T]>): Promise<ModelMap[T] | void> {
     if (prisma[modelName]) {
         return await (prisma[modelName] as any).create({ data: entity });
     }

@@ -1,12 +1,15 @@
 import { QueryParams } from "@/redux/reducers/product";
 import { Product } from "@prisma/client";
 import axios from "axios";
-import { ModelsResponse } from "../helpers/types";
+import { ManyWithMetadata, ModelsResponse } from "../helpers/types";
 import { buildUrl } from "../helpers/utils";
 
 
 export async function getProductById(id: number): Promise<Product> {
-    const response = await fetch(`/api/product/${id}`);
+    const response = await fetch(`/api/product/${id}`, {
+        method: "GET",
+        cache: "force-cache"
+    });
     if (!response.ok) {
         throw new Error('Failed to fetch');
     }
@@ -22,7 +25,7 @@ export async function getAllProducts(): Promise<Product[]> {
     return response.json();
 }
 
-export async function getProductsBySearchParams(params: Partial<QueryParams>): Promise<ModelsResponse<'product'>> {
+export async function getProductsBySearchParams(params: Partial<QueryParams>): Promise<ManyWithMetadata<'product', { currency: true }>> {
     const url = buildUrl("/api/product", params);
     const response = await fetch(url, { 
         method: "GET",

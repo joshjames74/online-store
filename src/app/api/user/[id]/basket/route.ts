@@ -1,6 +1,5 @@
 import { getHelper } from "@/api/helpers/request";
-import { getBasketByUserId, getBasketItemsByUserId } from "@/api/services/basketItemService";
-import { getProductByUserId } from "@/api/services/productService";
+import { getBasketByUserId } from "@/api/services/basketItemService";
 import { NextRequest, NextResponse } from "next/server";
 
 

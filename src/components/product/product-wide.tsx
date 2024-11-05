@@ -5,6 +5,9 @@ import { useContext } from "react";
 import styles from "./product-wide.module.css";
 import { Product } from "@prisma/client";
 import ProductReviewBox from "./product-review-box";
+import { ResultType } from "@/api/helpers/types";
+import { convertPrice, formatPrice, getProductPrice } from "@/api/helpers/utils";
+import { UserContext } from "@/contexts/user-context";
 
 
 // export default function ProductWide({...product}: Product): JSX.Element {
@@ -27,9 +30,15 @@ import ProductReviewBox from "./product-review-box";
 // }
 
 
-export default function ProductWide({...product}: Product): JSX.Element {
+export default function ProductWide({...product}: ResultType<'product', { currency: true }>): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
+    const { user } = useContext(UserContext);
+
+    if (!product.currency) {
+        console.log(product);
+        return <></>
+    }
 
     return (
         <Link href={`/product/${product.id}`}>
@@ -43,7 +52,9 @@ export default function ProductWide({...product}: Product): JSX.Element {
                             <Stack gap={1}>
                                 <Heading noOfLines={1}>{product.title}</Heading>
                                 <ProductReviewBox {...product} />
-                                <Heading fontSize="lg" color={theme.colors.accent.tertiary}>£{product.price}</Heading>
+                                <Heading fontSize="lg" color={theme.colors.accent.tertiary}>
+                                    {getProductPrice(product.price, product.currency.gbp_exchange_rate, user)}
+                                </Heading>
                                 <Text fontSize="xs" noOfLines={1}>{product.description}</Text>
                             </Stack>
                         </GridItem>

@@ -1,4 +1,4 @@
-import { Box, Text, Image, useToast, Card, CardHeader, Avatar, Heading, CardBody, Divider, HStack, CardFooter, IconButton } from "@chakra-ui/react";
+import { Box, Text, Image, useToast, Card, CardHeader, Avatar, Heading, CardBody, Divider, HStack, CardFooter, IconButton, Stack } from "@chakra-ui/react";
 import { Review } from "@prisma/client";
 import styles from "./review-card.module.css"
 import ReviewStars from "./review-stars";
@@ -8,21 +8,19 @@ import { useReviewSearchStore } from "@/zustand/store";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
+import { UserContext } from "@/contexts/user-context";
+import { ResultType } from "@/api/helpers/types";
+import { formatDate } from "@/api/helpers/utils";
 
 
-export default function ReviewCard(review: Review): JSX.Element {
+export default function ReviewCard(review: ResultType<'review', { usr: true }>): JSX.Element {
 
-    const isLoggedIn = true;
-
+    const { user, isAuthenticated } = useContext(UserContext);
     const clearParams = useReviewSearchStore((store) => store.clearParams);
     const { theme } = useContext(ThemeContext);
-
     const toast = useToast();
-    const router = useRouter();
 
     const handleDelete = () => {
-
-        // define toasts
         const pendingToast = toast({ title: 'Processing...', isClosable: true })
         const successToast = { 
             title: 'Success',
@@ -40,44 +38,32 @@ export default function ReviewCard(review: Review): JSX.Element {
         }
 
         // post review and update toasts accordingly
-        try {  
+        try {
+            if (!isAuthenticated || user.id !== review.usrId) {
+                throw new Error('Permission denied');
+            };
             deleteReviewById(review.id).then(_ =>  toast.update(pendingToast, successToast));
         } catch (error) {
             toast.update(pendingToast, errorToast);
         } finally {
             // clear params and reload
             clearParams();
-            router.refresh();
+            location.reload();
         }
     }
 
-    // return (
-
-    //     <Box className={styles.container}>
-    //         <Box className={styles.user_container}>
-    //             <Image className={styles.user_image} src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
-    //             <Text>{review.usrId}</Text>
-    //         </Box>
-    //         <Box className={styles.review_container}>
-    //             <ReviewStars value={review.score} fontSize="md" />
-    //             <Text fontWeight="semibold">{review.title}</Text>
-    //         </Box>
-    //         <Text>{review.content}</Text>
-    //         <Text 
-    //             className={styles.delete_text} 
-    //             display={isLoggedIn ? 'block' : 'none'}
-    //             onClick={handleDelete}>Delete</Text>
-    //     </Box>
-
-    // )
-    
     return (
 
         <Card className={styles.container} minW="md">
 
-            <CardHeader className={styles.user_container}>
-                <Avatar size="sm" name={"Random User"} src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"/>
-                <Heading fontSize="sm">{review.usrId}</Heading>
+            <CardHeader>
+                <HStack justifyContent="space-between">
+                    <HStack>
+                        <Avatar size="sm" name={review.usr.name} src={review.usr.image_url || ''}/>
+                        <Heading fontSize="sm">{review.usr.name}</Heading>
+                    </HStack>
+                    <Text>{formatDate(review.date.toString())}</Text>
+                </HStack>
             </CardHeader>
 
             <Divider />
@@ -91,7 +77,12 @@ export default function ReviewCard(review: Review): JSX.Element {
             </CardBody>
 
             <CardFooter justify="right">
-                <IconButton _hover={{ bgColor: theme.colors.semantic.error}} aria-label="Delete" display={isLoggedIn ? 'block' : 'none'} onClick={handleDelete} icon={<DeleteOutlined />}></IconButton>
+                <IconButton 
+                    _hover={{ bgColor: theme.colors.semantic.error}}
+                    aria-label="Delete"
+                    display={(isAuthenticated && user.id === review.usrId) ? 'block' : 'none'}
+                    onClick={handleDelete}
+                    icon={<DeleteOutlined />}></IconButton>
             </CardFooter>
         </Card>
 

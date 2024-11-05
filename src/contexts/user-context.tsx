@@ -1,57 +1,110 @@
 "use client";
-import { findOrPostUser } from "@/api/request/userRequest";
-import { Prisma, Usr } from "@prisma/client";
+import {  getUserByEmail, postUser } from "@/api/request/userRequest";
+import { UserWithCurrencyAndCountry } from "@/api/services/userService";
+import { Currency, Usr } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react"
 
 export interface IUser {
-    user: Usr;
+    user: UserWithCurrencyAndCountry;
     isAuthenticated: boolean;
     isLoading: boolean;
+    reload: () => Promise<void>;
 };
 
 const userData: IUser = {
-    user: {} as Usr,
+    user: {} as UserWithCurrencyAndCountry,
     isAuthenticated: false,
-    isLoading: false
+    isLoading: false,
+    reload: () => new Promise(() => {}),
+}
+
+
+export const findOrPostUser = async (email: string, name: string, image_url: string): Promise<UserWithCurrencyAndCountry> => {
+    
+    try {
+        const user = await getUserByEmail(email)
+        if (user) { 
+            console.log(user);
+            return user 
+        };
+    } catch (error) { console.error(error) }
+
+    try {
+        const post = await postUser({ email, name, image_url});
+        if (post) { 
+            try {
+                const user = await getUserByEmail(post.email);
+                if (user) { return user };
+            } catch (error) { console.error(error) };
+        };
+    } catch (error) { console.error(error) }
+    return {} as UserWithCurrencyAndCountry;
 }
 
 
 
 export const UserContext = React.createContext<IUser>(userData);
 
+
 export const UserProvider = (props: { children: JSX.Element}): JSX.Element => {
 
     const { children } = props;
 
     const { data: session, status } = useSession();
-    const [user, setUser] = useState<Usr>({} as Usr);
+    const [user, setUser] = useState<UserWithCurrencyAndCountry>({} as UserWithCurrencyAndCountry);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-    const loadUser = () => {
-        if (session?.user) {
-            setIsLoading(true);
 
-            const { name, email, image: image_url } = session.user;
-            findOrPostUser({ name, email, image_url}).then(res => setUser(res));
-            setIsAuthenticated(status === "authenticated");
-            
+    const loadUser = async () => {
+
+        if (!session?.user) { return }
+
+        const { name, email, image: image_url } = session.user;
+        if (!email) { return }
+        findOrPostUser(email, name ? name : '', image_url ? image_url : '')
+            .then(user => {
+                setUser(user);
+            })
+            .catch(error => console.error(error));
+        console.log(user);
+    };
+
+    const reload = async (): Promise<void> => {
+
+        setIsLoading(true);
+        if (!session?.user) { return }
+
+        const { email } = session.user;
+        if (!email) { return }
+        getUserByEmail(email, "reload").then(user => {
+            setUser(user);
+        }).catch(error => {
+            console.error(error);
+        }).finally(() => {
             setIsLoading(false);
-        }
+        });
+
     }
 
     useEffect(() => {
+        setIsLoading(true);
         loadUser();
+        setIsAuthenticated(status === "authenticated")
+        setIsLoading(false);
     }, [])
 
     useEffect(() => {
+        setIsLoading(true);
         loadUser();
+        setIsAuthenticated(status === "authenticated")
+        setIsLoading(false);
     }, [session]);
 
 
     return (
-        <UserContext.Provider value={{ user: user, isLoading: isLoading, isAuthenticated: isAuthenticated }}>
+        <UserContext.Provider value={{ user: user, isLoading: isLoading, isAuthenticated: isAuthenticated, reload: reload }}>
             {children}
         </UserContext.Provider>
     )

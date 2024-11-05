@@ -1,6 +1,10 @@
 import { Usr } from "@prisma/client";
 import { deleteOneEntityByField, getAllEntity, getEntitiesByField, getOneEntityByField, postOneEntity, putOneEntityByField, upsertOneEntityByField } from "../helpers/dynamicQuery";
 import { FieldValuePair } from "../helpers/request";
+import { ResultType } from "../helpers/types";
+
+
+export type UserWithCurrencyAndCountry = ResultType<'usr', { currency: true, country: true }>
 
 
 // GET methods
@@ -17,26 +21,25 @@ export async function getAllUsers(): Promise<Usr[] | void> {
     return getAllEntity('usr');
 };
 
-export async function getUserByEmail(email: string): Promise<Usr | void> {
-    return getOneEntityByField('usr', 'email', email);
+export async function getUserByEmail(email: string): Promise<UserWithCurrencyAndCountry | void> {
+    return getOneEntityByField('usr', 'email', email, { currency: true, country: true });
 };
 
 
 // POST methods
 
-export async function postUser(user: Omit<Usr, 'user_id'>): Promise<Usr | void> {
+export async function postUser(user: Partial<Omit<Usr, 'user_id'>>): Promise<Usr | void> {
     return postOneEntity('usr', user);
 };
 
-
-export async function findOrPostUser(user: Partial<Omit<Usr, 'user_id'>>): Promise<Usr | void> {
-    /**
-     * @deprecated Use upsert one by user (not technically the same but close)
-     */
-    const request = await getOneEntityByField('usr', 'email', user.email);
-    if (request) return request
-    return postOneEntity('usr', user);
-}
+// export async function findOrPostUser(user: Partial<Omit<Usr, 'user_id'>>): Promise<Usr | void> {
+//     /**
+//      * @deprecated Use upsert one by user (not technically the same but close)
+//      */
+//     const request = await getOneEntityByField('usr', 'email', user.email);
+//     if (request) return request
+//     return postOneEntity('usr', user);
+// }
 
 // DELETE methods
 

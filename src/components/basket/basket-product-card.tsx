@@ -1,16 +1,20 @@
+import { formatPrice, getProductPrice } from "@/api/helpers/utils";
 import { deleteBasketItemById, putBasketItemQuantityById } from "@/api/request/basketRequest";
-import { BasketItemWithProduct } from "@/api/services/basketItemService";
+import { BasketItemWithProductAndCurrency } from "@/api/services/basketItemService";
 import { ThemeContext } from "@/contexts/theme-context";
+import { UserContext } from "@/contexts/user-context";
 import { useBasketStore } from "@/zustand/store";
 import { CheckCircleFilled, CheckCircleOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Box, Button, Card, CardBody, Checkbox, CircularProgress, Grid, GridItem, Heading, HStack, Image, SliderFilledTrack, Stack, Text } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 
 
-export default function BasketProductCard({ basketItem }: { basketItem: BasketItemWithProduct }): JSX.Element {
+export default function BasketProductCard({ basketItem, loadData }: { basketItem: BasketItemWithProductAndCurrency, loadData: () => Promise<void> }): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
-    const loadData = useBasketStore((state) => state.loadData);
+    const { user } = useContext(UserContext);
+
+    // const loadData = useBasketStore((state) => state.loadData);
 
     // set vars relating to displaying success, error, and loading
     const [isLoadingQuantity, setIsLoadingQuantity] = useState<boolean>(false);
@@ -30,7 +34,7 @@ export default function BasketProductCard({ basketItem }: { basketItem: BasketIt
             console.log(error);
         }
         finally {
-            loadData(parseInt(basketItem?.usrId?.toString() || '')).then(res => {
+            loadData().then(res => {
                 setIsLoadingQuantity(false)
                 handleStatus();
             });
@@ -45,7 +49,7 @@ export default function BasketProductCard({ basketItem }: { basketItem: BasketIt
     const handleDelete = async () => {
         setIsLoadingDelete(true);
         deleteBasketItemById(basketItem.id).then(res => {
-            loadData(parseInt(basketItem?.usrId?.toString() || ''))
+            loadData();
             setIsLoadingDelete(false);
         })
     }
@@ -73,7 +77,7 @@ export default function BasketProductCard({ basketItem }: { basketItem: BasketIt
                         overflow="nowrap"
                         fontSize="lg"
                         color={theme.colors.accent.tertiary}>
-                        £{Math.round(basketItem.product.price * basketItem.quantity * 100) / 100}
+                        {getProductPrice(basketItem.product.price * basketItem.quantity, basketItem.product.currency.gbp_exchange_rate,  user)}
                     </Heading>
                 </GridItem>
 

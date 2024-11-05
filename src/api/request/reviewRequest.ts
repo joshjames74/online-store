@@ -1,6 +1,7 @@
 import { Review } from "@prisma/client";
 import axios from "axios";
 import { ReviewParams } from "../transformers/reviewSearchTransformer";
+import { ResultType } from "../helpers/types";
 
 
 // GET methods
@@ -31,7 +32,7 @@ export async function getReviewCountsByProductId(id: number): Promise<number[]> 
 }
 
 
-export async function getReviewsBySearch(params: Partial<ReviewParams>): Promise<Review[]> {
+export async function getReviewsBySearch(params: Partial<ReviewParams>): Promise<ResultType<'review', { usr: true }>[]> {
     const response = await axios(`/api/review`, {
         method: "GET",
         params: {...params}

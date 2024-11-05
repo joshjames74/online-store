@@ -10,7 +10,12 @@ import { ResultType } from "../helpers/types";
 export type OrderView = ResultType<'order', {
     OrderItem: {
         include: {
-            product: true
+            product: {
+                include: {
+                    currency: true,
+                    seller: true
+                }
+            }
         }
     },
     address: true,
@@ -20,7 +25,7 @@ export type OrderView = ResultType<'order', {
 // GET methods
 
 export async function getOrderViewById(id: number): Promise<any> {
-    return await getOneEntityByField('order', 'id', id, "OrderItem");
+    return await getOneEntityByField('order', 'id', id, { OrderItem: true });
 }
 
 
@@ -29,7 +34,12 @@ export async function getOrderViewsBySearch(params: OrderParams): Promise<OrderV
     const orders = await getEntitiesByFields('order', whereQuery, orderQuery, 0, 0, {
         OrderItem: {
             include: {
-                product: true
+                product: {
+                    include: {
+                        currency: true,
+                        seller: true
+                    }
+                },
             }
         },
         address: true,

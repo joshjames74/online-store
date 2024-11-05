@@ -48,6 +48,16 @@ export type ModelsResponse<T extends ModelType> = {
     metadata: Metadata<T>;
 };
 
+export type OneWithMetadata<T extends ModelType, I extends IncludeMap[T]> = {
+    data: ModelMap[T] | ResultType<T, I>;
+    metadata: Metadata<T>
+}
+
+export type ManyWithMetadata<T extends ModelType, I extends IncludeMap[T]> = {
+    data: ResultType<T, I>[];
+    metadata: Metadata<T>
+}
+
 // export type ResultType<T extends keyof ModelMap, I extends keyof IncludeMap[T]> = ModelMap[T] & (I extends undefined ? {} : { [K in I]: ModelMap[I]})
 
 export type ResultType<T extends keyof ModelMap, I extends IncludeMap[T]> = ModelMap[T] & 

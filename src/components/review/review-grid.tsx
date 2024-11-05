@@ -1,7 +1,7 @@
 import { getReviewById, getReviewsByProductId } from "@/api/request/reviewRequest";
 import { Box, Button, Heading, HStack, Select, Skeleton, SkeletonText, Stack, Text } from "@chakra-ui/react";
 import { Review } from "@prisma/client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ReviewCard from "./review-card";
 import styles from "./review-grid.module.css"
 import ReviewSummary from "./review-summary";
@@ -14,10 +14,14 @@ import { ReviewFilter, ReviewParams } from "@/api/transformers/reviewSearchTrans
 import { getReviewsBySearch } from "@/api/request/reviewRequest";
 import { useRouter } from "next/navigation";
 import { CaretDownOutlined, CaretRightOutlined, PlusOutlined } from "@ant-design/icons";
+import { ResultType } from "@/api/helpers/types";
+import { ThemeContext } from "@/contexts/theme-context";
 
 export default function ReviewGrid({ id, score }: { id: number, score: number } ): JSX.Element {
 
-    const [reviews, setReviews] = useState<Review[]>([]);
+    const { theme } = useContext(ThemeContext);
+
+    const [reviews, setReviews] = useState<ResultType<'review', { usr: true}>[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [showForm, setShowForm] = useState<boolean>(false);
 
@@ -40,7 +44,6 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
 
 
     const fetchData = () => {
-
         const reviewParams: Partial<ReviewParams> = {}
         reviewParams.productId = id;
 
@@ -56,7 +59,10 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
 
         setIsLoading(true);
         getReviewsBySearch(reviewParams).then(res => {
-            setReviews(res)
+            setReviews(res);
+        }).catch(error => {
+            console.error(error);
+        }).finally(() => {
             setIsLoading(false);
         });
         delete reviewParams.productId;
@@ -71,55 +77,37 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
         fetchData();
     }, [searchParams]);
 
-
-    const renderSkeleton = () => {
-        return (
-            <Box className={styles.container}>
-                <ReviewSummarySkeleton />
-                <Box className={styles.review_container}>
-                    <Box className={styles.grid_container}>
-                        {Array.from({length: 10}).map((_, index: number) => <ReviewCardSkeleton key={index} />)}
-                    </Box>
-                </Box>
-            </Box>
-        )
-    }
-
     return (
-
-        isLoading ? renderSkeleton() : (
+        <>
             <Box className={styles.container}>
                 <ReviewSummary id={id} score={score} />
                 <Box className={styles.review_container}>
-                    <HStack className={styles.review_header}>
-                        <Heading fontWeight="semibold" fontSize="xl" whiteSpace="nowrap">Top Reviews</Heading>
-                        <Select 
-                        placeholder="Filter By"
-                        value={params.review_filter}
-                        onChange={(e) => handleChangeFilter(parseInt(e.target.value || ''))}
-                        fontSize="sm">
-                            <option value={ReviewFilter.SCORE_LOW_TO_HIGH}>Score: Low - High</option>
-                            <option value={ReviewFilter.SCORE_HIGH_TO_LOW}>Score: High - Low</option>
-                            <option value={ReviewFilter.DATE_NEW_TO_OLD}>Recent</option>
-                            <option value={ReviewFilter.DATE_OLD_TO_NEW}>Oldest</option>
-                        </Select>
+                    <HStack justifyContent="space-between" w="full">
+                        <HStack>
+                            <Heading fontWeight="semibold" fontSize="xl" whiteSpace="nowrap">Top Reviews</Heading>
+                            <Select 
+                            placeholder="Filter By"
+                            value={params.review_filter}
+                            onChange={(e) => handleChangeFilter(parseInt(e.target.value || ''))}
+                            fontSize="sm">
+                                <option value={ReviewFilter.SCORE_LOW_TO_HIGH}>Score: Low - High</option>
+                                <option value={ReviewFilter.SCORE_HIGH_TO_LOW}>Score: High - Low</option>
+                                <option value={ReviewFilter.DATE_NEW_TO_OLD}>Recent</option>
+                                <option value={ReviewFilter.DATE_OLD_TO_NEW}>Oldest</option>
+                            </Select>
+                        </HStack>
+                        <Button onClick={handleClickButton} minW="fit-content" gap={2} bgColor={theme.colors.accent.primary}>
+                            <PlusOutlined /> Add Review
+                        </Button>
                     </HStack>
                     <Box className={styles.grid_container}>
-                        {reviews?.length ? reviews.map((review: Review, index: number) => <ReviewCard {...review} key={index} />) : <Box>No reviews</Box>}
+                        { isLoading 
+                        ? Array.from({length: 3}).map((_, index: number) => <ReviewCardSkeleton key={index} />)
+                        : reviews?.length ? reviews.map((review: Review, index: number) => <ReviewCard {...review} key={index} />) : <Box>No reviews</Box>}
                     </Box>  
-                    <Stack>
-                        <Button onClick={handleClickButton} w="fit-content" gap={2}>
-                            <PlusOutlined />
-                            <Text>Add Review</Text>
-                            {showForm ? <CaretRightOutlined /> : <CaretDownOutlined />}
-                        </Button>
-                        <Box display={showForm ? "block" : "none"}>
-                            <ReviewForm id={id}/>
-                        </Box>  
-                    </Stack>
                 </Box>
             </Box>
+            <ReviewForm id={id} isVisible={showForm} onClose={() => setShowForm(false)}/>
+        </>
         )
-    )
-
 }

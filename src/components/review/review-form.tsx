@@ -1,160 +1,134 @@
 "use client";
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormLabel, Heading, HStack, Input, Stack, Text, Textarea, useToast, UseToastOptions } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormLabel, Heading, HStack, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, Textarea, useToast, UseToastOptions } from "@chakra-ui/react";
 import styles from "./review-form.module.css";
 import { Review } from "@prisma/client";
-import { useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
 import { ThemeContext } from "@/contexts/theme-context";
 import { postReview } from "@/api/request/reviewRequest";
 import { useRouter } from "next/navigation";
 import { useReviewSearchStore } from "@/zustand/store";
+import { UserContext } from "@/contexts/user-context";
+import { useForm } from "react-hook-form";
 
-export default function ReviewForm({ id }: { id: number }): JSX.Element {
+
+export default function ReviewForm({ id, isVisible, onClose }: { id: number, isVisible: boolean, onClose: () => void }): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
+    const { user, isAuthenticated } = useContext(UserContext);
 
-    const defaultReview = { usrId: 1, productId: id, image_urls: '' }
+    const { register, handleSubmit, formState: { errors }} = useForm();
 
-    const [review, setReview] = useState<Partial<Review>>(defaultReview);
     const [rating, setRating] = useState<number>(0);
+    const [hoverRating, setHoverRating] = useState<number>(0);
+    const [isHovering, setIsHovering] = useState<boolean>(false);
 
-    const router = useRouter();
     const toast = useToast();
     const clearParams = useReviewSearchStore((state) => state.clearParams);
 
-    // update rating on change
 
-    useEffect(() => {
-        setReview({ ...review, ...{ score: rating} });
-    }, [rating]);
-
-
-    // handler functions
-
-    const handleChange = (data: Partial<Review>) => {
-        setReview({ ...review, ...data });
-    };
-
-    const handleCancel = () => {
-        setReview(defaultReview);
-    };
-
-    const handleSubmit = () => {
-
-        // define toasts
-        const pendingToast = toast({ title: 'Processing...', isClosable: true })
-        const successToast = { 
-            title: 'Success',
-            description: 'Your request was successful',
-            status: 'success',
-            duration: 5000,
-            isClosable: true
-        }
-        const errorToast = {
-            title: 'Error',
-            description: 'Something went wrong',
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-        }
-
-        // post review and update toasts accordingly
-        try {  
-            postReview(review).then(res => res ? toast.update(pendingToast, successToast) : toast.update(pendingToast, errorToast));
-        } catch (error) {
-            toast.update(pendingToast, errorToast);
-        } finally {
-            // clear params and reload
-            clearParams();
-            router.refresh();
-        }
+    // handle hover actions 
+    const handleMouseEnter = (score: number) => { 
+        setHoverRating(score);
+        setIsHovering(true);
+    }
+    const handleMouseLeave = () => {
+        setHoverRating(0);
+        setIsHovering(false);
     }
 
 
-    // return (
-    //     <Box>
-    //         <FormControl className={styles.container}>
+    const onSubmit = (event: FormEvent<any>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const review = Object.fromEntries(formData);
+        
+        const pendingToast = toast({ title: 'Processing...', isClosable: true })
+        const successToast = { title: 'Review saved successfully', status: "success", duration: 5000, isClosable: true }
+        const errorToast = { title: 'Error in saving review', status: "error", duration: 5000, isClosable: true }
 
-    //             <Text fontSize="2xl">Create Review</Text>
+        postReview(review)
+            .then(review => {
+                review 
+                    ? toast.update(pendingToast, successToast) 
+                    : toast.update(pendingToast, errorToast);
+            }).catch(error => {
+                console.error(error);
+                toast.update(pendingToast, errorToast);
+            }).finally(() => {
+                clearParams();
+                location.reload();
+            })
 
-    //             <Box className={styles.rating_container}>
-    //                 <FormLabel>Overall rating</FormLabel>
-    //                 {Array.from({ length: 5 }).map((_, index) => (
-    //                     <StarFilled
-    //                         style={{ color: index + 1 <= rating ? theme.colors.accent.primary : theme.colors.text.primary }}
-    //                         onClick={() => setRating(index + 1)} />
-    //                 ))}
-    //             </Box>
+    }
 
-    //             <Box className={styles.title_container}>
-    //                 <FormLabel>Add a title</FormLabel>
-    //                 <Input type="text" onChange={event => handleChange({ title: event.target.value })} />
-    //             </Box>
-
-    //             <Box className={styles.written_container}>
-    //                 <FormLabel>Add a written review</FormLabel>
-    //                 <Textarea onChange={event => handleChange({ content: event.target.value })}></Textarea>
-    //             </Box>
-
-    //             <Box className={styles.button_container}>   
-    //                 <Input as={Button} type="submit" onClick={handleSubmit}>Submit</Input>
-    //                 <Button onClick={handleCancel}>Cancel</Button>
-    //             </Box>
-
-    //         </FormControl>
-    //     </Box>
-    // )
-
-    
+    if (!isAuthenticated || !user) {
+        return <Box>Sign in to create a review</Box>
+    }
 
     return (
-        <Card minW="sm" border="2px solid gray" >
-            <FormControl className={styles.container}>
+    <Modal isOpen={isVisible} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
 
-                <CardHeader paddingBottom={0}>
-                    <Heading fontSize="2xl" fontWeight="semibold">Create Review</Heading>
-                </CardHeader>
+            <ModalHeader paddingBottom={0}>
+                <Heading fontSize="2xl" fontWeight="semibold">Create Review</Heading>
+            </ModalHeader>
 
-                <Divider />
+            <Divider />
 
-                <CardBody paddingY={0}>
-
+            <form onSubmit={(event) => handleSubmit(onSubmit(event))}>
+                <ModalBody paddingY={0}>
                     <Stack>
-
-                    <Box>
-                        <FormLabel>Overall rating</FormLabel>
-                        {Array.from({ length: 5 }).map((_, index: number) => (
-                            <StarFilled
-                            key={index}
-                            style={{ color: index + 1 <= rating ? theme.colors.accent.primary : theme.colors.text.primary }}
-                            onClick={() => setRating(index + 1)} />
-                        ))}
-                    </Box>
-
-                    <Box className={styles.title_container}>
-                        <FormLabel>Add a title</FormLabel>
-                        <Input type="text" onChange={event => handleChange({ title: event.target.value })} />
-                    </Box>
-
-                    <Box className={styles.written_container}>
-                        <FormLabel>Add a written review</FormLabel>
-                        <Textarea onChange={event => handleChange({ content: event.target.value })}></Textarea>
-                    </Box>
+                        <Stack fontSize="xl">
+                            <label>Overall rating</label>
+                            <HStack gap="1px">
+                                {Array.from({ length: 5 }).map((_, index: number) => (
+                                    <StarFilled
+                                    key={index}
+                                    onMouseEnter={() => handleMouseEnter(index + 1)}
+                                    onMouseLeave={handleMouseLeave}
+                                    style={{ 
+                                        color: isHovering 
+                                        ? index + 1 <= hoverRating ? theme.colors.antCompatible.accent : theme.colors.antCompatible.primary
+                                        : index + 1 <= rating ? theme.colors.antCompatible.accent : theme.colors.antCompatible.primary 
+                                    }}
+                                    onClick={() => setRating(index + 1)} />
+                                ))}
+                                <Text 
+                                marginLeft="0.4em"
+                                _hover={{ textDecoration: "underline" }}
+                                onClick={() => setRating(0)}>0</Text>
+                            </HStack>
+                            <input type="hidden" value={rating} {...register('score', { required: 'Score is required'})}/>
+                            {errors.score && <p>{errors.score.message}</p>}
+                        </Stack>
+                        <Stack>
+                            <label>Add a title</label>
+                            <input type="text" {...register('title', { required: 'Title is required'})} />
+                            {errors.title && <p>{errors.title.message}</p>}
+                        </Stack>
+                        <Stack>
+                            <label>Add a written review</label>
+                            <input type="textarea" {...register('content', { required: 'Content is required'})}/>
+                            {errors.content && <p>{errors.content.message}</p>}
+                        </Stack>
+                        <input type="hidden" name="usrId" value={user.id}/>
+                        <input type="hidden" name="productId" value={id}/>
+                        <input type="hidden" name="image_urls" value={''}/>
                     </Stack>
-
-                </CardBody>
+                </ModalBody>
 
                 <Divider />
 
-                <CardFooter paddingTop={0}>
+                <ModalFooter paddingTop={0}>
                     <HStack justifyContent="space-between" w="100%">   
-                        <Input as={Button} type="submit" onClick={handleSubmit} maxW="fit-content">Submit</Input>
-                        <Button onClick={handleCancel}>Cancel</Button>
+                        <Button onClick={onClose} color={theme.colors.semantic.error}>Cancel</Button>
+                        <Button as={Button} maxW="fit-content" type="submit" bgColor={theme.colors.accent.primary}>Submit</Button>
                     </HStack>
-                </CardFooter>
+                </ModalFooter>
+            </form>
 
-            </FormControl>
-        </Card>
-    )
-
-}
+        </ModalContent>
+    </Modal>
+)};

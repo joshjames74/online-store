@@ -3,7 +3,6 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 
 export async function getAllCategories(): Promise<Category[]> {
-    console.log("Called all categories once");
     const response = await fetch("/api/category/all", {
         method: "GET",
         cache: "force-cache"

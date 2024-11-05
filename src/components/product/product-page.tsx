@@ -1,4 +1,5 @@
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, CircularProgress, Divider, Heading, HStack, Image, Select, Stack, Text } from "@chakra-ui/react";
+"use client";
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, CircularProgress, Divider, Heading, HStack, Image, Select, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { Product } from "@prisma/client";
 import styles from "./product-page.module.css"
 import { ThemeContext } from "@/contexts/theme-context";
@@ -6,22 +7,27 @@ import { useContext, useEffect, useState } from "react";
 import ReviewStars from "../review/review-stars";
 import { postBasketItem } from "@/api/request/basketRequest";
 import { CheckCircleFilled, CheckOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import { UserContext } from "@/contexts/user-context";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { getProductPrice } from "@/api/helpers/utils";
 
 
 export default function ProductPage(product: Product): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
+    const { user, isAuthenticated } = useContext(UserContext);
+
+    const router = useRouter();
 
 
     const [quantity, setQuantity] = useState<number>(0);
-
 
     // define success/error message params
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showSuccess, setShowSuccess] = useState<boolean>(false);
     const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
 
-    const usrId = 1;
     const maxQuantity = 30;
     const isInStock = true;
 
@@ -29,16 +35,17 @@ export default function ProductPage(product: Product): JSX.Element {
     const handleClick = async () => {
         setIsLoading(true);
         try {
-            await postBasketItem({ usrId: usrId, productId: product.id, quantity: quantity });
+            await postBasketItem({ usrId: user.id, productId: product.id, quantity: quantity });
         } catch (error) {
             setIsSuccessful(false);
             console.log(error);
         } finally {
             setIsLoading(false);
-            setShowSuccess(true)
+            setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 1000);
+            if (isSuccessful) { router.push("/user/basket") };
         }
-    }
+    }   
 
     const renderStatus = (successful: boolean): JSX.Element => {
         return (
@@ -51,26 +58,36 @@ export default function ProductPage(product: Product): JSX.Element {
 
     return (
     
-    <Box margin="20px" alignItems="stretch" className={styles.container}>
+    <HStack margin="20px" alignItems="stretch" className={styles.container} gap="1em">
 
         {/** Product info */}
 
-        <Card minW="sm" w="full" className={styles.product_container}>   
+        <Card minW="sm" maxW="5xl" w="full" className={styles.product_container}>   
             <CardBody>
                     <HStack h="full" alignItems="stretch" sx={{'@media screen and (max-width: 600px)': { flexDirection: 'column'}}}>
-                        <Image minW="300px" borderRadius="md" src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
+                        {isLoading 
+                        ? <Skeleton minW="300px"/>
+                        : <Image minW="300px" borderRadius="md" src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
+                        }
                         <Stack w="full">
+                            {
+                            isLoading 
+                            ? <></>
+                            : <>
                             <Heading>{product.title}</Heading>
                             <HStack className={styles.review_container} fontSize="lg">
                                 <Text>{product.review_score}</Text>
                                 <ReviewStars fontSize="lg" value={product.review_score}/>
-                                <Text className={styles.ratings_link} _hover={{ color: theme.colors.accent.primary }}>
-                                        {product.review_count} ratings
-                                </Text>
+                                <a href="#reviews">
+                                    <Text className={styles.ratings_link} _hover={{ color: theme.colors.accent.primary }}>
+                                            {product.review_count} ratings
+                                    </Text>
+                                </a>
                             </HStack>
                             <Divider w="100%" className={styles.divider} bgColor={theme.colors.border.background}/>
-                            <Heading fontSize="3xl" fontWeight="normal">£{product.price}</Heading>
+                            <Heading fontSize="3xl" fontWeight="normal">{getProductPrice(product.price, user)}</Heading>
                             <Text>{product.description}</Text>
+                            </>}
                         </Stack>
                     </HStack>
             </CardBody>
@@ -95,55 +112,17 @@ export default function ProductPage(product: Product): JSX.Element {
                         ))}
                     </Select>
                     <Button 
+                    isDisabled={!isAuthenticated}
                     rightIcon={isLoading ? <CircularProgress size="1em" isIndeterminate /> : showSuccess ? renderStatus(isSuccessful): <></>}
                     bgColor={theme.colors.accent.secondary} 
                     onClick={handleClick}>
-                        Add to basket
+                        {!isAuthenticated ? "Sign in to add to basket" : "Add to basket"}
                     </Button>
                     <Button bgColor={theme.colors.accent.primary}>Buy now</Button>
                 </Stack>
             </CardFooter>
         </Card>
-    </Box>
+    </HStack>
     )
 
 }
-// export default function ProductPage(product: Product): JSX.Element {
-
-//     const { theme } = useContext(ThemeContext);
-
-//     return (
-    
-//         <Box className={styles.container}>
-//             <Image 
-//             className={styles.image}
-//             src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
-//             <Box className={styles.body}>
-
-//                 <Text className={styles.title}>{product.title}</Text>
-
-//                 <Box className={styles.review_container}>
-//                     <Text>{product.review_score}</Text>
-//                     <ReviewStars value={product.review_score} fontSize="xl"/>
-//                     <Text 
-//                         className={styles.ratings_link} 
-//                         _hover={{ color: theme.colors.accent.primary }}
-//                         fontSize="lg">
-//                             {product.review_count} ratings
-//                     </Text>
-//                 </Box>
-
-//                 <Divider 
-//                     className={styles.divider} 
-//                     bgColor={theme.colors.border.background}/>
-
-//                 <Text fontSize="2xl">{product.price}</Text>
-//                 <Text>{product.description}</Text>
-                
-//             </Box>
-//         </Box>
-
-//     )
-
-// }
-

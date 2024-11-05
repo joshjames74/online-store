@@ -1,8 +1,8 @@
 import axios from "axios";
-import { Basket, BasketItemWithProduct } from "../services/basketItemService";
+import { Basket, BasketItemWithProductAndCurrency } from "../services/basketItemService";
 import { BasketItem } from "@prisma/client";
 
-export async function getBasketItemsByUserId(id: number): Promise<BasketItemWithProduct[]> {
+export async function getBasketItemsByUserId(id: number): Promise<BasketItemWithProductAndCurrency[]> {
     const response = await axios(`/api/user/${id}/basket`, { method: "GET" });
     return response.data;
 }

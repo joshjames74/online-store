@@ -14,6 +14,15 @@ export default function AccountPage(): JSX.Element {
             title: "Your addresses", 
             subtitle: "Edit, remove, or set default addresses",
             href: "/user/addresses"
+        },
+        {
+            title: "Sign Out",
+            subtitle: "Sign out",
+            href: "/auth/signout"
+        },
+        {
+            title: "Payments",
+            subtitle: "Your payments"
         }
     ]
 
@@ -23,7 +32,7 @@ export default function AccountPage(): JSX.Element {
 
             <Stack maxW="1200px" w="fit-content" gap="1em">
                 <Heading fontWeight="semibold">Your account</Heading>
-                <Grid gridTemplateColumns="repeat(5, 1fr)" gap="1em">
+                <Grid gridTemplateColumns="repeat(3, 1fr)" gap="1em">
                     {pages.map((page, index: number) => <AccountCard {...page} key={index}/>)}
                 </Grid>
             </Stack>

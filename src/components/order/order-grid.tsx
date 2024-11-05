@@ -1,5 +1,5 @@
 import { parseOrderSearchParams } from "@/api/helpers/utils";
-import { getOrderViewsBySearch } from "@/api/request/orderRequest";
+import { getOrdersByUserId } from "@/api/request/orderRequest";
 import { OrderView } from "@/api/services/orderService";
 import { Box, Button, HStack, Stack } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
@@ -15,13 +15,11 @@ export default function OrderGrid({ params }: { params: { id: number }}): JSX.El
 
 
     const loadData = () => {
+
         const searchData = parseOrderSearchParams(searchParams);
         setIsLoading(true);
 
-        console.log("id");
-        console.log(id);
-
-        getOrderViewsBySearch({ ...searchData, usrId: id  }).then((res: OrderView[]) => {
+        getOrdersByUserId({id: 1, params: searchData}).then((res: OrderView[]) => {
             setOrders(res);
         }).catch(error => {
             console.error(error);
@@ -35,15 +33,17 @@ export default function OrderGrid({ params }: { params: { id: number }}): JSX.El
         loadData();
     }, [])
 
-    useEffect(() => {
-        console.log("Orders");
-        console.log(orders);
-    }, [orders]);
+
+    if (isLoading) {
+        return <Box>Loading...</Box>;
+    }
+
+    if (!orders || !orders.length) {
+        return <Box>No orders</Box>;
+    }
   
 
     return (
-        isLoading ? <Box>Loading...</Box>   
-        : 
         <Stack alignItems="center" marginTop="20px">
             {orders.length ? orders.map((orderView, index) => (
                 <OrderCard params={{orderView: orderView}} key={index} />

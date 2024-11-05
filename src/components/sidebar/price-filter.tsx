@@ -1,12 +1,12 @@
 "use client";
 import { Box, SkeletonText, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text } from "@chakra-ui/react";
 import styles from "./price-filter.module.css"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSearchStore } from "@/zustand/store";
-import { useSearchParams } from "next/navigation";
-import { parseQueryParams } from "@/api/helpers/utils";
+import { getProductPrice, parseQueryParams } from "@/api/helpers/utils";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { ModelsResponse } from "@/api/helpers/types";
+import { UserContext } from "@/contexts/user-context";
 
 
 export default function PriceFilter(): JSX.Element {
@@ -16,6 +16,8 @@ export default function PriceFilter(): JSX.Element {
     const [sliderValue, setSliderValue] = useState<number>();
     const [maxPrice, setMaxPrice] = useState<number>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const { user } = useContext(UserContext);
 
     const setSearchParams = useSearchStore((state) => state.setParams);
 
@@ -49,7 +51,11 @@ export default function PriceFilter(): JSX.Element {
             <Text fontWeight="bold">Price</Text>
             {isLoading ? <SkeletonText noOfLines={2}/> : (
                 <>
-                    <Text fontWeight="semibold">£{min} - £{sliderValue}</Text>
+                    <Text fontWeight="semibold">
+                        {getProductPrice(min, user && user.currency ? user.currency.gbp_exchange_rate : 1, user)}
+                        - 
+                        {getProductPrice(sliderValue || 0, user && user.currency ? user.currency.gbp_exchange_rate : 1, user)}
+                    </Text>
                     <Slider onChange={handlePriceChange} min={min} max={maxPrice} defaultValue={maxPrice}>
                         <SliderTrack><SliderFilledTrack /></SliderTrack>
                         <SliderThumb />

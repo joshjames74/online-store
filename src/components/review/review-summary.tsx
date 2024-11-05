@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Heading, HStack, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Heading, HStack, SkeletonText, Stack, Text } from "@chakra-ui/react";
 import styles from "./review-summary.module.css"
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
@@ -143,25 +143,31 @@ export default function ReviewSummary({ id, score }: { id: number, score: number
         router.push(`?${getAsUrl()}`)
     }, [params]);
 
-
-
-    return (isLoading ? <ReviewCardSkeleton /> :
+    return (
 
         <Card h="fit-content" minW="xs">
 
             <CardHeader>
+
                 <Stack gap={1}>
                     <Heading fontSize="2xl">Customer Reviews</Heading>
+                    {isLoading 
+                    ? <SkeletonText noOfLines={1}/> 
+                    : <>
                     <HStack>
                         <ReviewStars value={score} fontSize="xl" />
                         <Heading fontSize="md" fontWeight="semibold">{score} out of 5</Heading>
                     </HStack>
                     <Heading fontSize="md" fontWeight="semibold">{total} global reviews</Heading>
+                    </>}
                 </Stack>
+
             </CardHeader>
 
             <CardBody className={styles.body}>
-                {Array.from({ length: 6 }).reverse().map((_, index: number) => {
+                {isLoading 
+                ? <SkeletonText noOfLines={5}/>
+                : Array.from({ length: 6 }).reverse().map((_, index: number) => {
                     index = 5 - index;
                     const isSelected = index === params.score;
                     return (

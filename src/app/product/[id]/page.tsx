@@ -25,7 +25,7 @@ export default function Page({ params }: { params: { id: string }}): JSX.Element
             setIsLoading(false);
         });
     }, [])
-
+    
     
     if (!id || isNaN(parseInt(id))) {
         //redirect to 404
@@ -34,10 +34,12 @@ export default function Page({ params }: { params: { id: string }}): JSX.Element
 
 
     return (
-        <Box>
+        <Box h="5000px">
             {isLoading || !product ? <ProductPageSkeleton /> 
             : <ProductPage {...product}/>}
-            <ReviewGrid id={parseInt(id)} score={product?.review_score ? product?.review_score : 0} />
+            <section id="reviews">
+                <ReviewGrid id={parseInt(id)} score={product?.review_score ? product?.review_score : 0} />
+            </section>
         </Box>
     )
 };

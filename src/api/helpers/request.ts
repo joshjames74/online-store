@@ -36,6 +36,7 @@ export async function getHelper<T extends ModelType>(func: GetType<T>, params: a
         }
         return NextResponse.json(response, { status: 200})
     } catch (error) {
+        console.log((error as any).message)
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     };
 }
@@ -66,6 +67,7 @@ export async function postHelper<T extends ModelType>(
             data: response
         }, { status: 201 })
     } catch (error) {
+        console.log((error as any).message);    
         return NextResponse.json({ message: 'Error processing request', error: error}, { status: 500 })
     }
 
@@ -91,6 +93,7 @@ export async function deleteHelper<T extends ModelType>(
 
         return NextResponse.json({ message: 'DELETE request completed successfully' }, { status: 200 } );
     } catch (error) {
+        console.log((error as any).message);
         return NextResponse.json({ message: 'Error processing request', error: error }, { status: 500 })
     }
 }
@@ -115,6 +118,7 @@ export async function putHelper<T extends ModelType>(
 
         return NextResponse.json({ message: 'PUT request completed successfully', data: response }, { status: 200 } );
     } catch (error) {
+        console.log((error as any).message)
         return NextResponse.json({ message: 'Error processing request', error: error }, { status: 500 })
     }
 

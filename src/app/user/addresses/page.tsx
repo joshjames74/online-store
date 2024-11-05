@@ -16,7 +16,7 @@ export default function Page(): JSX.Element {
     if (!isLoading && !isAuthenticated) return <Box>404 not found</Box>
 
     // redirect this
-    if (!user) return <Box>User not found</Box>
+    if (!user || !user.id) return <Box>User not found</Box>
 
     return <AddressesPage params={{ id: user.id }} />
 
