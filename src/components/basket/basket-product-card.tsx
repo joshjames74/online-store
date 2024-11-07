@@ -1,11 +1,12 @@
 import { formatPrice, getProductPrice } from "@/api/helpers/utils";
 import { deleteBasketItemById, putBasketItemQuantityById } from "@/api/request/basketRequest";
 import { BasketItemWithProductAndCurrency } from "@/api/services/basketItemService";
+import { SettingsContext } from "@/contexts/settings-context";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
 import { useBasketStore } from "@/zustand/store";
 import { CheckCircleFilled, CheckCircleOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
-import { Box, Button, Card, CardBody, Checkbox, CircularProgress, Grid, GridItem, Heading, HStack, Image, SliderFilledTrack, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, Checkbox, CircularProgress, Grid, GridItem, Heading, HStack, Image, SliderFilledTrack, Stack, Text, useMediaQuery } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 
 
@@ -13,8 +14,7 @@ export default function BasketProductCard({ basketItem, loadData }: { basketItem
 
     const { theme } = useContext(ThemeContext);
     const { user } = useContext(UserContext);
-
-    // const loadData = useBasketStore((state) => state.loadData);
+    const { defaultImageUrl } = useContext(SettingsContext);
 
     // set vars relating to displaying success, error, and loading
     const [isLoadingQuantity, setIsLoadingQuantity] = useState<boolean>(false);
@@ -56,9 +56,9 @@ export default function BasketProductCard({ basketItem, loadData }: { basketItem
 
 
     return (
-        <HStack gap="0.4em" padding="0.4em" minW="500px" maxH="100px" alignItems="stretch">
+        <HStack gap="0.4em" padding="0.4em" maxH="100px" alignItems="stretch">
 
-            <Image h="100px" w="auto" objectFit="cover" borderRadius="md" src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
+            <Image h="100px" w="auto" objectFit="cover" borderRadius="md" src={defaultImageUrl} />
 
             <Grid templateColumns="3fr 1fr" templateRows="3fr 1fr" w="100%" >
 

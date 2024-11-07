@@ -99,3 +99,4 @@ export function getProductPrice(price: number, productExchangeRate: number, user
     const userPrice = convertPrice(productPriceGBP, currency.gbp_exchange_rate);
     return formatPrice(userPrice, currency.code);
 }
+

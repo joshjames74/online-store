@@ -63,7 +63,7 @@ export default function SearchBar(): JSX.Element {
 
     return (
         <InputGroup className={styles.container} bgColor={theme.colors.background.primary} color={theme.colors.text.primary}>
-            <InputLeftAddon className={styles.input_left_addon}>
+            <InputLeftAddon className={styles.input_left_addon} maxW="fit-content">
                 <Select 
                     onChange={e => setSelectedCategory(parseInt(e.target.value || ''))}
                     placeholder="All"
@@ -73,8 +73,8 @@ export default function SearchBar(): JSX.Element {
                     {isLoading || !categories.length ? <></> : categories.map((category, index) => <option key={index} value={category.id}>{category.name}</option>)}
                 </Select>
             </InputLeftAddon>
-            <Input placeholder="Search" onChange={e => setQuery(e.target.value)} />
-            <InputRightElement onClick={() => updateURL()} bgColor={theme.colors.accent.primary} color={theme.colors.text.secondary} >
+            <Input placeholder="Search" onChange={e => setQuery(e.target.value)} w="full" />
+            <InputRightElement onClick={() => updateURL()} bgColor={theme.colors.accent.primary} color={theme.colors.text.secondary} maxW="fit-content" paddingX="1em">
                 <SearchOutlined />
             </InputRightElement>
         </InputGroup>

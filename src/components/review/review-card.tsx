@@ -22,43 +22,31 @@ export default function ReviewCard(review: ResultType<'review', { usr: true }>):
 
     const handleDelete = () => {
         const pendingToast = toast({ title: 'Processing...', isClosable: true })
-        const successToast = { 
-            title: 'Success',
-            description: 'Review deleted successfully',
-            status: 'success',
-            duration: 5000,
-            isClosable: true
-        }
-        const errorToast = {
-            title: 'Error',
-            description: 'Something went wrong',
-            status: 'error',
-            duration: 5000,
-            isClosable: true
-        }
+        const successToast = { title: 'Review deleted successfully', status: 'success', duration: 5000, isClosable: true }
+        const errorToast = { title: 'Something went wrong', status: 'error', duration: 5000, isClosable: true }
 
         // post review and update toasts accordingly
-        try {
-            if (!isAuthenticated || user.id !== review.usrId) {
-                throw new Error('Permission denied');
-            };
-            deleteReviewById(review.id).then(_ =>  toast.update(pendingToast, successToast));
-        } catch (error) {
+        if (!isAuthenticated || user.id !== review.usrId) {
+            throw new Error('Permission denied');
+        };
+
+        deleteReviewById(review.id).then(_ => {
+            toast.update(pendingToast, successToast);
+        }).catch(error => {
             toast.update(pendingToast, errorToast);
-        } finally {
-            // clear params and reload
+        }).finally(() => {
             clearParams();
             location.reload();
-        }
+        });
     }
 
     return (
 
-        <Card className={styles.container} minW="md">
+        <Card className={styles.container} minW={theme.sizes.minWidth} w="md">
 
             <CardHeader>
-                <HStack justifyContent="space-between">
-                    <HStack>
+                <HStack justifyContent="space-between" w="fit-content">
+                    <HStack w="fit-content">
                         <Avatar size="sm" name={review.usr.name} src={review.usr.image_url || ''}/>
                         <Heading fontSize="sm">{review.usr.name}</Heading>
                     </HStack>

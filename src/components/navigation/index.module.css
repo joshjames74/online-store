@@ -1,6 +1,9 @@
 .container {
-    display: grid;
+    /* display: grid;
     grid-template-columns: 1fr 1fr 5fr 1fr 1fr 1fr;
+     */
+    display: flex;
+    flex-direction: row;
     width: 100%;;
     align-items: center;
     padding: 1em;

@@ -1,3 +1,8 @@
+.text_button {
+    min-width: fit-content !important;
+    padding: 1em
+}
+
 .container {
     display: grid;
     grid-template-columns: 1fr 5fr;

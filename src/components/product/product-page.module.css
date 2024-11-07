@@ -12,12 +12,12 @@
 
 .container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column !important;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (min-width: 800px) {
     .container {
-        flex-direction: column;
+        flex-direction: row !important;
     }
     .product_container {
         flex-direction: column;

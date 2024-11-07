@@ -6,6 +6,9 @@ import '@fontsource/raleway';
 // create interface theme
 export interface ITheme {
     theme: {
+        sizes: {
+            minWidth: string;
+        }
         fonts: {
             primary: string;
         },
@@ -27,6 +30,7 @@ export interface ITheme {
             background: {
                 primary: string;
                 secondary: string;
+                accent: string;
             },
             border: {
                 primary: string;
@@ -34,7 +38,9 @@ export interface ITheme {
             },
             antCompatible: {
                 accent: string,
-                primary: string
+                primary: string,
+                background: string,
+                text: string,
             }
         }
     }
@@ -43,6 +49,9 @@ export interface ITheme {
 // set default theme
 const theme: ITheme = {
     theme: {
+        sizes: {
+            minWidth: "320px",
+        },
         fonts: {
             primary: `'Raleway', sans-serif`
         },
@@ -64,6 +73,7 @@ const theme: ITheme = {
             background: {
                 primary: "white",
                 secondary: "gray.200",
+                accent: "#131921"
             },
             border: {
                 primary: "black",
@@ -72,6 +82,8 @@ const theme: ITheme = {
             antCompatible: {
                 accent: "orange",
                 primary: "grey",
+                background: "#131921",
+                text: "white"
             }
         }
     }

@@ -4,7 +4,7 @@ import ProductPage from "@/components/product/product-page";
 import ProductPageSkeleton from "@/components/product/product-page-skeleton";
 import ReviewCard from "@/components/review/review-card";
 import ReviewGrid from "@/components/review/review-grid";
-import { Box } from "@chakra-ui/react";
+import { Box, Card } from "@chakra-ui/react";
 import { Product } from "@prisma/client";
 import { useEffect, useState } from "react";
 
@@ -35,8 +35,7 @@ export default function Page({ params }: { params: { id: string }}): JSX.Element
 
     return (
         <Box h="5000px">
-            {isLoading || !product ? <ProductPageSkeleton /> 
-            : <ProductPage {...product}/>}
+            {isLoading || !product ? <ProductPageSkeleton /> : <ProductPage {...product}/>}
             <section id="reviews">
                 <ReviewGrid id={parseInt(id)} score={product?.review_score ? product?.review_score : 0} />
             </section>

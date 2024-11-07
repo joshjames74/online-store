@@ -11,16 +11,16 @@ import { UserContext } from "@/contexts/user-context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getProductPrice } from "@/api/helpers/utils";
+import { ResultType } from "@/api/helpers/types";
+import ProductBasketCard from "./product-basket-card";
 
 
-export default function ProductPage(product: Product): JSX.Element {
+export default function ProductPage(product: ResultType<'product', { currency: true }>): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
     const { user, isAuthenticated } = useContext(UserContext);
 
     const router = useRouter();
-
-
     const [quantity, setQuantity] = useState<number>(0);
 
     // define success/error message params
@@ -29,8 +29,6 @@ export default function ProductPage(product: Product): JSX.Element {
     const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
 
     const maxQuantity = 30;
-    const isInStock = true;
-
 
     const handleClick = async () => {
         setIsLoading(true);
@@ -38,7 +36,7 @@ export default function ProductPage(product: Product): JSX.Element {
             await postBasketItem({ usrId: user.id, productId: product.id, quantity: quantity });
         } catch (error) {
             setIsSuccessful(false);
-            console.log(error);
+            console.error(error);
         } finally {
             setIsLoading(false);
             setShowSuccess(true);
@@ -62,9 +60,9 @@ export default function ProductPage(product: Product): JSX.Element {
 
         {/** Product info */}
 
-        <Card minW="sm" maxW="5xl" w="full" className={styles.product_container}>   
+        <Card minW={theme.sizes.minWidth} maxW="5xl" w="full" className={styles.product_container}>   
             <CardBody>
-                    <HStack h="full" alignItems="stretch" sx={{'@media screen and (max-width: 600px)': { flexDirection: 'column'}}}>
+                    <HStack h="full" alignItems="stretch" sx={{'@media screen and (max-width: 1000px)': { flexDirection: 'column'}}}>
                         {isLoading 
                         ? <Skeleton minW="300px"/>
                         : <Image minW="300px" borderRadius="md" src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
@@ -75,7 +73,7 @@ export default function ProductPage(product: Product): JSX.Element {
                             ? <></>
                             : <>
                             <Heading>{product.title}</Heading>
-                            <HStack className={styles.review_container} fontSize="lg">
+                            <HStack className={styles.review_container} fontSize="lg" fontWeight="medium">
                                 <Text>{product.review_score}</Text>
                                 <ReviewStars fontSize="lg" value={product.review_score}/>
                                 <a href="#reviews">
@@ -85,7 +83,7 @@ export default function ProductPage(product: Product): JSX.Element {
                                 </a>
                             </HStack>
                             <Divider w="100%" className={styles.divider} bgColor={theme.colors.border.background}/>
-                            <Heading fontSize="3xl" fontWeight="normal">{getProductPrice(product.price, user)}</Heading>
+                            <Heading fontSize="3xl" fontWeight="semibold">{getProductPrice(product.price, product.currency.gbp_exchange_rate, user)}</Heading>
                             <Text>{product.description}</Text>
                             </>}
                         </Stack>
@@ -93,17 +91,15 @@ export default function ProductPage(product: Product): JSX.Element {
             </CardBody>
         </Card>
 
-        {/** Basket */}
+        <ProductBasketCard props={{ id: product.id }}/>
 
-        <Card minW="sm" className={styles.basket_container}>
+        {/* * Basket. to do: split into separate file
+
+        <Card minW="2xs" className={styles.basket_container} paddingX="1em">
             <CardHeader>
                 <Heading fontSize="lg" fontWeight="semibold">Add to basket</Heading>
             </CardHeader>
-
-            <CardBody>
-                <Text color={theme.colors.semantic.success}>{isInStock ? "In stock" : "Out of stock"}</Text>
-            </CardBody>
-
+            <Divider color={theme.colors.border.background} />
             <CardFooter>
                 <Stack w="full">
                     <Select placeholder="Select quantity" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))}>
@@ -121,7 +117,7 @@ export default function ProductPage(product: Product): JSX.Element {
                     <Button bgColor={theme.colors.accent.primary}>Buy now</Button>
                 </Stack>
             </CardFooter>
-        </Card>
+        </Card> */}
     </HStack>
     )
 

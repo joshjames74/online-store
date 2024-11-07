@@ -7,8 +7,8 @@ import { ManyWithMetadata, Metadata, ModelsResponse, ResultType } from "../helpe
 
 // GET methods
 
-export async function getProductById(id: number): Promise<Product | void> {
-    return getOneEntityByField('product', 'id', id);
+export async function getProductById(id: number): Promise<ResultType<'product', { currency: true }> | void> {
+    return getOneEntityByField('product', 'id', id, { currency: true });
 };
 
 export async function getProductByUserId(id: number): Promise<Product | void> {

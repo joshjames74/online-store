@@ -8,6 +8,7 @@ import ProductReviewBox from "./product-review-box";
 import { ResultType } from "@/api/helpers/types";
 import { convertPrice, formatPrice, getProductPrice } from "@/api/helpers/utils";
 import { UserContext } from "@/contexts/user-context";
+import { SettingsContext } from "@/contexts/settings-context";
 
 
 // export default function ProductWide({...product}: Product): JSX.Element {
@@ -34,6 +35,7 @@ export default function ProductWide({...product}: ResultType<'product', { curren
 
     const { theme } = useContext(ThemeContext);
     const { user } = useContext(UserContext);
+    const { defaultImageUrl } = useContext(SettingsContext);
 
     if (!product.currency) {
         console.log(product);
@@ -46,7 +48,7 @@ export default function ProductWide({...product}: ResultType<'product', { curren
                 <CardBody>
                     <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2}>
                         <GridItem colSpan={1}>
-                            <Image objectFit="cover" h="auto" w="100%" borderRadius="md" src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" alt={product.image_alt}  />
+                            <Image objectFit="cover" h="auto" w="100%" borderRadius="md" src={defaultImageUrl} alt={product.image_alt}  />
                         </GridItem>
                         <GridItem colSpan={1}>
                             <Stack gap={1}>

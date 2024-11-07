@@ -1,24 +1,24 @@
 import { Box, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Radio, RadioGroup, Select, Stack, Text } from "@chakra-ui/react";
-import styles from "./delivery-button.module.css";
+import styles from "./index.module.css";
 import { EnvironmentOutlined } from "@ant-design/icons";
-import { useContext, useEffect, useState } from "react";
-import { Address } from "@prisma/client";
-import { UserContext } from "@/contexts/user-context";
+import { useEffect, useState } from "react";
 import { getAddressesByUserId } from "@/api/request/addressRequest";
 import { ResultType } from "@/api/helpers/types";
+import { UserWithCurrencyAndCountry } from "@/api/services/userService";
 
 
-export default function DeliveryButton(): JSX.Element {
+export default function DeliveryButtonLoggedIn({ props }: { props: { user: UserWithCurrencyAndCountry } }): JSX.Element {
 
-    const { user, isAuthenticated } = useContext(UserContext);
+    const { user } = props;
+
     const [addresses, setAddresses] = useState<ResultType<"address", { country: true }>[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
     const loadData = () => {
+        if (!user || !user.id) { return };
         setIsLoading(true);
-        if (!isAuthenticated || !user || !user.id) { return };
         getAddressesByUserId(user.id).then(addresses => {
             setAddresses(addresses);
         }).catch(error => {
@@ -32,26 +32,23 @@ export default function DeliveryButton(): JSX.Element {
         loadData();
     }, [])
 
-
     useEffect(() => {
         loadData();
-    }, [isAuthenticated, user]);
+    }, [user]);
+
 
     if (isLoading) {
-        return <Button>Loading...</Button>
+        return <Button className={styles.text_button}>Loading...</Button>
     }
 
-    if (!isLoading && !isAuthenticated) {
-        return <Button>Login to create address</Button>
-    }
 
     if (!isLoading && !addresses.length) {
-        return <Button>Create address</Button>
+        return <Button className={styles.text_button}>Create address</Button>
     }
 
     return (
     <>
-    <Button className={styles.container} onClick={() => setIsOpen(true)}>
+    <Button className={styles.container} onClick={() => setIsOpen(true)} minW="sm">
         <EnvironmentOutlined color={"black"}/>
         <Box className={styles.text_container}>
             <Text className={styles.deliver_to}>Deliver To {addresses[0].name}</Text>
@@ -59,13 +56,9 @@ export default function DeliveryButton(): JSX.Element {
         </Box>
     </Button>
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-
         <ModalContent>
-
             <ModalHeader>Addresses</ModalHeader>
-
             <ModalBody>
-
                 <RadioGroup>
                     <Stack>
                     {addresses.map((address, index: number) => {
@@ -73,9 +66,7 @@ export default function DeliveryButton(): JSX.Element {
                     })}
                     </Stack>
                 </RadioGroup>
-
             </ModalBody>
-
             <ModalFooter>
                 <Button onClick={() => setIsOpen(false)}>Close</Button>
             </ModalFooter>

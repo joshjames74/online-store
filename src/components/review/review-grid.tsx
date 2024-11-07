@@ -1,5 +1,5 @@
 import { getReviewById, getReviewsByProductId } from "@/api/request/reviewRequest";
-import { Box, Button, Heading, HStack, Select, Skeleton, SkeletonText, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Card, CardHeader, Heading, HStack, Select, Skeleton, SkeletonText, Stack, Text } from "@chakra-ui/react";
 import { Review } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
 import ReviewCard from "./review-card";
@@ -81,7 +81,7 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
         <>
             <Box className={styles.container}>
                 <ReviewSummary id={id} score={score} />
-                <Box className={styles.review_container}>
+                <Box className={styles.review_container} w="fit-content">
                     <HStack justifyContent="space-between" w="full">
                         <HStack>
                             <Heading fontWeight="semibold" fontSize="xl" whiteSpace="nowrap">Top Reviews</Heading>
@@ -103,7 +103,13 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
                     <Box className={styles.grid_container}>
                         { isLoading 
                         ? Array.from({length: 3}).map((_, index: number) => <ReviewCardSkeleton key={index} />)
-                        : reviews?.length ? reviews.map((review: Review, index: number) => <ReviewCard {...review} key={index} />) : <Box>No reviews</Box>}
+                        : reviews?.length ? reviews.map((review: Review, index: number) => <ReviewCard {...review} key={index} />) : (
+                            <Card>
+                                <CardHeader gap="1em" display="flex" flexDirection="column">
+                                    <Heading fontWeight="semibold" fontSize="md">No reviews found</Heading>
+                                </CardHeader>
+                            </Card>
+                        ) }
                     </Box>  
                 </Box>
             </Box>

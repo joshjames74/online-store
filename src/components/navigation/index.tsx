@@ -1,24 +1,19 @@
-import { Box, Button, Image } from "@chakra-ui/react";
-import styles from "./index.module.css";
-import DeliveryButton from "./delivery-button";
-import SearchBar from "./search-bar";
-import Link from "next/link";
-import AccountButton from "./account-button";
-import CurrencyCountryButton from "./currency-country-button";
+"use client";
+import { Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Heading, HStack, Stack, useDisclosure, useMediaQuery } from "@chakra-ui/react";
+import NavigationCompact from "./navigation-compact";
+import NavigationWide from "./navigation-wide";
+import { useContext } from "react";
+import { ThemeContext } from "@/contexts/theme-context";
 
 
 export default function NavBar(): JSX.Element {
 
+    const [isLargerThan800px] = useMediaQuery('(min-width: 800px)');
+    const { theme } = useContext(ThemeContext);
+
     return (
-        <Box className={styles.container}>
-            <Image className={styles.min_width_500} />
-            <DeliveryButton />
-            <SearchBar />
-            <CurrencyCountryButton />
-            <AccountButton />
-            <Link href={"/user/basket"} className={styles.min_width_500}>
-                <Button>Basket</Button>
-            </Link>
+        <Box minW={theme.sizes.minWidth}>
+            {isLargerThan800px ? <NavigationWide /> : <NavigationCompact />}
         </Box>
     )
 

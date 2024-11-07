@@ -1,5 +1,5 @@
 "use client";
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormLabel, Heading, HStack, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, Textarea, useToast, UseToastOptions } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormLabel, Heading, HStack, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, Textarea, useToast, UseToastOptions } from "@chakra-ui/react";
 import styles from "./review-form.module.css";
 import { Review } from "@prisma/client";
 import { FormEvent, useContext, useEffect, useState } from "react";
@@ -63,7 +63,20 @@ export default function ReviewForm({ id, isVisible, onClose }: { id: number, isV
     }
 
     if (!isAuthenticated || !user) {
-        return <Box>Sign in to create a review</Box>
+        return (
+        <Modal isOpen={isVisible} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalBody>
+                    <Link href="/auth/signin">
+                        <Text>
+                            Sign in to create a review
+                        </Text>
+                    </Link>
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+        )
     }
 
     return (
@@ -71,16 +84,16 @@ export default function ReviewForm({ id, isVisible, onClose }: { id: number, isV
         <ModalOverlay />
         <ModalContent>
 
-            <ModalHeader paddingBottom={0}>
+            <ModalHeader>
                 <Heading fontSize="2xl" fontWeight="semibold">Create Review</Heading>
             </ModalHeader>
 
             <Divider />
 
             <form onSubmit={(event) => handleSubmit(onSubmit(event))}>
-                <ModalBody paddingY={0}>
+                <ModalBody>
                     <Stack>
-                        <Stack fontSize="xl">
+                        <Stack fontSize="xl" fontWeight="semibold">
                             <label>Overall rating</label>
                             <HStack gap="1px">
                                 {Array.from({ length: 5 }).map((_, index: number) => (
@@ -97,20 +110,22 @@ export default function ReviewForm({ id, isVisible, onClose }: { id: number, isV
                                 ))}
                                 <Text 
                                 marginLeft="0.4em"
+                                fontSize="sm"
                                 _hover={{ textDecoration: "underline" }}
-                                onClick={() => setRating(0)}>0</Text>
+                                onClick={() => setRating(0)}>Set to zero</Text>
                             </HStack>
                             <input type="hidden" value={rating} {...register('score', { required: 'Score is required'})}/>
                             {errors.score && <p>{errors.score.message}</p>}
                         </Stack>
-                        <Stack>
+                        <Stack fontWeight="semibold">
                             <label>Add a title</label>
-                            <input type="text" {...register('title', { required: 'Title is required'})} />
+                            <Input 
+                            type="text" {...register('title', { required: 'Title is required'})} />
                             {errors.title && <p>{errors.title.message}</p>}
                         </Stack>
-                        <Stack>
+                        <Stack fontWeight="semibold">
                             <label>Add a written review</label>
-                            <input type="textarea" {...register('content', { required: 'Content is required'})}/>
+                            <Input type="textarea" {...register('content', { required: 'Content is required'})}/>
                             {errors.content && <p>{errors.content.message}</p>}
                         </Stack>
                         <input type="hidden" name="usrId" value={user.id}/>
@@ -121,7 +136,7 @@ export default function ReviewForm({ id, isVisible, onClose }: { id: number, isV
 
                 <Divider />
 
-                <ModalFooter paddingTop={0}>
+                <ModalFooter>
                     <HStack justifyContent="space-between" w="100%">   
                         <Button onClick={onClose} color={theme.colors.semantic.error}>Cancel</Button>
                         <Button as={Button} maxW="fit-content" type="submit" bgColor={theme.colors.accent.primary}>Submit</Button>

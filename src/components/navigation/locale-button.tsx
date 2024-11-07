@@ -1,17 +1,12 @@
-"use client";
-import { UserContext } from "@/contexts/user-context";
+import { UserWithCurrencyAndCountry } from "@/api/services/userService";
 import { DownOutlined } from "@ant-design/icons";
 import { Button, Heading, HStack, Image,  Popover, PopoverBody, PopoverContent, PopoverTrigger, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import { useContext } from "react";
 
-export default function CurrencyCountryButton(): JSX.Element {
 
-    const { user, isAuthenticated } = useContext(UserContext)
+export default function LocaleButton({ props }: { props: { user: UserWithCurrencyAndCountry }}): JSX.Element {
 
-    if (!isAuthenticated || !user) {
-        return <></>
-    }
+    const { user } = props;
 
     return (
         <Popover>
@@ -20,7 +15,8 @@ export default function CurrencyCountryButton(): JSX.Element {
                 display="flex"
                 alignContent="center"
                 gap="0.4em"
-                w="fit-content">
+                paddingX="1em"
+                minW="fit-content">
                     <Image 
                     h="full"
                     w="auto"

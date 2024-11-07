@@ -1,14 +1,14 @@
 import { QueryParams } from "@/redux/reducers/product";
 import { Product } from "@prisma/client";
 import axios from "axios";
-import { ManyWithMetadata, ModelsResponse } from "../helpers/types";
+import { ManyWithMetadata, ModelsResponse, ResultType } from "../helpers/types";
 import { buildUrl } from "../helpers/utils";
 
 
-export async function getProductById(id: number): Promise<Product> {
+export async function getProductById(id: number): Promise<ResultType<'product', { currency: true }>> {
     const response = await fetch(`/api/product/${id}`, {
         method: "GET",
-        cache: "force-cache"
+        //cache: "force-cache"
     });
     if (!response.ok) {
         throw new Error('Failed to fetch');
