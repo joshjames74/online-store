@@ -9,6 +9,7 @@ import { useContext, useEffect } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
 import { ControlOutlined } from "@ant-design/icons";
+import SortFilter from "./sort-filter";
 
 
 export default function Sidebar(): JSX.Element {
@@ -30,6 +31,7 @@ export default function Sidebar(): JSX.Element {
     const renderFilters = (): JSX.Element => {
         return (
             <Stack gap={2}>
+                <SortFilter />
                 <PriceFilter />
                 <ReviewFilter />
                 <CategoryFilter />
@@ -52,7 +54,6 @@ export default function Sidebar(): JSX.Element {
         return (
         <Card className={styles.container} h="fit-content" minW="2xs">
             <CardHeader paddingBottom={2}>{renderHeading()}</CardHeader>
-            <Divider />
             <CardBody paddingTop={2} paddingBottom={0}>{renderFilters()}</CardBody>
             <CardFooter paddingTop={1}>{renderFooter()}</CardFooter>
         </Card>
@@ -62,7 +63,7 @@ export default function Sidebar(): JSX.Element {
     const drawer = () => {
         return (
             <>
-                <Button onClick={onOpen} w="fit-content">
+                <Button onClick={onOpen} w="fit-content" bgColor={theme.colors.background.primary}>
                     <HStack gap="0.4em">
                         <Text>Filters</Text>
                         <ControlOutlined />

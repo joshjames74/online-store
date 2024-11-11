@@ -1,12 +1,15 @@
 .text_button {
-    min-width: fit-content !important;
-    padding: 1em
+    padding: 1em;
 }
 
 .container {
     display: grid;
     grid-template-columns: 1fr 5fr;
     justify-content: space-evenly;
+    gap: 0.4em;
+    max-width: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 @media screen and (max-width: 500px) {

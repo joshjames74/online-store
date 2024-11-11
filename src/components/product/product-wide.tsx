@@ -44,7 +44,7 @@ export default function ProductWide({...product}: ResultType<'product', { curren
 
     return (
         <Link href={`/product/${product.id}`}>
-            <Card maxW="xl">
+            <Card maxW="lg" minW={theme.sizes.minWidth}>
                 <CardBody>
                     <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2}>
                         <GridItem colSpan={1}>
@@ -52,7 +52,7 @@ export default function ProductWide({...product}: ResultType<'product', { curren
                         </GridItem>
                         <GridItem colSpan={1}>
                             <Stack gap={1}>
-                                <Heading noOfLines={1}>{product.title}</Heading>
+                                <Heading noOfLines={1} fontSize="2xl">{product.title}</Heading>
                                 <ProductReviewBox {...product} />
                                 <Heading fontSize="lg" color={theme.colors.accent.tertiary}>
                                     {getProductPrice(product.price, product.currency.gbp_exchange_rate, user)}

@@ -1,5 +1,5 @@
 import { UserWithCurrencyAndCountry } from "@/api/services/userService";
-import { DownOutlined } from "@ant-design/icons";
+import { CaretDownOutlined, DownOutlined } from "@ant-design/icons";
 import { Button, Heading, HStack, Image,  Popover, PopoverBody, PopoverContent, PopoverTrigger, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 
@@ -22,7 +22,7 @@ export default function LocaleButton({ props }: { props: { user: UserWithCurrenc
                     w="auto"
                     objectFit="cover"
                     src={user.country ? user.country.image_url : 'https://flagsapi.com/GB/flat/64.png'} />
-                    <DownOutlined />
+                    <CaretDownOutlined />
                 </Button>
             </PopoverTrigger>
             <PopoverContent>

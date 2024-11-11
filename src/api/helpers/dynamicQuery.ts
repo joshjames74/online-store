@@ -139,6 +139,12 @@ export async function deleteOneEntityByField<T extends ModelType>(modelName: T, 
     return;
 }
 
+export async function deleteEntitiesByField<T extends ModelType>(modelName: T, field: TableMap[T], value: any): Promise<ModelMap[T][] | void> {
+    if (prisma[modelName] && typeof prisma[modelName].deleteMany == 'function') {
+        return await (prisma[modelName] as any).deleteMany({ where: { [field]: value }});
+    }
+}
+
 
 // PUT methods
 

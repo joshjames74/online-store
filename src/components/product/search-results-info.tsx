@@ -34,7 +34,7 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
     const upperBound: number = params.take ? lowerBound + params.take : 1;
 
     return ( isLoading ? <></> :
-        <HStack bgColor={theme.colors.accent.tertiary} justify="space-between" paddingX={2}>
+        <HStack bgColor={theme.colors.accent.tertiary} justify="space-between" padding="1em">
             <Heading className={styles.heading}>Showing {lowerBound} - {upperBound} of {resultsCount} results</Heading>
             <HStack gap={2}>
                 <HStack fontSize="lg">
@@ -44,9 +44,9 @@ export default function SearchResultsInfo({ showing, total }: { showing: number,
                     </Heading>
                     <Heading className={styles.heading} onClick={() => handleChangeWidth(Width.COMPACT)} textDecoration={width === Width.COMPACT ? "underline" : ""}>{Width.COMPACT}</Heading>
                 </HStack>
-                <Select placeholder="Filter by">
+                {/* <Select placeholder="Filter by">
                     {Object.keys(ProductFilter).map((val, index: number) => <option key={index}>{val}</option>)}
-                </Select>
+                </Select> */}
             </HStack>
         </HStack>
     )

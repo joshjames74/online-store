@@ -1,12 +1,9 @@
 "use client";
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormLabel, Heading, HStack, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, Textarea, useToast, UseToastOptions } from "@chakra-ui/react";
-import styles from "./review-form.module.css";
-import { Review } from "@prisma/client";
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
 import { ThemeContext } from "@/contexts/theme-context";
-import { postReview } from "@/api/request/reviewRequest";
-import { useRouter } from "next/navigation";
+import { getReviewCountsByProductId, getReviewsBySearch, postReview } from "@/api/request/reviewRequest";
 import { useReviewSearchStore } from "@/zustand/store";
 import { UserContext } from "@/contexts/user-context";
 import { useForm } from "react-hook-form";
@@ -57,8 +54,11 @@ export default function ReviewForm({ id, isVisible, onClose }: { id: number, isV
                 toast.update(pendingToast, errorToast);
             }).finally(() => {
                 clearParams();
+                // reset the cache status of the reviews
+                getReviewsBySearch({ productId: id }, "reload").then(() => {}).catch(error => console.error(error));
+                getReviewCountsByProductId(id, "reload").then(() => {}).catch(error => console.error(error));
                 location.reload();
-            })
+            });
 
     }
 

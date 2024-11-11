@@ -1,5 +1,5 @@
 "use client";
-import { Input, InputGroup, InputLeftAddon, InputRightElement, Select, } from "@chakra-ui/react";
+import { Box, HStack, Input, InputGroup, InputLeftAddon, InputRightElement, Select, Stack, } from "@chakra-ui/react";
 import styles from "./search-bar.module.css";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
@@ -52,31 +52,65 @@ export default function SearchBar(): JSX.Element {
     }, [query]);
 
     const updateURL = () => {
-
         // search bar category overrides all other categories, so is set last
         if (selectedCategory) { setSearchParams({ categories: [selectedCategory]})}
-
         // set page back to 1
         setSearchParams({ pageNumber: 1 });
         router.push(`/?${getURLSearchParams()} `); 
     }
 
     return (
-        <InputGroup className={styles.container} bgColor={theme.colors.background.primary} color={theme.colors.text.primary}>
-            <InputLeftAddon className={styles.input_left_addon} maxW="fit-content">
+        <Box className={styles.container}>
+        <InputGroup className={styles.input_container} bgColor={theme.colors.background.primary} color={theme.colors.text.primary}>
+            <InputLeftAddon className={styles.input_left_addon} maxW="200px" textOverflow="ellipsis"> 
                 <Select 
                     onChange={e => setSelectedCategory(parseInt(e.target.value || ''))}
                     placeholder="All"
                     className={styles.select_container}
                     variant="unstyled"
-                    value={selectedCategory}>
-                    {isLoading || !categories.length ? <></> : categories.map((category, index) => <option key={index} value={category.id}>{category.name}</option>)}
+                    value={selectedCategory}
+                    textOverflow="ellipsis">
+                    {isLoading || !categories.length ? <></> : categories.map((category, index) => {
+                        return (
+                            <option key={index} value={category.id}>{category.name}</option> 
+                        )
+                    })}
                 </Select>
             </InputLeftAddon>
-            <Input placeholder="Search" onChange={e => setQuery(e.target.value)} w="full" />
+            <Input placeholder="Search" onChange={e => setQuery(e.target.value)} />
             <InputRightElement onClick={() => updateURL()} bgColor={theme.colors.accent.primary} color={theme.colors.text.secondary} maxW="fit-content" paddingX="1em">
                 <SearchOutlined />
             </InputRightElement>
         </InputGroup>
+        </Box>
     )
+
+    // return (
+    //     <>
+    //     <form>
+    //         <HStack>
+
+    //             <Select 
+    //                 onChange={e => setSelectedCategory(parseInt(e.target.value || ''))}
+    //                 placeholder="All"
+    //                 className={styles.select_container}
+    //                 variant="unstyled"
+    //                 value={selectedCategory}>
+    //                 {isLoading || !categories.length ? <></> : categories.map((category, index) => <option key={index} value={category.id}>{category.name}</option>)}
+    //             </Select>
+
+    //             <input 
+    //             placeholder="Search"
+    //             onChange={e => setQuery(e.target.value)}
+    //             width="full"  />
+
+    //             <Box 
+    //             onClick={() => updateURL()} bgColor={theme.colors.accent.primary} color={theme.colors.text.secondary} maxW="fit-content" paddingX="1em">
+    //                 <SearchOutlined />
+    //             </Box>
+
+    //         </HStack>
+    //     </form>
+    //     </>
+    // )
 }

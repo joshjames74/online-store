@@ -24,10 +24,7 @@ export const findOrPostUser = async (email: string, name: string, image_url: str
     
     try {
         const user = await getUserByEmail(email)
-        if (user) { 
-            console.log(user);
-            return user 
-        };
+        if (user) { return user };
     } catch (error) { console.error(error) }
 
     try {
@@ -63,16 +60,14 @@ export const UserProvider = (props: { children: JSX.Element}): JSX.Element => {
 
         const { name, email, image: image_url } = session.user;
         if (!email) { return }
-        findOrPostUser(email, name ? name : '', image_url ? image_url : '')
-            .then(user => {
-                setUser(user);
-            })
-            .catch(error => console.error(error));
-        console.log(user);
+        findOrPostUser(email, name ? name : '', image_url ? image_url : '').then(user => {
+            setUser(user);
+        }).catch(error => {
+            console.error(error)
+        });
     };
 
     const reload = async (): Promise<void> => {
-
         setIsLoading(true);
         if (!session?.user) { return }
 
@@ -85,7 +80,6 @@ export const UserProvider = (props: { children: JSX.Element}): JSX.Element => {
         }).finally(() => {
             setIsLoading(false);
         });
-
     }
 
     useEffect(() => {

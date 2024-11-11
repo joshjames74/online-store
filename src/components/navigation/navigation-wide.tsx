@@ -45,7 +45,7 @@ export default function NavigationWide(): JSX.Element {
 
     const renderLoggedIn = (): JSX.Element => {
         return (
-        <HStack bgColor={theme.colors.background.accent} padding="1em" alignContent="center">
+        <HStack bgColor={theme.colors.background.accent} padding="1em" alignContent="center" w="full">
             <Logo />
             <DeliveryButtonLoggedIn props={{ user: user }} />
             <SearchBar />

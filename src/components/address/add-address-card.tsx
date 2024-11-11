@@ -5,7 +5,7 @@ export default function AddAddressCard(): JSX.Element {
 
     return (
 
-        <Card w="350px" h="250px" border="2px dashed grey">
+        <Card w="300px" h="250px" border="2px dashed grey">
             <Box 
             w="full" h="full" 
             display="flex"

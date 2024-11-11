@@ -38,6 +38,7 @@ export default function ProductGrid(): JSX.Element {
   
   const loadData = () => {
       setIsLoading(true);
+      console.log(parseQueryParams(searchParams));
       getProductsBySearchParams(parseQueryParams(searchParams)).then((res: ManyWithMetadata<'product', { currency: true }>) => {
         setProducts(res.data);
       }).catch(error => {

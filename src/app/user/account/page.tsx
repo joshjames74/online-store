@@ -10,10 +10,10 @@ export default function Page(): JSX.Element {
     const { user, isAuthenticated, isLoading } = useContext(UserContext);
 
     // create loading skeleton
-    if (isLoading) return <Box>Loading... </Box>
+    if (isLoading) return <></>
 
     // to do: redirect to 404 page
-    if (!isLoading && !isAuthenticated) return <Box>404 not found</Box>
+    if (!isAuthenticated) return <Box>404 not found</Box>
 
     // redirect this
     if (!user) return <Box>User not found</Box>

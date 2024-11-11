@@ -28,7 +28,7 @@ export default function AccountButtonLoggedIn({ props }: { props: { user: UserWi
                         <Link href="/auth/signout">
                             <Text>Your payments</Text>
                         </Link>
-                        <Link href="/user/orders">
+                        <Link href="/auth/signout">
                             <Text>Sign out</Text>
                         </Link>
                     </Stack>

@@ -27,7 +27,7 @@
     }
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 350px) {
     .container_compact {
         grid-template-columns: repeat(1, 1fr);
     }

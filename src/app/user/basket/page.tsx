@@ -7,7 +7,7 @@ import EmptyBasket from "@/components/basket/empty-basket";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
 import { useBasketStore } from "@/zustand/store";
-import { Box, Card, CardBody, CardFooter, CardHeader, Divider, Heading, Text } from "@chakra-ui/react";
+import { Box, Card, CardBody, CardFooter, CardHeader, Center, Divider, Heading, Text } from "@chakra-ui/react";
 import { BasketItem } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
 
@@ -50,5 +50,9 @@ export default function Page(): JSX.Element {
     // </Box>
     // )
 
-    return <BasketPage />
+    return (
+    <Center>
+        <BasketPage />
+    </Center>
+    )
 }

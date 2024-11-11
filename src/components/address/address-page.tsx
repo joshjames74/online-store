@@ -7,6 +7,7 @@ import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, G
 import { Address } from "@prisma/client";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
+import styles from "./address-page.module.css";
 
 
 export default function AddressesPage({ params }: { params: { id: number } }): JSX.Element {
@@ -27,48 +28,40 @@ export default function AddressesPage({ params }: { params: { id: number } }): J
         });
     }, []);
 
+    if (isLoading) { return <></> }
+
     return (
+        <Box w="full" display="flex" justifyContent="center">
 
-        isLoading ? (<Box>Loading....</Box>) : (
+            <Box marginTop="20px">
+                <Stack gap="1em">
+                    <Box>
+                        <Breadcrumb separator=">">
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/user/account">Your Account</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbItem isCurrentPage={true}>
+                                <BreadcrumbLink>Addresses</BreadcrumbLink>
+                            </BreadcrumbItem>
+                        </Breadcrumb>
+                    </Box>
 
-            <Box w="full" display="flex" justifyContent="center">
+                    <Heading>Your Addresses</Heading>
 
-                <Box marginTop="20px">
-                    <Stack gap="1em">
-                        <Box>
-                            <Breadcrumb separator=">">
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href="/user/account">Your Account</BreadcrumbLink>
-                                </BreadcrumbItem>
-
-                                <BreadcrumbItem isCurrentPage={true}>
-                                    <BreadcrumbLink>Addresses</BreadcrumbLink>
-                                </BreadcrumbItem>
-                            </Breadcrumb>
-                        </Box>
-
-                        <Heading>Your Addresses</Heading>
-
-                        <Grid gridTemplateColumns="repeat(3, 1fr)" gap="1em">
-                            <GridItem>
-                                <Link href="/user/addresses/add">
-                                    <AddAddressCard />
-                                </Link>
+                    <Grid className={styles.grid} gap="1em" marginBottom="1em">
+                        <GridItem>
+                            <Link href="/user/addresses/add">
+                                <AddAddressCard />
+                            </Link>
+                        </GridItem>
+                        {addresses.length ? addresses.map((address, index: number) => (
+                            <GridItem key={index}>
+                                <AddressCard {...address} />
                             </GridItem>
-                            {addresses.length ? addresses.map((address, index: number) => (
-                                <GridItem key={index}>
-                                    <AddressCard {...address} />
-                                </GridItem>
-                            )) : <></>}
-                        </Grid>
-
-                    </Stack>
-                </Box>
-                
+                        )) : <></>}
+                    </Grid>
+                </Stack>
             </Box>
-
-        )
-
+        </Box>
     )
-
 }

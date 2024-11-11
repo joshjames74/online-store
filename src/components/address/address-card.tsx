@@ -1,31 +1,32 @@
 import { ThemeContext } from "@/contexts/theme-context";
-import { Card, CardBody, CardFooter, CardHeader, Divider, Heading, HStack, Stack, Tag, Text, useToast } from "@chakra-ui/react";
+import { Card, CardBody, CardFooter, Heading, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import { Address } from "@prisma/client";
 import { useContext } from "react";
 import styles from "./address-card.module.css";
-import { deleteAddressById } from "@/api/request/addressRequest";
-import { useRouter } from "next/navigation";
+import { deleteAddressById, getAddressesByUserId } from "@/api/request/addressRequest";
 
 export default function AddressCard(address: Address, isDefault?: boolean): JSX.Element {
 
     const { theme } = useContext(ThemeContext);
     const toast = useToast();
 
-    const onDeleteSuccess = () => { toast({ title: "Deleted address successfully", status: "success", duration: 1000 })};
-    const onDeleteError = () => { toast({ title: "Error deleting address", status: "error", duration: 5000 })};
-
+    
     const handleDelete = () => {
+        const pendingToast = toast({ title: "Deleting address...", status: "loading" });
         deleteAddressById(address.id).then(res => {
-            onDeleteSuccess();
+            // reload cached addresses
+            getAddressesByUserId(address.usrId, "reload").then(() => {}).catch(error => console.error(error));
+            // display success
+            toast.update(pendingToast, { title: "Deleted address successfully", status: "success", duration: 1000 })
             location.reload();
         }).catch(error => {
             console.log(error);
-            onDeleteError();
+            toast.update(pendingToast, { title: "Error deleting address", status: "error", duration: 5000 });
         })
     }
 
     return (
-        <Card w="350px" h="250px" borderRadius="1em">
+        <Card w="300px" h="250px" borderRadius="1em">
 
             <CardBody>
                 <Stack gap="0.1em">

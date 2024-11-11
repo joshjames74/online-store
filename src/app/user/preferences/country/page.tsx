@@ -39,7 +39,7 @@ export default function Page({ params }: { params: { redirectUrl: string }}): JS
 
     const handleSubmit = () => {
         const pendingToast = toast({ title: "Loading...", status: "loading", isClosable: true, id: "toast" })
-        const successToast = { title: "Country changed successfully", status: "loading", duration: 1000 } as Omit<UseToastOptions, "id">
+        const successToast = { title: "Country changed successfully", status: "success", duration: 1000 } as Omit<UseToastOptions, "id">
         const errorToast = { title: "Error", status: "error", duration: 5000 } as Omit<UseToastOptions, "id">
 
         if (!selectedCountry) { return }

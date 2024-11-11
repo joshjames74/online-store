@@ -19,7 +19,7 @@ export default function ProductCompact({...product}: ResultType<'product', { cur
 
     return (
         <Link href={`/product/${product.id}`}>
-            <Card maxW="sm" w="200px">
+            <Card maxW="180px" w="full">
                 <CardBody>
                     <Stack>
                         <Image w="100%" h="150px" objectFit="cover" borderRadius="md" src={defaultImageUrl} />

@@ -3,7 +3,7 @@ import styles from "./product-page.module.css";
 import { useContext, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
-import { postBasketItem } from "@/api/request/basketRequest";
+import { getBasketByUserId, postBasketItem } from "@/api/request/basketRequest";
 import { useRouter } from "next/navigation";
 import { CheckCircleFilled, CloseCircleOutlined } from "@ant-design/icons";
 
@@ -39,6 +39,7 @@ export default function ProductBasketCard({ props }: { props: { id: number }}): 
             setIsSuccessful(false);
             console.error(error);
         } finally {
+            await getBasketByUserId(user.id, "reload");
             setIsLoading(false);
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 1000);

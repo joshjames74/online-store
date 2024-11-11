@@ -1,5 +1,5 @@
 import { BasketItem, Currency } from "@prisma/client";
-import { deleteOneEntityByField, getCountByField, getEntitiesByField, getEntitiesByFields, getOneEntityByField, getOneEntityByFields, getSumByField, postOneEntity, putOneEntityByField } from "../helpers/dynamicQuery";
+import { deleteEntitiesByField, deleteOneEntityByField, getCountByField, getEntitiesByField, getEntitiesByFields, getOneEntityByField, getOneEntityByFields, getSumByField, postOneEntity, putOneEntityByField } from "../helpers/dynamicQuery";
 import { Metadata, ResultType } from "../helpers/types";
 import { OrderRelation, SearchFieldType } from "../transformers";
 import { FieldValuePair } from "../helpers/request";
@@ -66,7 +66,10 @@ export async function getBasketByUserId(id: number): Promise<Basket | void> {
 
 export async function deleteBasketItemById(id: number): Promise<void> {
     return await deleteOneEntityByField('basketItem', 'id', id);
+}
 
+export async function deleteAllBasketItemByUserId(id: number): Promise<void> {
+    return await deleteEntitiesByField('basketItem', 'usrId', id);
 }
 
 

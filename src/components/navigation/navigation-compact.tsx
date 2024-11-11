@@ -1,12 +1,11 @@
 import { ThemeContext } from "@/contexts/theme-context"
 import { Stack, HStack, Button, Drawer, DrawerOverlay, DrawerHeader, DrawerFooter, Link, Heading, DrawerContent, DrawerCloseButton, DrawerBody, useDisclosure } from "@chakra-ui/react"
 import { useContext } from "react"
-import logo from "./../../app/logo.png";
-import Image from "next/image";
 import { MenuOutlined } from "@ant-design/icons";
 import SearchBar from "./search-bar";
 import BasketButton from "./basket-button";
 import { UserContext } from "@/contexts/user-context";
+import Logo from "./logo";
 
 
 export default function NavigationCompact(): JSX.Element {
@@ -17,12 +16,12 @@ export default function NavigationCompact(): JSX.Element {
 
     const header = (isLoggedIn: boolean) => {
         return (
-        <HStack paddingX="1em" paddingY="0.4em" alignContent="center" justifyContent="space-between">
-            <HStack>
+        <HStack paddingX="1em" paddingY="0.4em" alignItems="center" justifyContent="space-between">
+            <HStack alignItems="center">
                 <Button onClick={onOpen} backgroundColor={theme.colors.antCompatible.background} padding={0} _hover={{ border: "1px solid white"}}>
                     <MenuOutlined style={{ color: theme.colors.antCompatible.text, fontSize: "20px" }}/>
                 </Button>
-                <Image src={logo} alt="" objectFit="cover" width={150}/>
+                <Logo />
             </HStack>
             {isLoggedIn ? <BasketButton /> : <></>}
         </HStack>
@@ -47,13 +46,28 @@ export default function NavigationCompact(): JSX.Element {
                 <DrawerBody>
                     <Stack>
                         <Link href="/user/account">
-                            <Heading fontSize="md" fontWeight="semibold">
+                            <Heading fontSize="lg" fontWeight="semibold">
                                 Your account
+                            </Heading>
+                        </Link>
+                        <Link href="/user/orders">
+                            <Heading fontSize="md" fontWeight="semibold">
+                                Your orders
+                            </Heading>
+                        </Link>
+                        <Link href="/user/orders">
+                            <Heading fontSize="md" fontWeight="semibold">
+                                Your addresses
                             </Heading>
                         </Link>
                         <Link href="/user/preferences/currency">
                             <Heading fontSize="md" fontWeight="semibold">
-                                Edit Currency
+                                Edit currency
+                            </Heading>
+                        </Link>
+                        <Link href="/user/preferences/country">
+                            <Heading fontSize="md" fontWeight="semibold">
+                                Edit country
                             </Heading>
                         </Link>
                     </Stack>

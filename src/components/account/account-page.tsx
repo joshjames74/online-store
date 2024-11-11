@@ -1,6 +1,6 @@
 import { Box, Grid, Heading, Stack } from "@chakra-ui/react";
 import AccountCard, { AccountCardProps } from "./account-card";
-import Link from "next/link";
+import styles from "./account-page.module.css";
 
 export default function AccountPage(): JSX.Element {
 
@@ -27,12 +27,10 @@ export default function AccountPage(): JSX.Element {
     ]
 
     return (
-
-        <Box w="full" display="flex" justifyContent="center" padding="2em">
-
+        <Box w="full" display="flex" justifyContent="center" paddingY="2em">
             <Stack maxW="1200px" w="fit-content" gap="1em">
                 <Heading fontWeight="semibold">Your account</Heading>
-                <Grid gridTemplateColumns="repeat(3, 1fr)" gap="1em">
+                <Grid className={styles.grid} gap="1em">
                     {pages.map((page, index: number) => <AccountCard {...page} key={index}/>)}
                 </Grid>
             </Stack>

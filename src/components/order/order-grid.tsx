@@ -1,7 +1,7 @@
 import { parseOrderSearchParams } from "@/api/helpers/utils";
 import { getOrdersByUserId } from "@/api/request/orderRequest";
 import { OrderView } from "@/api/services/orderService";
-import { Box, Button, HStack, Stack } from "@chakra-ui/react";
+import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Center, HStack, Stack } from "@chakra-ui/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import OrderCard from "./order-card";
@@ -44,10 +44,22 @@ export default function OrderGrid({ params }: { params: { id: number }}): JSX.El
   
 
     return (
-        <Stack alignItems="center" marginTop="20px">
-            {orders.length ? orders.map((orderView, index) => (
-                <OrderCard params={{orderView: orderView}} key={index} />
-            )) : <></>}
+        <Stack alignItems="center" padding="1em" border="1px solid red" width="100%" mx="auto">
+            <Box border="1px solid black" >
+                <Breadcrumb separator=">">
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/user/account">Your Account</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem isCurrentPage={true}>
+                        <BreadcrumbLink>Orders</BreadcrumbLink>
+                    </BreadcrumbItem>
+                </Breadcrumb>
+                <Stack marginTop="1em">
+                {orders.length ? orders.map((orderView, index) => (
+                    <OrderCard params={{orderView: orderView}} key={index} />
+                )) : <></>}
+                </Stack>
+            </Box>
         </Stack>
     )
 

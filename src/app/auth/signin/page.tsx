@@ -10,7 +10,7 @@ export default function Page() {
     const githubUrl = "https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png"
 
     const handleGoogleSignIn = () => {
-        signIn('google', { callbackUrl: '/'} )
+        signIn('google', { callbackUrl: '/' } )
     }
 
     return (
@@ -19,7 +19,7 @@ export default function Page() {
             <Heading>Sign In</Heading>
             <Text>Select a method of sign in</Text>
         </Stack>
-        <Stack w="md">
+        <Stack maxW="80vw" minW="xs" w="100vw">
             <Card>
                 <CardHeader>
                     <HStack>
