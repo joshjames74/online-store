@@ -62,7 +62,12 @@ export default function DeliveryButtonLoggedIn({ props }: { props: { user: UserW
                 <RadioGroup>
                     <Stack>
                     {addresses.map((address, index: number) => {
-                        return <Radio key={index} value={address.id.toString()}>{address.name}</Radio>
+                        return (
+                        <Radio key={index} value={address.id.toString()}>
+                            <Text noOfLines={1} textOverflow="ellipsis">
+                                {address.name}
+                            </Text>
+                        </Radio> )
                     })}
                     </Stack>
                 </RadioGroup>

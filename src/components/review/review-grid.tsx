@@ -81,7 +81,7 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
         <>
             <Box className={styles.container}>
                 <ReviewSummary id={id} score={score} />
-                <Box className={styles.review_container} w="fit-content">
+                <Box className={styles.review_container} minW="fit-content" w="max-content" maxW="100%">
                     <HStack justifyContent="space-between" w="full">
                         <HStack>
                             <Heading fontWeight="semibold" fontSize="xl" whiteSpace="nowrap">Top Reviews</Heading>

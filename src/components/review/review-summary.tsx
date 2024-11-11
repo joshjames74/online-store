@@ -147,8 +147,7 @@ export default function ReviewSummary({ id, score }: { id: number, score: number
 
         <Card h="fit-content" minW="xs">
 
-            <CardHeader>
-
+            <CardHeader paddingBottom={0}>
                 <Stack gap={1}>
                     <Heading fontSize="2xl">Customer Reviews</Heading>
                     {isLoading 
@@ -161,10 +160,9 @@ export default function ReviewSummary({ id, score }: { id: number, score: number
                     <Heading fontSize="md" fontWeight="semibold">{total} global reviews</Heading>
                     </>}
                 </Stack>
-
             </CardHeader>
 
-            <CardBody className={styles.body}>
+            <CardBody className={styles.body} paddingBottom={0} paddingTop="0.4em">
                 {isLoading 
                 ? <SkeletonText noOfLines={5}/>
                 : Array.from({ length: 6 }).reverse().map((_, index: number) => {
@@ -186,7 +184,7 @@ export default function ReviewSummary({ id, score }: { id: number, score: number
                 })}
             </CardBody>
 
-            <CardFooter>
+            <CardFooter paddingTop="0.4em">
                 <Text _hover={{ textDecoration: "underline" }} fontSize="sm" onClick={() => handleClearFilters()}>Clear Filters</Text>
             </CardFooter>
         </Card>

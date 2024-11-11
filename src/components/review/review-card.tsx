@@ -42,33 +42,35 @@ export default function ReviewCard(review: ResultType<'review', { usr: true }>):
 
     return (
 
-        <Card className={styles.container} minW={theme.sizes.minWidth} w="md">
+        <Card className={styles.container} minW={theme.sizes.minWidth} maxW="2xl">
 
-            <CardHeader>
-                <HStack justifyContent="space-between" w="fit-content">
-                    <HStack w="fit-content">
+            <CardHeader paddingY="0.6em">
+                <HStack justifyContent="space-around"  w="full">
+                    <HStack flex={1} overflow="hidden" w="full">
                         <Avatar size="sm" name={review.usr.name} src={review.usr.image_url || ''}/>
-                        <Heading fontSize="sm">{review.usr.name}</Heading>
+                        <Heading 
+                        fontSize="sm"
+                        noOfLines={1}
+                        >{review.usr.name}</Heading>
                     </HStack>
-                    <Text>{formatDate(review.date.toString())}</Text>
+                    <Text flex={1} overflow="hidden" textAlign="right" maxW="fit-content">{formatDate(review.date.toString())}</Text>
                 </HStack>
             </CardHeader>
 
             <Divider />
 
             <CardBody>
-                <HStack>
+                <HStack paddingBottom="0.4em">
                     <ReviewStars value={review.score} fontSize="md" />
-                    <Heading fontWeight="semibold" fontSize="lg">{review.title}</Heading>
+                    <Heading fontWeight="semibold" fontSize="lg" noOfLines={1} textOverflow="ellipsis">{review.title}</Heading>
                 </HStack>
-            <Text>{review.content}</Text>
+            <Text noOfLines={15} textOverflow="ellipsis">{review.content}</Text>
             </CardBody>
 
-            <CardFooter justify="right">
+            <CardFooter justify="right" display={(isAuthenticated && user.id === review.usrId) ? 'flex' : 'none'}>
                 <IconButton 
                     _hover={{ bgColor: theme.colors.semantic.error}}
                     aria-label="Delete"
-                    display={(isAuthenticated && user.id === review.usrId) ? 'block' : 'none'}
                     onClick={handleDelete}
                     icon={<DeleteOutlined />}></IconButton>
             </CardFooter>

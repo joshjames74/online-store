@@ -28,16 +28,16 @@ export default function AddressCard(address: Address, isDefault?: boolean): JSX.
     return (
         <Card w="300px" h="250px" borderRadius="1em">
 
-            <CardBody>
+            <CardBody paddingBottom={0}>
                 <Stack gap="0.1em">
-                    <Heading fontSize="md">{address.name}</Heading>
-                    <Text>{address.address_line_1}</Text>
-                    <Text>{address.address_line_2}</Text>
-                    <Text>{address.area_code}</Text>
+                    <Heading fontSize="md" noOfLines={2}>{address.name}</Heading>
+                    <Text noOfLines={3}>{address.address_line_1}</Text>
+                    <Text noOfLines={2}>{address.address_line_2}</Text>
+                    <Text noOfLines={1}>{address.area_code}</Text>
                 </Stack>
             </CardBody>
 
-            <CardFooter>
+            <CardFooter paddingTop="0.4em">
                 <HStack color={theme.colors.accent.tertiary} gap="1em">
                     <Text className={styles.button}>Edit</Text>
                     <span>|</span>
