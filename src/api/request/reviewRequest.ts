@@ -2,6 +2,7 @@ import { Review } from "@prisma/client";
 import axios from "axios";
 import { ReviewParams } from "../transformers/reviewSearchTransformer";
 import { ResultType } from "../helpers/types";
+import { buildUrl } from "../helpers/utils";
 
 
 // GET methods
@@ -15,16 +16,22 @@ export async function getReviewById(id: number): Promise<Review> {
 }
 
 
-export async function getReviewsByProductId(id: number): Promise<Review[]> {
-    const response = await fetch(`/api/product/${id}/reviews`);
+export async function getReviewsByProductId(id: number, cache?: RequestCache): Promise<Review[]> {
+    const response = await fetch(`/api/product/${id}/reviews`, {
+        method: "GET",
+        cache: cache ? cache : "force-cache"
+    });
     if (!response.ok) {
         throw new Error('Failed to fetch');
     }
     return response.json();
 }
 
-export async function getReviewCountsByProductId(id: number): Promise<number[]> {
-    const response = await fetch(`/api/product/${id}/reviews/summary`);
+export async function getReviewCountsByProductId(id: number, cache?: RequestCache): Promise<number[]> {
+    const response = await fetch(`/api/product/${id}/reviews/summary`, {
+        method: "GET",
+        cache: cache ? cache : "force-cache"
+    });
     if (!response.ok) {
         throw new Error('Failed to fetch');
     };
@@ -32,12 +39,16 @@ export async function getReviewCountsByProductId(id: number): Promise<number[]> 
 }
 
 
-export async function getReviewsBySearch(params: Partial<ReviewParams>): Promise<ResultType<'review', { usr: true }>[]> {
-    const response = await axios(`/api/review`, {
+export async function getReviewsBySearch(params: Partial<ReviewParams>, cache?: RequestCache): Promise<ResultType<'review', { usr: true }>[]> {
+    const url = buildUrl('/api/review', params);
+    const response = await fetch(url, {
         method: "GET",
-        params: {...params}
+        cache: cache ? cache : "force-cache"
     });
-    return response.data;
+    if (!response.ok) {
+        throw new Error('Failed to fetch');
+    }
+    return response.json();
 }
 
 

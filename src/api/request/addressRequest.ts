@@ -1,11 +1,16 @@
 import { Address } from "@prisma/client";
-import axios from "axios";
-import { buildUrl } from "../helpers/utils";
 import { ResultType } from "../helpers/types";
 
-export async function getAddressesByUserId(id: number): Promise<ResultType<"address", { country: true}>[]> {
-    const request = await axios(`/api/user/${id}/addresses`, { method: "GET" });
-    return request.data;
+
+export async function getAddressesByUserId(id: number, cache?: RequestCache): Promise<ResultType<"address", { country: true}>[]> {
+    const response = await fetch(`/api/user/${id}/addresses`, { 
+        method: "GET",
+        cache: cache ? cache : "force-cache"
+    });
+    if (!response.ok) {
+        throw new Error('Error fetching addresses');
+    }
+    return response.json();
 };
 
 

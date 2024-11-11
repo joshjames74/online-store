@@ -9,7 +9,7 @@ import { UserWithCurrencyAndCountry } from "../services/userService";
 export async function getUserByEmail(email: string, cache?: RequestCache): Promise<UserWithCurrencyAndCountry> {
     const response = await fetch(`/api/user/by-email/${email}`, { 
         method: "GET",
-        //cache: cache ? cache : "force-cache"
+        cache: cache ? cache : "force-cache"
     });
     if (!response.ok) {
         throw new Error('Error getting user');
