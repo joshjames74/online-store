@@ -48,11 +48,11 @@ export default function DeliveryButtonLoggedIn({ props }: { props: { user: UserW
 
     return (
     <>
-    <Button className={styles.container} onClick={() => setIsOpen(true)} minW="fit-content" bgColor="transparent" fontSize="2xl">
+    <Button className={styles.container} onClick={() => setIsOpen(true)} bgColor="transparent" fontSize="2xl">
         <EnvironmentOutlined />
-        <Box className={styles.text_container} fontSize="xs">
-            <Text fontWeight="normal">Deliver To {addresses[0].name}</Text>
-            <Text fontWeight="semibold">{addresses[0].country.name} {addresses[0].area_code}</Text>
+        <Box className={styles.text_container} fontSize="xs" overflow="hidden">
+            <Text fontWeight="normal" className={styles.text_wrap}>Deliver To {addresses[0].address_line_1}</Text>
+            <Text fontWeight="semibold" className={styles.text_wrap}>{addresses[0].country.name} {addresses[0].area_code}</Text>
         </Box>
     </Button>
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>

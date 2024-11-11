@@ -104,13 +104,13 @@ export default function AddressForm(): JSX.Element {
                             {errors.name && errorMessage(errors.name.message?.toString())}
                         </Stack>
                         <Stack>
-                            <label htmlFor="name">Address number</label>
-                            <input id="number" type="text" {...register('number', { required: 'Address is required'})} /> 
+                            <label htmlFor="name">Address line 1</label>
+                            <input id="number" type="text" {...register('address_line_1', { required: 'Address line 1 is required'})} /> 
                             {errors.number && errorMessage(errors.number.message?.toString())}
                         </Stack>
                         <Stack>
-                            <label htmlFor="street">Street</label>
-                            <input id="street" type="text" {...register('street', { required: 'Street is required' })} /> 
+                            <label htmlFor="street">Address line 2</label>
+                            <input id="street" type="text" {...register('address_line_2', { required: 'Address line 2 is required' })} /> 
                             {errors.street && errorMessage(errors.street.message?.toString())}
                         </Stack>
                         <Stack>

@@ -7,9 +7,10 @@
     grid-template-columns: 1fr 5fr;
     justify-content: space-evenly;
     gap: 0.4em;
-    max-width: 100px;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    min-width: minmax(100px, fit-content);
+    max-width: 200px !important;
+    /* text-overflow: ellipsis;
+    overflow: hidden; */
 }
 
 @media screen and (max-width: 500px) {
@@ -24,6 +25,11 @@
     justify-content: space-between;
     font-size: 10px;
     text-align: left;
+}
+
+.text_wrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .map_icon {

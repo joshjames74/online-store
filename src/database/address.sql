@@ -1,74 +1,74 @@
-INSERT INTO address ("usrId", name, number, street, area_code, "countryId")
+INSERT INTO address ("usrId", name, address_line_1, address_line_2, area_code, "countryId")
 VALUES
 -- User 1 (2 addresses)
-(1, 'John Work', '123', 'Main Street', '10001', 1),
-(1, 'John Home', '456', 'Elm Street', '10002', 2),
+(1, 'John Office', '223', 'Maple Street', '10011', 1),
+(1, 'John Cabin', '456', 'Oak Terrace', '10022', 2),
 
 -- User 2 (1 address)
-(2, 'Jane Home', '789', 'Pine Avenue', '20001', 3),
+(2, 'Jane Studio', '789', 'Pine Lane', '20011', 3),
 
 -- User 3 (3 addresses)
-(3, 'Alice Home', '101', 'Oak Lane', '30001', 4),
-(3, 'Alice Work', '102', 'Birch Road', '30002', 5),
-(3, 'Alice Vacation', '103', 'Maple Drive', '30003', 6),
+(3, 'Alice HQ', '101', 'Birch Avenue', '30011', 4),
+(3, 'Alice Downtown', '202', 'Ash Road', '30022', 5),
+(3, 'Alice Country', '303', 'Pine Grove', '30033', 6),
 
 -- User 4 (2 addresses)
-(4, 'Bob Home', '104', 'Spruce Street', '40001', 7),
-(4, 'Bob Office', '105', 'Willow Way', '40002', 8),
+(4, 'Bob Villa', '404', 'Spruce Avenue', '40011', 7),
+(4, 'Bob Workshop', '505', 'Cedar Street', '40022', 8),
 
 -- User 5 (1 address)
-(5, 'Charlie Home', '106', 'Cedar Road', '50001', 9),
+(5, 'Charlie Cottage', '606', 'Willow Drive', '50011', 9),
 
 -- User 6 (3 addresses)
-(6, 'Diana Home', '107', 'Fir Lane', '60001', 10),
-(6, 'Diana Work', '108', 'Poplar Boulevard', '60002', 11),
-(6, 'Diana Office', '109', 'Chestnut Court', '60003', 12),
+(6, 'Diana Cabin', '707', 'Fir Street', '60011', 10),
+(6, 'Diana Main', '808', 'Poplar Place', '60022', 11),
+(6, 'Diana Suite', '909', 'Chestnut Drive', '60033', 12),
 
 -- User 7 (1 address)
-(7, 'Edward Home', '110', 'Beech Street', '70001', 13),
+(7, 'Edward Villa', '1010', 'Beech Grove', '70011', 13),
 
 -- User 8 (2 addresses)
-(8, 'Fiona Home', '111', 'Aspen Avenue', '80001', 14),
-(8, 'Fiona Work', '112', 'Walnut Street', '80002', 15),
+(8, 'Fiona HQ', '1111', 'Aspen Street', '80011', 14),
+(8, 'Fiona Condo', '1212', 'Walnut Lane', '80022', 15),
 
 -- User 9 (1 address)
-(9, 'George Home', '113', 'Hickory Lane', '90001', 16),
+(9, 'George Bungalow', '1313', 'Hickory Way', '90011', 16),
 
 -- User 10 (1 address)
-(10, 'Hannah Home', '114', 'Sycamore Road', '100001', 17),
+(10, 'Hannah Loft', '1414', 'Sycamore Grove', '100011', 17),
 
 -- User 11 (2 addresses)
-(11, 'Isabella Home', '115', 'Cottonwood Avenue', '110001', 18),
-(11, 'Isabella Work', '116', 'Redwood Street', '110002', 19),
+(11, 'Isabella Den', '1515', 'Cottonwood Court', '110011', 18),
+(11, 'Isabella Office', '1616', 'Redwood Place', '110022', 19),
 
 -- User 12 (1 address)
-(12, 'Jack Home', '117', 'Linden Lane', '120001', 20),
+(12, 'Jack Cottage', '1717', 'Linden Grove', '120011', 20),
 
 -- User 13 (2 addresses)
-(13, 'Katherine Home', '118', 'Palm Drive', '130001', 21),
-(13, 'Katherine Work', '119', 'Magnolia Street', '130002', 22),
+(13, 'Katherine Villa', '1818', 'Palm Street', '130011', 21),
+(13, 'Katherine Suite', '1919', 'Magnolia Court', '130022', 22),
 
 -- User 14 (1 address)
-(14, 'Liam Home', '120', 'Hemlock Road', '140001', 23),
+(14, 'Liam Studio', '2020', 'Hemlock Grove', '140011', 23),
 
 -- User 15 (3 addresses)
-(15, 'Mia Home', '121', 'Juniper Boulevard', '150001', 24),
-(15, 'Mia Work', '122', 'Sequoia Avenue', '150002', 25),
-(15, 'Mia Vacation', '123', 'Douglas Fir Road', '150003', 26),
+(15, 'Mia Office', '2121', 'Juniper Lane', '150011', 24),
+(15, 'Mia Workshop', '2222', 'Sequoia Grove', '150022', 25),
+(15, 'Mia Cabin', '2323', 'Douglas Fir Place', '150033', 26),
 
 -- User 16 (1 address)
-(16, 'Noah Home', '124', 'Cypress Lane', '160001', 27),
+(16, 'Noah Studio', '2424', 'Cypress Road', '160011', 27),
 
 -- User 17 (2 addresses)
-(17, 'Olivia Home', '125', 'Tamarind Street', '170001', 28),
-(17, 'Olivia Work', '126', 'Ginkgo Drive', '170002', 29),
+(17, 'Olivia HQ', '2525', 'Tamarind Court', '170011', 28),
+(17, 'Olivia Suite', '2626', 'Ginkgo Lane', '170022', 29),
 
 -- User 18 (1 address)
-(18, 'Paul Home', '127', 'Dogwood Road', '180001', 30),
+(18, 'Paul Den', '2727', 'Dogwood Place', '180011', 30),
 
 -- User 19 (1 address)
-(19, 'Quinn Home', '128', 'Olive Boulevard', '190001', 31),
+(19, 'Quinn Loft', '2828', 'Olive Way', '190011', 31),
 
 -- User 20 (2 addresses)
-(20, 'Ryan Home', '129', 'Alder Lane', '200001', 32),
-(20, 'Ryan Work', '130', 'Bamboo Street', '200002', 33);
+(20, 'Ryan Cabin', '2929', 'Alder Court', '200011', 32),
+(20, 'Ryan Office', '3030', 'Bamboo Avenue', '200022', 33);

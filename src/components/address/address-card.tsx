@@ -31,8 +31,8 @@ export default function AddressCard(address: Address, isDefault?: boolean): JSX.
             <CardBody>
                 <Stack gap="0.1em">
                     <Heading fontSize="md">{address.name}</Heading>
-                    <Text>{address.number}</Text>
-                    <Text>{address.street}</Text>
+                    <Text>{address.address_line_1}</Text>
+                    <Text>{address.address_line_2}</Text>
                     <Text>{address.area_code}</Text>
                 </Stack>
             </CardBody>

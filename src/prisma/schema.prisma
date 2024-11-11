@@ -96,10 +96,10 @@ model Address {
   id          Int      @id @default(autoincrement())
   usr         Usr     @relation(fields: [usrId], references: [id])
   usrId       Int 
-  name        String
-  number      String
-  street      String
-  area_code   String
+  name        String         @default("")
+  address_line_1      String @default("")
+  address_line_2      String @default("")
+  area_code   String         @default("")
   country     Country   @relation(fields: [countryId], references: [id])
   countryId   Int 
   Order       Order[]
