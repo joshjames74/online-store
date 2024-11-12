@@ -2,11 +2,13 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 1em;
+    width: fit-content
 }
 
 .container_wide {
     display: grid;
     gap: 1em;
+    width: 800px;
 }
 
 @media screen and (max-width: 1550px) {
@@ -16,18 +18,64 @@
 }
 
 @media screen and (max-width: 1350px) {
+    .container_wide {
+        width: 700px;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    .container_wide {
+        width: 600px;
+    }
     .container_compact {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media screen and (max-width: 1050px) {
+@media screen and (max-width: 950px) {
+    .container_wide {
+        width: 500px;
+    }
     .container_compact {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media screen and (max-width: 350px) {
+
+@media screen and (max-width: 900px) {
+    .container_compact {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .container_wide {
+        width: 600px;
+    }
+    .container_compact {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .container_wide {
+        width: 500px;
+    }
+    .container_compact {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .container_wide {
+        width: 400px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .container_wide {
+        width: 300px;
+    }
     .container_compact {
         grid-template-columns: repeat(1, 1fr);
     }

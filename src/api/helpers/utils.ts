@@ -94,9 +94,9 @@ export function convertPrice(priceInGBP: number, exchangeRate: number): number {
 }
 
 export function getProductPrice(price: number, productExchangeRate: number, user: UserWithCurrencyAndCountry): string {
-    const currency = user && user.currency ? user.currency : { symbol: "$", code: "USD", id: "1", gbp_exchange_rate: 1 };
-    const productPriceGBP = convertPrice(price, productExchangeRate);
-    const userPrice = convertPrice(productPriceGBP, currency.gbp_exchange_rate);
+    const currency = user && user.currency ? user.currency : { symbol: "£", code: "GBP", id: "1", gbp_exchange_rate: 1 };
+    const productPriceGBP = price * productExchangeRate;
+    const userPrice = productPriceGBP / currency.gbp_exchange_rate;
     return formatPrice(userPrice, currency.code);
 }
 

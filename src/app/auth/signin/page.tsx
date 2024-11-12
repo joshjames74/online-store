@@ -14,12 +14,12 @@ export default function Page() {
     }
 
     return (
-        <Stack style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px' }}>
+        <Stack style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px', margin: "1em" }}>
         <Stack alignItems="center">
             <Heading>Sign In</Heading>
             <Text>Select a method of sign in</Text>
         </Stack>
-        <Stack maxW="80vw" minW="xs" w="100vw">
+        <Stack maxW="xl" minW="xs" w="100vw">
             <Card>
                 <CardHeader>
                     <HStack>

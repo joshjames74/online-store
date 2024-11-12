@@ -13,6 +13,13 @@
     
 }
 
+@media screen and (max-width: 550px) {
+    .review_text {
+        display: none !important;
+    }
+    
+}
+
 .review_header {
     display: flex;
     flex-direction: column;

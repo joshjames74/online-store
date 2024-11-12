@@ -1,7 +1,7 @@
 'use client';
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import ProductWide from "@/components/product/product-wide";
-import { Box } from "@chakra-ui/react";
+import { Box, useMediaQuery } from "@chakra-ui/react";
 import { Product } from "@prisma/client";
 import { useState, useEffect } from "react";
 import ProductCompact from "./product-compact";
@@ -24,6 +24,9 @@ export default function ProductGrid(): JSX.Element {
   const [products, setProducts] = useState<ResultType<'product', { currency: true}>[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [isLessThan450px] = useMediaQuery('(max-width: 450px)');
+
+
   const width = useSearchStore((state) => state.params.width);
   const setParams = useSearchStore((state) => state.setParams);
   const getURLSearchParams = useSearchStore((state) => state.getURLSearchParams);
@@ -38,7 +41,6 @@ export default function ProductGrid(): JSX.Element {
   
   const loadData = () => {
       setIsLoading(true);
-      console.log(parseQueryParams(searchParams));
       getProductsBySearchParams(parseQueryParams(searchParams)).then((res: ManyWithMetadata<'product', { currency: true }>) => {
         setProducts(res.data);
       }).catch(error => {
@@ -90,16 +92,13 @@ export default function ProductGrid(): JSX.Element {
       products?.length ?
         (
         <Box className={styles.wrapper}>
-          <Box className={styles.container_wide}>
-
-            {width == Width.WIDE 
+        {(width == Width.WIDE && !isLessThan450px) 
               ? (<Box className={styles.container_wide}>
                    {products.map((product: ResultType<'product', { currency: true }>) => <ProductWide key={product.id} {...product} />)}
                  </Box>)
               : (<Box className={styles.container_compact}>
                   {products.map((product: ResultType<'product', { currency: true }>) => <ProductCompact key={product.id} {...product} />)}
                 </Box>)}
-          </Box>
           <PageNumberGrid params={{ pageNumber: parseQueryParams(searchParams).pageNumber || 0, onClickPageNumber: handleClickPageNumber, maxPages: getMaxPages() }}/>
         </Box>
         )

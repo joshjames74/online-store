@@ -1,9 +1,46 @@
 .container {
-    max-width: 1000px;
+    width: 800px;
+    min-width: 320px;
 }
 
-@media screen and (max-width: 1200px) {
+/* @media screen and (max-width: 600px) {
     .container {
-        width: 800px;
+        width: 350px;
+    }
+} */
+/* 
+@media screen and (max-width: 1000px) {
+    .container {
+        width: 700px;
     }
 }
+
+@media screen and (max-width: 800px) {
+    .container {
+        width: 600px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .container {
+        width: 500px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .container {
+        width: 500px;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .container {
+        width: 400px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .container {
+        width: 400px;
+    }
+} */

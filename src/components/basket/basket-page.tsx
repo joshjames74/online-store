@@ -91,9 +91,9 @@ export default function BasketPage(): JSX.Element {
             </CardBody> 
 
             <CardFooter marginRight={0} marginLeft="auto">
-                <Heading fontWeight="semibold" fontSize="xl">
-                    Subtotal ({basket.metadata && basket.metadata.total.quantity} items): 
-                    <b> {basket.metadata && getProductPrice(basket.metadata.total.price, 1, user)}</b>
+                <Heading fontWeight="semibold" fontSize="xl" display="flex" flexDirection="row">
+                    Subtotal ({basket.metadata && basket.metadata.total.quantity} items):
+                    <Text color={theme.colors.accent.tertiary} fontWeight="bold"> {basket.metadata && getProductPrice(basket.metadata.total.price, 1, user)}</Text>
                 </Heading>
             </CardFooter>
 

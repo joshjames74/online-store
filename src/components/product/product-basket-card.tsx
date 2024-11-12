@@ -48,7 +48,7 @@ export default function ProductBasketCard({ props }: { props: { id: number }}): 
     }   
 
     return (
-         <Card minW="2xs" className={styles.basket_container} paddingX="1em">
+         <Card minW="2xs" className={styles.basket_container}>
             <CardHeader>
                 <Heading fontSize="lg" fontWeight="semibold">Add to basket</Heading>
             </CardHeader>

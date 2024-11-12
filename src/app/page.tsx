@@ -12,9 +12,6 @@ import { getProductsBySearchParams } from "@/api/request/productRequest";
 
 const Page = () => {
 
-  const showing = 10;
-  const total = 1000;
-
   const searchParams = useSearchParams();
   
   const params = useSearchStore((state) => state.params);
@@ -33,7 +30,7 @@ const Page = () => {
 
     // set results count
     const { perPage, pageNumber, ...searchParamsWithoutPagination } = params;
-    getProductsBySearchParams(searchParamsWithoutPagination).then(res => setResultsCount(res.metadata?.count || 0));
+    getProductsBySearchParams(searchParamsWithoutPagination, "reload").then(res => setResultsCount(res.metadata?.count || 0));
 
     // set pagination info
     setPageNumber(params.pageNumber || 1);

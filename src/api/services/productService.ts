@@ -4,6 +4,7 @@ import { FieldValuePair } from "../helpers/request";
 import { queryParamsToPrismaQuery } from "../transformers";
 import { ProductParams, productQueryTransformer } from "../transformers/productSearchTransformer";
 import { ManyWithMetadata, Metadata, ModelsResponse, ResultType } from "../helpers/types";
+import { convertPrice } from "../helpers/utils";
 
 // GET methods
 
@@ -26,7 +27,7 @@ export async function getProductBySearch(params: Partial<ProductParams>): Promis
 
     // get metadata
     const count = products?.length;
-    const max_price = Math.max(...products?.length ? products?.map(product => product.price) : [])
+    const max_price = Math.max(...products?.length ? products?.map(product => product.price * product.currency.gbp_exchange_rate) : [])
 
     const metadata: Metadata<'product'> = {
         count: count,

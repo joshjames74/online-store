@@ -97,7 +97,7 @@ export default function ReviewGrid({ id, score }: { id: number, score: number } 
                             </Select>
                         </HStack>
                         <Button onClick={handleClickButton} minW="fit-content" gap={2} bgColor={theme.colors.accent.primary}>
-                            <PlusOutlined /> Add Review
+                            <PlusOutlined /> <p className={styles.review_text}>Add Review</p>
                         </Button>
                     </HStack>
                     <Box className={styles.grid_container}>

@@ -1,5 +1,5 @@
 "use client";
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, CircularProgress, Divider, Heading, HStack, Image, Select, Skeleton, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, CircularProgress, Divider, Heading, HStack, Image, Select, Skeleton, Stack, Text, useMediaQuery } from "@chakra-ui/react";
 import { Product } from "@prisma/client";
 import styles from "./product-page.module.css"
 import { ThemeContext } from "@/contexts/theme-context";
@@ -32,15 +32,10 @@ export default function ProductPage(product: ResultType<'product', { currency: t
         <Card minW={theme.sizes.minWidth} maxW="5xl" w="full" className={styles.product_container}>   
             <CardBody>
                     <HStack h="full" alignItems="stretch" sx={{'@media screen and (max-width: 1000px)': { flexDirection: 'column'}}}>
-                        {isLoading 
-                        ? <Skeleton minW="300px"/>
-                        : <Image minW="300px" borderRadius="md" src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
-                        }
+                        <Box bgColor={theme.colors.background.secondary} alignItems="center" justifyContent="center" display="flex" padding="1em" borderRadius="0.4em">
+                            <Image minW="300px" h="auto" objectFit="contain" borderRadius="md" src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg" />
+                        </Box>
                         <Stack w="full">
-                            {
-                            isLoading 
-                            ? <></>
-                            : <>
                             <Heading>{product.title}</Heading>
                             <HStack className={styles.review_container} fontSize="lg" fontWeight="medium">
                                 <Text>{product.review_score}</Text>
@@ -54,7 +49,6 @@ export default function ProductPage(product: ResultType<'product', { currency: t
                             <Divider w="100%" className={styles.divider} bgColor={theme.colors.border.background}/>
                             <Heading fontSize="3xl" fontWeight="semibold" color={theme.colors.accent.tertiary}>{getProductPrice(product.price, product.currency.gbp_exchange_rate, user)}</Heading>
                             <Text>{product.description}</Text>
-                            </>}
                         </Stack>
                     </HStack>
             </CardBody>

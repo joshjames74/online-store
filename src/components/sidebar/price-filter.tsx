@@ -3,7 +3,7 @@ import { Box, SkeletonText, Slider, SliderFilledTrack, SliderThumb, SliderTrack,
 import styles from "./price-filter.module.css"
 import { useContext, useEffect, useState } from "react";
 import { useSearchStore } from "@/zustand/store";
-import { getProductPrice, parseQueryParams } from "@/api/helpers/utils";
+import { formatPrice, getProductPrice, parseQueryParams } from "@/api/helpers/utils";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { ModelsResponse } from "@/api/helpers/types";
 import { UserContext } from "@/contexts/user-context";
@@ -54,7 +54,7 @@ export default function PriceFilter(): JSX.Element {
                     <Text fontWeight="semibold">
                         {getProductPrice(min, user && user.currency ? user.currency.gbp_exchange_rate : 1, user)}
                         - 
-                        {getProductPrice(sliderValue || 0, user && user.currency ? user.currency.gbp_exchange_rate : 1, user)}
+                        {formatPrice((sliderValue || 0) / user.currency.gbp_exchange_rate, user.currency.code)}
                     </Text>
                     <Slider onChange={handlePriceChange} min={min} max={maxPrice} defaultValue={maxPrice}>
                         <SliderTrack><SliderFilledTrack /></SliderTrack>

@@ -42,9 +42,9 @@ export default function ReviewCard(review: ResultType<'review', { usr: true }>):
 
     return (
 
-        <Card className={styles.container} minW={theme.sizes.minWidth} maxW="2xl">
+        <Card className={styles.container} maxW="2xl">
 
-            <CardHeader paddingY="0.6em">
+            <CardHeader paddingY="0.6em" w="full">
                 <HStack justifyContent="space-around"  w="full">
                     <HStack flex={1} overflow="hidden" w="full">
                         <Avatar size="sm" name={review.usr.name} src={review.usr.image_url || ''}/>
@@ -64,7 +64,7 @@ export default function ReviewCard(review: ResultType<'review', { usr: true }>):
                     <ReviewStars value={review.score} fontSize="md" />
                     <Heading fontWeight="semibold" fontSize="lg" noOfLines={1} textOverflow="ellipsis">{review.title}</Heading>
                 </HStack>
-            <Text noOfLines={15} textOverflow="ellipsis">{review.content}</Text>
+            <Text noOfLines={15} textOverflow="ellipsis" overflow="hidden">{review.content}</Text>
             </CardBody>
 
             <CardFooter justify="right" display={(isAuthenticated && user.id === review.usrId) ? 'flex' : 'none'}>

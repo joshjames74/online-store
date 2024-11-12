@@ -65,7 +65,7 @@ export default function Page({ params }: { params: { redirectUrl: string }}): JS
 
     return (
         <Box w="full" justifyItems="center" marginTop="1em">
-            <Stack w="2xl">
+            <Stack w="fit-content">
 
                 <Heading>Change country</Heading>
                 <Text>Select the country you want.</Text>
