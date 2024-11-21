@@ -36,6 +36,7 @@ export type ProductParams = {
   perPage?: number;
 };
 
+
 export const productQueryTransformer: ProductQueryTransformer = (
   params: Partial<ProductParams>,
 ): QueryField<"product"> => {
@@ -106,6 +107,9 @@ export const productQueryTransformer: ProductQueryTransformer = (
     params.perPage || 0,
     params.pageNumber || 0,
   );
+
+  console.log(whereFields);
+  console.log(params.categories);
 
   return {
     whereFields: whereFields,

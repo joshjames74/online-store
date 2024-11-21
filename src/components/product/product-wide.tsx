@@ -48,15 +48,10 @@ import ProductCompact from "./product-compact";
 
 export default function ProductWide({
   ...product
-}: ResultType<"product", { currency: true }>): JSX.Element {
+}: ResultType<"product", { }>): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { defaultImageUrl } = useContext(SettingsContext);
-
-  if (!product.currency) {
-    console.log(product);
-    return <></>;
-  }
 
   return (
     <Link href={`/product/${product.id}`}>

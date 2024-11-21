@@ -52,10 +52,7 @@ const Page = () => {
 
   return (
     <Box className={styles.container} fontFamily={"Montserrat"}>
-      <SearchResultsInfo
-        showing={(pageNumber - 1) * perPage + 1}
-        total={resultsCount}
-      />
+      <SearchResultsInfo />
       <Box className={styles.product_area_container}>
         <Sidebar />
         <ProductGrid />

@@ -40,10 +40,14 @@ export async function getAllProducts(): Promise<Product[] | void> {
 export async function getProductBySearch(
   params: Partial<ProductParams>,
 ): Promise<ManyWithMetadata<"product", {}> | void> {
+
+  // convert parameters to query objects
   const { whereQuery, orderQuery, skip, take } = queryParamsToPrismaQuery(
     params,
     productQueryTransformer,
   );
+
+  // fetch products
   const products = await getEntitiesByFields(
     "product",
     whereQuery,

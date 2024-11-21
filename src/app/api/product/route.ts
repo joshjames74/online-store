@@ -16,16 +16,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const query = searchParams.get("query") || "";
   const max_price = parseFloat(searchParams.get("max_price") || "0");
   const min_review = parseFloat(searchParams.get("min_review") || "0");
-
   const perPage = parseInt(searchParams.get("perPage") || "");
   const pageNumber = parseInt(searchParams.get("pageNumber") || "");
-
-  const categories = searchParams.getAll("categories[]").length
-    ? searchParams
-        .getAll("categories[]")
-        .filter((val) => !isNaN(parseInt(val)))
-        .map((val) => parseInt(val))
-    : [];
+  const categories = searchParams.get("categories")?.split(",").filter((val) => !isNaN(parseInt(val))).map((val) => parseInt(val));
 
   // parse enum
   const product_filter_raw = parseInt(searchParams.get("product_filter") || "");

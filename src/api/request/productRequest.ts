@@ -3,11 +3,12 @@ import { Product } from "@prisma/client";
 import axios from "axios";
 import { ManyWithMetadata, ModelsResponse, ResultType } from "../helpers/types";
 import { buildUrl } from "../helpers/utils";
+import { ProductParams } from "../transformers/productSearchTransformer";
 
 export async function getProductById(
   id: number,
   cache?: RequestCache,
-): Promise<ResultType<"product", { currency: true }>> {
+): Promise<ResultType<"product", { }>> {
   const response = await fetch(`/api/product/${id}`, {
     method: "GET",
     cache: cache ? cache : "force-cache",
@@ -27,9 +28,9 @@ export async function getAllProducts(): Promise<Product[]> {
 }
 
 export async function getProductsBySearchParams(
-  params: Partial<QueryParams>,
+  params: Partial<ProductParams>,
   cache?: RequestCache,
-): Promise<ManyWithMetadata<"product", { currency: true }>> {
+): Promise<ManyWithMetadata<"product", { }>> {
   const url = buildUrl("/api/product", params);
   const response = await fetch(url, {
     method: "GET",

@@ -24,7 +24,7 @@ import { SettingsContext } from "@/contexts/settings-context";
 
 export default function ProductCompact({
   ...product
-}: ResultType<"product", { currency: true }>): JSX.Element {
+}: ResultType<"product", { }>): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { defaultImageUrl } = useContext(SettingsContext);

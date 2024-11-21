@@ -1,7 +1,7 @@
 "use client";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import ProductWide from "@/components/product/product-wide";
-import { Box, useMediaQuery } from "@chakra-ui/react";
+import { Box, Card, CardBody, Heading, useMediaQuery } from "@chakra-ui/react";
 import { Product } from "@prisma/client";
 import { useState, useEffect } from "react";
 import ProductCompact from "./product-compact";
@@ -19,12 +19,12 @@ import { Width } from "@/redux/reducers/product";
 import { useSearchStore } from "@/zustand/store";
 import PageNumberGrid from "../basket/pagination/page-number-grid";
 
+
 export default function ProductGrid(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [products, setProducts] =
-    useState<ResultType<"product", { currency: true }>[]>();
+  const [products, setProducts] = useState<ResultType<"product", { }>[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [isLessThan450px] = useMediaQuery("(max-width: 450px)");
@@ -36,6 +36,8 @@ export default function ProductGrid(): JSX.Element {
   );
   const getMaxPages = useSearchStore((state) => state.getMaxPages);
 
+  const perPage = useSearchStore((state) => state.params.perPage);
+
   // when click page number
   const handleClickPageNumber = (pageNumber: number) => {
     setParams({ pageNumber: pageNumber });
@@ -45,7 +47,7 @@ export default function ProductGrid(): JSX.Element {
   const loadData = () => {
     setIsLoading(true);
     getProductsBySearchParams(parseQueryParams(searchParams))
-      .then((res: ManyWithMetadata<"product", { currency: true }>) => {
+      .then((res: ManyWithMetadata<"product", { }>) => {
         setProducts(res.data);
       })
       .catch((error) => {
@@ -98,10 +100,10 @@ export default function ProductGrid(): JSX.Element {
     renderSkeleton()
   ) : products?.length ? (
     <Box className={styles.wrapper}>
-      {width == Width.WIDE && !isLessThan450px ? (
+      {perPage && (perPage === Width.WIDE && !isLessThan450px) ? (
         <Box className={styles.container_wide}>
           {products.map(
-            (product: ResultType<"product", { currency: true }>) => (
+            (product: ResultType<"product", { }>) => (
               <ProductWide key={product.id} {...product} />
             ),
           )}
@@ -109,7 +111,7 @@ export default function ProductGrid(): JSX.Element {
       ) : (
         <Box className={styles.container_compact}>
           {products.map(
-            (product: ResultType<"product", { currency: true }>) => (
+            (product: ResultType<"product", { }>) => (
               <ProductCompact key={product.id} {...product} />
             ),
           )}
@@ -124,6 +126,10 @@ export default function ProductGrid(): JSX.Element {
       />
     </Box>
   ) : (
-    <></>
+    <Card className={styles.wrapper} h="fit-content">
+      <CardBody>
+        <Heading fontSize="md">No products found</Heading>
+      </CardBody>
+    </Card>
   );
 }

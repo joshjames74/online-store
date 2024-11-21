@@ -2,13 +2,11 @@
 import { getAddressesByUserId } from "@/api/request/addressRequest";
 import AddAddressCard from "@/components/address/add-address-card";
 import AddressCard from "@/components/address/address-card";
-import { ThemeContext } from "@/contexts/theme-context";
 import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
   Grid,
   GridItem,
   Heading,
@@ -19,13 +17,13 @@ import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import styles from "./address-page.module.css";
 
+
 export default function AddressesPage({
   params,
 }: {
   params: { id: number };
 }): JSX.Element {
   const { id } = params;
-  const { theme } = useContext(ThemeContext);
 
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
