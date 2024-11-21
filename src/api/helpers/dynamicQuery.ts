@@ -29,7 +29,7 @@ type EntityQueryParams<T extends keyof TableMap, I extends IncludeMap[T]> = {
  * @returns {any} - A query object compatible with Prisma.
  *
  * @example
- * // Example usage with Prisma:
+ * // Example usage:
  * const query = createQueryFromField('productId', 42, { currency: true }, { review_score: 'DESC' }, 10, 5);
  * const results = prisma.product.findMany(query);
  */
