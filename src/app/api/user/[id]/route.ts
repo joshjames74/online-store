@@ -1,49 +1,66 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { deleteHelper, FieldValuePair, formatBodyToField, getHelper, putHelper } from '@/api/helpers/request';
-import { deleteUserById, getUserById, putUserByFields } from '@/api/services/userService';
-
+import { NextRequest, NextResponse } from "next/server";
+import {
+  deleteHelper,
+  FieldValuePair,
+  formatBodyToField,
+  getHelper,
+  putHelper,
+} from "@/api/helpers/request";
+import {
+  deleteUserById,
+  getUserById,
+  putUserByFields,
+} from "@/api/services/userService";
 
 // GET method
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   const { id } = params;
 
   if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await getHelper('usr', getUserById, parseInt(id));
+  return await getHelper("usr", getUserById, parseInt(id));
 }
-
 
 // DELETE method
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string }}): Promise<NextResponse> {
-
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   const { id } = params;
 
   if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await deleteHelper('usr', deleteUserById, parseInt(id));
+  return await deleteHelper("usr", deleteUserById, parseInt(id));
 }
-
 
 // PUT method
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string }}): Promise<NextResponse> {
-
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   const { id } = params;
 
   const body = await req.json();
-  
-  const searchField: FieldValuePair<'usr'> = { field: 'id', value: parseInt(id) };
-  const putField = formatBodyToField<'usr'>(body);
+
+  const searchField: FieldValuePair<"usr"> = {
+    field: "id",
+    value: parseInt(id),
+  };
+  const putField = formatBodyToField<"usr">(body);
 
   if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await putHelper('usr', putUserByFields, searchField, putField);
+  return await putHelper("usr", putUserByFields, searchField, putField);
 }

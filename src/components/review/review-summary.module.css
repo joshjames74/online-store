@@ -1,49 +1,49 @@
 .container {
-    display: block;
-    gap: 0.4em;
+  display: block;
+  gap: 0.4em;
 }
 
-
 .stars_container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
 }
 
 .star_container {
-    display: grid;
-    grid-template-columns: 1fr 7fr 1fr;
-    white-space: nowrap;
-    gap: 0.4em;
-    align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 7fr 1fr;
+  white-space: nowrap;
+  gap: 0.4em;
+  align-items: center;
 }
 
 .star_text {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
-.selected, .star_container:hover {
-    text-decoration: underline;
+.selected,
+.star_container:hover {
+  text-decoration: underline;
 }
 
 .star_content {
-    flex-grow: 1;
-    min-width: 0;
-    display: grid;
-    border: 1px solid;
-    border-radius: 5px;
-    box-sizing: border-box;
-    height: 1em;
-    overflow: hidden;
+  flex-grow: 1;
+  min-width: 0;
+  display: grid;
+  border: 1px solid;
+  border-radius: 5px;
+  box-sizing: border-box;
+  height: 1em;
+  overflow: hidden;
 }
 
 .review_stars_container {
-    display: flex;
-    flex-direction: row;
-    gap: 0.4em;
+  display: flex;
+  flex-direction: row;
+  gap: 0.4em;
 }
 
 .header {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }

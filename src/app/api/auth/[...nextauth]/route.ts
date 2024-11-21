@@ -1,8 +1,8 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import prisma from '../../../../lib/prisma';
-import { headers } from 'next/headers';
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import prisma from "../../../../lib/prisma";
+import { headers } from "next/headers";
 
 const authOptions = {
   //adapter: PrismaAdapter(prisma),
@@ -36,10 +36,10 @@ const authOptions = {
   //     return true;
   //   },
   // },
- 
+
   //session: { strategy: 'jwt' },
 };
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST};
+export { handler as GET, handler as POST };

@@ -1,16 +1,31 @@
-import { ThemeContext } from "@/contexts/theme-context"
+import { ThemeContext } from "@/contexts/theme-context";
 import Link from "next/link";
-import { Box, Card, CardBody, Grid, GridItem, Heading, HStack, Image, Stack, Text, useMediaQuery } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Grid,
+  GridItem,
+  Heading,
+  HStack,
+  Image,
+  Stack,
+  Text,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { useContext } from "react";
 import styles from "./product-wide.module.css";
 import { Product } from "@prisma/client";
 import ProductReviewBox from "./product-review-box";
 import { ResultType } from "@/api/helpers/types";
-import { convertPrice, formatPrice, getProductPrice } from "@/api/helpers/utils";
+import {
+  convertPrice,
+  formatPrice,
+  getProductPrice,
+} from "@/api/helpers/utils";
 import { UserContext } from "@/contexts/user-context";
 import { SettingsContext } from "@/contexts/settings-context";
 import ProductCompact from "./product-compact";
-
 
 // export default function ProductWide({...product}: Product): JSX.Element {
 
@@ -31,42 +46,67 @@ import ProductCompact from "./product-compact";
 //     )
 // }
 
+export default function ProductWide({
+  ...product
+}: ResultType<"product", { currency: true }>): JSX.Element {
+  const { theme } = useContext(ThemeContext);
+  const { user } = useContext(UserContext);
+  const { defaultImageUrl } = useContext(SettingsContext);
 
-export default function ProductWide({...product}: ResultType<'product', { currency: true }>): JSX.Element {
+  if (!product.currency) {
+    console.log(product);
+    return <></>;
+  }
 
-    const { theme } = useContext(ThemeContext);
-    const { user } = useContext(UserContext);
-    const { defaultImageUrl } = useContext(SettingsContext);
-
-    if (!product.currency) {
-        console.log(product);
-        return <></>
-    }
-
-    return (
-        <Link href={`/product/${product.id}`}>
-            <Card maxW="2xl" minW={theme.sizes.minWidth}>
-                <CardBody>
-                    <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2} w="full" >
-                        <GridItem colSpan={1} bgColor={theme.colors.background.secondary} display="flex" padding="0.4em" borderRadius="1em" justifyContent="center" alignItems="center">
-                            <Image objectFit="cover" h="auto" w="100%" borderRadius="md" src={defaultImageUrl} alt={product.image_alt}  />
-                        </GridItem>
-                        <GridItem colSpan={1} overflow="hidden" textOverflow="ellipsis">
-                            <Stack gap={1}>
-                                <Heading noOfLines={1} fontSize="2xl" w="full">{product.title}</Heading>
-                                <ProductReviewBox {...product} />
-                                <Heading fontSize="lg" color={theme.colors.accent.tertiary}>
-                                    {getProductPrice(product.price, product.currency.gbp_exchange_rate, user)}
-                                </Heading>
-                                <Text fontSize="xs" noOfLines={6} overflow="hidden" textOverflow="ellipsis">
-                                    {product.description}
-                                </Text>
-                            </Stack>
-                        </GridItem>
-                    </Grid>
-                </CardBody>
-            </Card>
-        </Link>
-    )
+  return (
+    <Link href={`/product/${product.id}`}>
+      <Card maxW="2xl" minW={theme.sizes.minWidth}>
+        <CardBody>
+          <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2} w="full">
+            <GridItem
+              colSpan={1}
+              bgColor={theme.colors.background.secondary}
+              display="flex"
+              padding="0.4em"
+              borderRadius="1em"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Image
+                objectFit="cover"
+                h="auto"
+                w="100%"
+                borderRadius="md"
+                src={defaultImageUrl}
+                alt={product.image_alt}
+              />
+            </GridItem>
+            <GridItem colSpan={1} overflow="hidden" textOverflow="ellipsis">
+              <Stack gap={1}>
+                <Heading noOfLines={1} fontSize="2xl" w="full">
+                  {product.title}
+                </Heading>
+                <ProductReviewBox {...product} />
+                <Heading fontSize="lg" color={theme.colors.accent.tertiary}>
+                  {getProductPrice(
+                    product.price,
+                    product.currency.gbp_exchange_rate,
+                    user,
+                  )}
+                </Heading>
+                <Text
+                  fontSize="xs"
+                  noOfLines={6}
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  {product.description}
+                </Text>
+              </Stack>
+            </GridItem>
+          </Grid>
+        </CardBody>
+      </Card>
+    </Link>
+  );
 }
-

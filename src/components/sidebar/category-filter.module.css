@@ -1,10 +1,10 @@
 .container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .checkbox_container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
 }

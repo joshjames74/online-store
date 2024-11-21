@@ -32,16 +32,15 @@ export default function RootLayout({
 }: Readonly<{
   children: JSX.Element;
 }>) {
-
   return (
-    <html lang="en" style={{ margin: 0, padding: 0, boxSizing: "border-box"}}>
+    <html lang="en" style={{ margin: 0, padding: 0, boxSizing: "border-box" }}>
       <body style={{ minWidth: "320px" }}>
         <SessionProvider>
           <Provider>
-              <div style={{ gridColumn: "1/-1"}}>
-                <NavBar />
-                {children}
-              </div>
+            <div style={{ gridColumn: "1/-1" }}>
+              <NavBar />
+              {children}
+            </div>
           </Provider>
         </SessionProvider>
       </body>

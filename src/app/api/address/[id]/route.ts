@@ -1,30 +1,36 @@
 import { deleteHelper, getHelper } from "@/api/helpers/request";
-import { deleteAddressById, getAddressById } from "@/api/services/addressService";
+import {
+  deleteAddressById,
+  getAddressById,
+} from "@/api/services/addressService";
 import { NextRequest, NextResponse } from "next/server";
-
 
 // GET method
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
-    const { id } = params;
-  
-    if (!id || isNaN(Number(id))) {
-      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
-    }
-  
-    return await getHelper(getAddressById, parseInt(id));
-}
-  
-
-// DELETE method
-
-export async function DELETE(req: NextRequest, { params }: { params: { id: string }}): Promise<NextResponse> {
-
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   const { id } = params;
 
   if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await deleteHelper('address', deleteAddressById, parseInt(id));
+  return await getHelper(getAddressById, parseInt(id));
+}
+
+// DELETE method
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
+  const { id } = params;
+
+  if (!id || isNaN(Number(id))) {
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+  }
+
+  return await deleteHelper("address", deleteAddressById, parseInt(id));
 }

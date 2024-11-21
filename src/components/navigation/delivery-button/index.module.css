@@ -1,37 +1,37 @@
 .text_button {
-    padding: 1em;
+  padding: 1em;
 }
 
 .container {
-    display: grid;
-    grid-template-columns: 1fr 5fr;
-    justify-content: space-evenly;
-    gap: 0.4em;
-    min-width: minmax(100px, fit-content);
-    max-width: 200px !important;
-    /* text-overflow: ellipsis;
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  justify-content: space-evenly;
+  gap: 0.4em;
+  min-width: minmax(100px, fit-content);
+  max-width: 200px !important;
+  /* text-overflow: ellipsis;
     overflow: hidden; */
 }
 
 @media screen and (max-width: 500px) {
-    .container {
-        display: none !important;
-    }
+  .container {
+    display: none !important;
+  }
 }
 
 .text_container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-size: 10px;
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 10px;
+  text-align: left;
 }
 
 .text_wrap {
-    overflow: hidden;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .map_icon {
-    color: black;
+  color: black;
 }

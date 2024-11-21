@@ -1,85 +1,100 @@
 import { QueryParams } from "@/redux/reducers/product";
-import { OrderField, OrderRelation, QueryField, WhereField, WhereRelation } from ".";
+import {
+  OrderField,
+  OrderRelation,
+  QueryField,
+  WhereField,
+  WhereRelation,
+} from ".";
 import { TableMap } from "../helpers/types";
 
-
-export type ReviewQueryTransformer = (params: Partial<ReviewParams>) => QueryField<'review'>;
-
+export type ReviewQueryTransformer = (
+  params: Partial<ReviewParams>,
+) => QueryField<"review">;
 
 export enum ReviewFilter {
-    SCORE_LOW_TO_HIGH = 1,
-    SCORE_HIGH_TO_LOW = 2,
-    DATE_NEW_TO_OLD = 3,
-    DATE_OLD_TO_NEW = 4
+  SCORE_LOW_TO_HIGH = 1,
+  SCORE_HIGH_TO_LOW = 2,
+  DATE_NEW_TO_OLD = 3,
+  DATE_OLD_TO_NEW = 4,
 }
 
 export type ReviewParams = {
-    productId: number,
-    score: number,
-    review_filter: ReviewFilter
-}
+  productId: number;
+  score: number;
+  review_filter: ReviewFilter;
+};
 
+export const reviewQueryTransformer: ReviewQueryTransformer = (
+  params: Partial<ReviewParams>,
+): QueryField<"review"> => {
+  /**
+   *  Transform search parameters into a custom seach field type for a particular search
+   */
 
+  const whereFields: WhereField<"review">[] = [];
+  const orderFields: OrderField<"review">[] = [];
 
-export const reviewQueryTransformer: ReviewQueryTransformer = (params: Partial<ReviewParams>): QueryField<'review'> => {
+  if (params.productId) {
+    whereFields.push({
+      targets: ["productId"],
+      data: params.productId,
+      relation: [WhereRelation.EQUALS],
+    });
+  }
 
-    /**
-     *  Transform search parameters into a custom seach field type for a particular search
-     */
+  if (params.score) {
+    whereFields.push({
+      targets: ["score"],
+      data: params.score,
+      relation: [WhereRelation.EQUALS],
+    });
+  }
 
-    const whereFields: WhereField<'review'>[] = [];
-    const orderFields: OrderField<'review'>[] = []
+  if (params.review_filter) {
+    let relation: OrderRelation = OrderRelation.ASC;
+    let targets: TableMap["review"][] = [];
 
-    if (params.productId) {
-        whereFields.push({
-            targets: ['productId'],
-            data: params.productId,
-            relation: [WhereRelation.EQUALS]
-        })
-    };
-
-    if (params.score) {
-        whereFields.push({ 
-            targets: ['score'], 
-            data: params.score, 
-            relation: [WhereRelation.EQUALS] 
-        })
+    // if descending order
+    if (
+      params.review_filter === ReviewFilter.DATE_NEW_TO_OLD ||
+      params.review_filter === ReviewFilter.SCORE_HIGH_TO_LOW
+    ) {
+      relation = OrderRelation.DESC;
     }
 
-
-    if (params.review_filter) {
-        
-        let relation: OrderRelation = OrderRelation.ASC;
-        let targets: TableMap['review'][] = [];
-
-        // if descending order
-        if (params.review_filter === ReviewFilter.DATE_NEW_TO_OLD || params.review_filter === ReviewFilter.SCORE_HIGH_TO_LOW) {
-            relation = OrderRelation.DESC;
-        };
-
-        // if ascending order
-        if (params.review_filter === ReviewFilter.DATE_OLD_TO_NEW || params.review_filter === ReviewFilter.SCORE_LOW_TO_HIGH) {
-            relation = OrderRelation.ASC
-        };
-
-        // if relating to score
-        if (params.review_filter === ReviewFilter.SCORE_HIGH_TO_LOW || params.review_filter === ReviewFilter.SCORE_LOW_TO_HIGH) {
-            targets = ['score'];
-        };
-
-        // if relating to date
-        if (params.review_filter === ReviewFilter.DATE_NEW_TO_OLD || params.review_filter === ReviewFilter.DATE_OLD_TO_NEW) {
-            targets = ['date']
-        }
-
-        orderFields.push({
-            targets: targets,
-            relation: relation
-        })
+    // if ascending order
+    if (
+      params.review_filter === ReviewFilter.DATE_OLD_TO_NEW ||
+      params.review_filter === ReviewFilter.SCORE_LOW_TO_HIGH
+    ) {
+      relation = OrderRelation.ASC;
     }
 
-    return {
-        whereFields: whereFields,
-        orderFields: orderFields,
-    };
-}
+    // if relating to score
+    if (
+      params.review_filter === ReviewFilter.SCORE_HIGH_TO_LOW ||
+      params.review_filter === ReviewFilter.SCORE_LOW_TO_HIGH
+    ) {
+      targets = ["score"];
+    }
+
+    // if relating to date
+    if (
+      params.review_filter === ReviewFilter.DATE_NEW_TO_OLD ||
+      params.review_filter === ReviewFilter.DATE_OLD_TO_NEW
+    ) {
+      targets = ["date"];
+    }
+
+    orderFields.push({
+      targets: targets,
+      relation: relation,
+    });
+  }
+
+  return {
+    whereFields: whereFields,
+    orderFields: orderFields,
+  };
+};

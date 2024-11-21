@@ -1,71 +1,69 @@
 @media screen and (max-width: 1100px) {
-    .container {
-        max-width: 600px !important;
-    }
+  .container {
+    max-width: 600px !important;
+  }
 }
 
 @media screen and (max-width: 1000px) {
-    .container {
-        max-width: 500px !important;
-    }
+  .container {
+    max-width: 500px !important;
+  }
 }
 
 @media screen and (max-width: 900px) {
-    .container {
-        max-width: 440px !important;
-    }
+  .container {
+    max-width: 440px !important;
+  }
 }
 
 @media screen and (max-width: 800px) {
-    .container {
-        max-width: 600px !important;
-    }
+  .container {
+    max-width: 600px !important;
+  }
 }
 
 @media screen and (max-width: 650px) {
-    .container {
-        max-width: 500px !important;
-    }
+  .container {
+    max-width: 500px !important;
+  }
 }
 
 @media screen and (max-width: 550px) {
-    .container {
-        max-width: 400px !important;
-    }
+  .container {
+    max-width: 400px !important;
+  }
 }
 
 @media screen and (max-width: 450px) {
-    .container {
-        max-width: 320px !important;
-    }
+  .container {
+    max-width: 320px !important;
+  }
 }
 
-
-
 .user_container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.2em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.2em;
 }
 
 .user_image {
-    height: 30px;
-    border-radius: 100%;
-    background-color: black;
+  height: 30px;
+  border-radius: 100%;
+  background-color: black;
 }
 
 .review_container {
-    display: flex;
-    flex-direction: row;
-    gap: 0.4em;
+  display: flex;
+  flex-direction: row;
+  gap: 0.4em;
 }
 
 .delete_text {
-    text-align: right;
+  text-align: right;
 }
 
 .delete_text:hover {
-    text-decoration: underline;
-    cursor: pointer;
+  text-decoration: underline;
+  cursor: pointer;
 }

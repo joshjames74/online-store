@@ -1,5 +1,17 @@
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Heading, HStack, SkeletonText, Stack, Text } from "@chakra-ui/react";
-import styles from "./review-summary.module.css"
+import {
+  Box,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Heading,
+  HStack,
+  SkeletonText,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import styles from "./review-summary.module.css";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import ReviewStars from "./review-stars";
@@ -34,7 +46,6 @@ import { useRouter } from "next/navigation";
 
 //     const { theme } = useContext(ThemeContext);
 
-    
 //     const params = useReviewSearchStore((state) => state.params);
 //     const clearParams = useReviewSearchStore((state) => state.clearParams);
 //     const setParams = useReviewSearchStore((state) => state.setParams);
@@ -53,8 +64,6 @@ import { useRouter } from "next/navigation";
 //     useEffect(() => {
 //         router.push(`?${getAsUrl()}`)
 //     }, [params]);
-
-
 
 //     return (isLoading ? <ReviewCardSkeleton /> :
 
@@ -92,103 +101,140 @@ import { useRouter } from "next/navigation";
 //             <Text _hover={{ textDecoration: "underline" }} fontSize="sm" onClick={() => handleClearFilters()}>Clear Filters</Text>
 //         </Box>
 
-
 //     )
 // }
 
+export default function ReviewSummary({
+  id,
+  score,
+}: {
+  id: number;
+  score: number;
+}): JSX.Element {
+  const [counts, setCounts] = useState<number[]>([]);
+  const [percentages, setPercentages] = useState<number[]>([]);
+  const [total, setTotal] = useState<number>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-export default function ReviewSummary({ id, score }: { id: number, score: number }): JSX.Element {
+  useEffect(() => {
+    setIsLoading(true);
+    getReviewCountsByProductId(id)
+      .then((res: number[]) => {
+        // compute total and percentages
+        const total = res.reduce((partialSum, curr) => partialSum + curr, 0);
+        const percentages = res.map((count: number) =>
+          total && total > 0 ? count / total : 0,
+        );
 
-    const [counts, setCounts] = useState<number[]>([]);
-    const [percentages, setPercentages] = useState<number[]>([]);
-    const [total, setTotal] = useState<number>();
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+        setCounts(res);
+        setTotal(total);
+        setPercentages(percentages);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
-    useEffect(() => {
-        setIsLoading(true);
-        getReviewCountsByProductId(id).then((res: number[]) => {
-            // compute total and percentages
-            const total = res.reduce((partialSum, curr) => partialSum + curr, 0)
-            const percentages = res.map((count: number) => (total && total > 0) ? count / total : 0)
+  const { theme } = useContext(ThemeContext);
 
-            setCounts(res);
-            setTotal(total);
-            setPercentages(percentages);
-        }).catch(error => {
-            console.log(error);
-        }).finally(() => {
-            setIsLoading(false);
-        });
-    }, [])
+  const params = useReviewSearchStore((state) => state.params);
+  const clearParams = useReviewSearchStore((state) => state.clearParams);
+  const setParams = useReviewSearchStore((state) => state.setParams);
+  const getAsUrl = useReviewSearchStore((state) => state.getAsUrl);
 
-    const { theme } = useContext(ThemeContext);
+  const handleClickReviewScore = (score: number) => {
+    setParams({ score: score });
+  };
 
-    
-    const params = useReviewSearchStore((state) => state.params);
-    const clearParams = useReviewSearchStore((state) => state.clearParams);
-    const setParams = useReviewSearchStore((state) => state.setParams);
-    const getAsUrl = useReviewSearchStore((state) => state.getAsUrl);
+  const handleClearFilters = () => {
+    clearParams();
+  };
 
-    const handleClickReviewScore = (score: number) => {
-        setParams({ score: score })
-    }
+  const router = useRouter();
 
-    const handleClearFilters = () => {
-        clearParams();
-    };
+  useEffect(() => {
+    router.push(`?${getAsUrl()}`);
+  }, [params]);
 
-    const router = useRouter();
+  return (
+    <Card h="fit-content" minW="xs">
+      <CardHeader paddingBottom={0}>
+        <Stack gap={1}>
+          <Heading fontSize="2xl">Customer Reviews</Heading>
+          {isLoading ? (
+            <SkeletonText noOfLines={1} />
+          ) : (
+            <>
+              <HStack>
+                <ReviewStars value={score} fontSize="xl" />
+                <Heading fontSize="md" fontWeight="semibold">
+                  {score} out of 5
+                </Heading>
+              </HStack>
+              <Heading fontSize="md" fontWeight="semibold">
+                {total} global reviews
+              </Heading>
+            </>
+          )}
+        </Stack>
+      </CardHeader>
 
-    useEffect(() => {
-        router.push(`?${getAsUrl()}`)
-    }, [params]);
+      <CardBody className={styles.body} paddingBottom={0} paddingTop="0.4em">
+        {isLoading ? (
+          <SkeletonText noOfLines={5} />
+        ) : (
+          Array.from({ length: 6 })
+            .reverse()
+            .map((_, index: number) => {
+              index = 5 - index;
+              const isSelected = index === params.score;
+              return (
+                <Box
+                  className={
+                    styles.star_container +
+                    " " +
+                    (isSelected ? styles.selected : "")
+                  }
+                  key={index}
+                  onClick={() => handleClickReviewScore(index)}
+                >
+                  <Text
+                    className={styles.star_text}
+                    color={theme.colors.accent.tertiary}
+                  >
+                    {index} star
+                  </Text>
+                  <Box
+                    style={{
+                      gridTemplateColumns: `${percentages[index]}fr ${1 - percentages[index]}fr`,
+                    }}
+                    className={styles.star_content}
+                    bgColor={theme.colors.border.primary}
+                  >
+                    <Box bgColor={theme.colors.accent.primary}></Box>
+                    <Box bgColor={theme.colors.background.primary}></Box>
+                  </Box>
+                  <Text color={theme.colors.accent.tertiary}>
+                    {Math.round(percentages[index] * 100)}%
+                  </Text>
+                </Box>
+              );
+            })
+        )}
+      </CardBody>
 
-    return (
-
-        <Card h="fit-content" minW="xs">
-
-            <CardHeader paddingBottom={0}>
-                <Stack gap={1}>
-                    <Heading fontSize="2xl">Customer Reviews</Heading>
-                    {isLoading 
-                    ? <SkeletonText noOfLines={1}/> 
-                    : <>
-                    <HStack>
-                        <ReviewStars value={score} fontSize="xl" />
-                        <Heading fontSize="md" fontWeight="semibold">{score} out of 5</Heading>
-                    </HStack>
-                    <Heading fontSize="md" fontWeight="semibold">{total} global reviews</Heading>
-                    </>}
-                </Stack>
-            </CardHeader>
-
-            <CardBody className={styles.body} paddingBottom={0} paddingTop="0.4em">
-                {isLoading 
-                ? <SkeletonText noOfLines={5}/>
-                : Array.from({ length: 6 }).reverse().map((_, index: number) => {
-                    index = 5 - index;
-                    const isSelected = index === params.score;
-                    return (
-                        <Box className={styles.star_container + ' ' + (isSelected ? styles.selected : '')} key={index}
-                            onClick={() => handleClickReviewScore(index)}>
-                            <Text className={styles.star_text} color={theme.colors.accent.tertiary}>{index} star</Text>
-                            <Box
-                                style={{ gridTemplateColumns: `${percentages[index]}fr ${1 - percentages[index]}fr` }}
-                                className={styles.star_content}
-                                bgColor={theme.colors.border.primary}>
-                                <Box bgColor={theme.colors.accent.primary}></Box>
-                                <Box bgColor={theme.colors.background.primary}></Box>
-                            </Box>
-                            <Text color={theme.colors.accent.tertiary}>{Math.round(percentages[index] * 100)}%</Text>
-                        </Box>)
-                })}
-            </CardBody>
-
-            <CardFooter paddingTop="0.4em">
-                <Text _hover={{ textDecoration: "underline" }} fontSize="sm" onClick={() => handleClearFilters()}>Clear Filters</Text>
-            </CardFooter>
-        </Card>
-
-
-    )
+      <CardFooter paddingTop="0.4em">
+        <Text
+          _hover={{ textDecoration: "underline" }}
+          fontSize="sm"
+          onClick={() => handleClearFilters()}
+        >
+          Clear Filters
+        </Text>
+      </CardFooter>
+    </Card>
+  );
 }

@@ -26,7 +26,6 @@ model Currency {
   symbol            String
   gbp_exchange_rate Float
   Usr               Usr[]
-  Product           Product[]
   Order             Order[]
 
   @@map("currency")
@@ -69,8 +68,6 @@ model Product {
   image_url     String     @default("https://webneel.com/daily/sites/default/files/images/daily/08-2018/1-nature-photography-spring-season-mumtazshamsee.jpg")
   image_alt     String     @db.VarChar(100)
   price         Float
-  currency      Currency   @relation(fields: [currencyId], references: [id])
-  currencyId    Int 
   review_score  Float      @default(0)
   review_count  Int        @default(0)
   order_count   Int        @default(0)

@@ -8,38 +8,48 @@ import { Box, Card } from "@chakra-ui/react";
 import { Product } from "@prisma/client";
 import { useEffect, useState } from "react";
 
-export default function Page({ params }: { params: { id: string }}): JSX.Element {
+export default function Page({
+  params,
+}: {
+  params: { id: string };
+}): JSX.Element {
+  const { id } = params;
 
-    const { id } = params;
+  const [product, setProduct] = useState<Product>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [product, setProduct] = useState<Product>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+  useEffect(() => {
+    setIsLoading(true);
+    getProductById(parseInt(id))
+      .then((res) => {
+        setProduct(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
-    useEffect(() => {
-        setIsLoading(true);
-        getProductById(parseInt(id)).then(res => {
-            setProduct(res)
-        }).catch(error => {
-            console.error(error);
-        }).finally(() => {
-            setIsLoading(false);
-        });
-    }, [])
-    
-    
-    if (!id || isNaN(parseInt(id))) {
-        //redirect to 404
-        return <Box>Page not found</Box>
-    }
+  if (!id || isNaN(parseInt(id))) {
+    //redirect to 404
+    return <Box>Page not found</Box>;
+  }
 
-
-    return (
-        <Box h="5000px">
-            {isLoading || !product ? <ProductPageSkeleton /> : <ProductPage {...product}/>}
-            <section id="reviews">
-                <ReviewGrid id={parseInt(id)} score={product?.review_score ? product?.review_score : 0} />
-            </section>
-        </Box>
-    )
-};
-
+  return (
+    <Box h="5000px">
+      {isLoading || !product ? (
+        <ProductPageSkeleton />
+      ) : (
+        <ProductPage {...product} />
+      )}
+      <section id="reviews">
+        <ReviewGrid
+          id={parseInt(id)}
+          score={product?.review_score ? product?.review_score : 0}
+        />
+      </section>
+    </Box>
+  );
+}

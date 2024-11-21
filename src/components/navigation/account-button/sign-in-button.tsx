@@ -1,11 +1,10 @@
 import { Button } from "@chakra-ui/react";
 import Link from "next/link";
 
-
 export default function SignInButton(): JSX.Element {
-    return (
+  return (
     <Link href="/auth/signin">
-        <Button>Sign in</Button>
+      <Button>Sign in</Button>
     </Link>
-    )
+  );
 }

@@ -1,203 +1,268 @@
 import { getProductPrice } from "@/api/helpers/utils";
-import { deleteBasketItemById, getBasketByUserId, putBasketItemQuantityById } from "@/api/request/basketRequest";
+import {
+  deleteBasketItemById,
+  getBasketByUserId,
+  putBasketItemQuantityById,
+} from "@/api/request/basketRequest";
 import { BasketItemWithProductAndCurrency } from "@/api/services/basketItemService";
 import { SettingsContext } from "@/contexts/settings-context";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
-import { CheckCircleFilled, DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
-import { Box, Button, CircularProgress, Grid, GridItem, Heading, HStack, Image, SliderFilledTrack, Stack, Text, useMediaQuery } from "@chakra-ui/react";
+import {
+  CheckCircleFilled,
+  DeleteOutlined,
+  MinusOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  GridItem,
+  Heading,
+  HStack,
+  Image,
+  SliderFilledTrack,
+  Stack,
+  Text,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import ProductWide from "../product/product-wide";
 import ProductCompact from "../product/product-compact";
 
+export default function BasketProductCard({
+  basketItem,
+  loadData,
+}: {
+  basketItem: BasketItemWithProductAndCurrency;
+  loadData: (cache?: RequestCache) => Promise<void>;
+}): JSX.Element {
+  const { theme } = useContext(ThemeContext);
+  const { user } = useContext(UserContext);
+  const { defaultImageUrl } = useContext(SettingsContext);
 
-export default function BasketProductCard({ basketItem, loadData }: { 
-        basketItem: BasketItemWithProductAndCurrency, loadData: (cache?: RequestCache) => Promise<void> }): JSX.Element {
+  const [isLessThan600px] = useMediaQuery("(max-width: 600px)");
+  const [isLessThan350px] = useMediaQuery("(max-width: 350px)");
 
-    const { theme } = useContext(ThemeContext);
-    const { user } = useContext(UserContext);
-    const { defaultImageUrl } = useContext(SettingsContext);
+  // set vars relating to displaying success, error, and loading
+  const [isLoadingQuantity, setIsLoadingQuantity] = useState<boolean>(false);
+  const [showStatus, setShowStatus] = useState<boolean>(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState<boolean>(false);
 
-    const [isLessThan600px] = useMediaQuery('(max-width: 600px)');
-    const [isLessThan350px] = useMediaQuery('(max-width: 350px)');
+  // increment product quantity
+  const handleIncrementQuantity = () => updateQuantity(1);
+  const handleDecrementQuantity = () => updateQuantity(-1);
 
-    // set vars relating to displaying success, error, and loading
-    const [isLoadingQuantity, setIsLoadingQuantity] = useState<boolean>(false);
-    const [showStatus, setShowStatus] = useState<boolean>(false);
-    const [isLoadingDelete, setIsLoadingDelete] = useState<boolean>(false);
-
-    // increment product quantity
-    const handleIncrementQuantity = () => updateQuantity(1)
-    const handleDecrementQuantity = () => updateQuantity(-1);
-
-    const updateQuantity = async (quantity: number) => {
-        setIsLoadingQuantity(true);
-        putBasketItemQuantityById(basketItem.id, Math.max(basketItem.quantity + quantity, 0)).catch(error => {
-            console.log(error);
-        }).finally(() => {
-            loadData("reload").then(res => {
-                setIsLoadingQuantity(false)
-                handleStatus();
-            });
-        })
-    }
-
-    const handleStatus = () => {
-        setShowStatus(true);
-        setTimeout(() => setShowStatus(false), 1000);
-    }
-
-    const handleDelete = async () => {
-        setIsLoadingDelete(true);
-        deleteBasketItemById(basketItem.id).then(res => {
-            loadData("reload").then(() => {}).catch(error => console.error(error));
-        }).catch(error => {
-            console.error(error);
-        }).finally(() => {
-            setIsLoadingDelete(false)
-        })
-    }
-
-
-    // return (
-    //     <HStack gap="0.4em" padding="0.4em" maxH="140px" h="fit-content" alignItems="stretch" flexDirection={isLessThan600px ? "column" : "row"}>
-
-    //         <Image h="100px" w="auto" objectFit="cover" borderRadius="md" src={defaultImageUrl} />
-
-    //         <Grid templateColumns="3fr 1fr" templateRows="3fr 1fr" w="100%" overflow="hidden">
-    //             <GridItem colStart={1} colEnd={1} maxH="fit-content">
-    //                 <Stack w="full">
-    //                     <Heading fontSize="lg">{basketItem.product.title}</Heading>
-    //                     <Text noOfLines={2} overflow="hidden" textOverflow="ellipsis" display={isLessThan600px ? "none" : "inline"}>
-    //                         {basketItem.product.description}
-    //                     </Text>
-    //                 </Stack>
-    //             </GridItem>
-
-    //             <GridItem colStart={2} rowStart={1}>
-    //                 <Heading
-    //                     marginLeft="auto"
-    //                     marginRight={0}
-    //                     maxW="fit-content"
-    //                     overflow="nowrap"
-    //                     fontSize="lg"
-    //                     color={theme.colors.accent.tertiary}>
-    //                     {getProductPrice(basketItem.product.price * basketItem.quantity, basketItem.product.currency.gbp_exchange_rate,  user)}
-    //                 </Heading>
-    //             </GridItem>
-
-    //             <GridItem colStart={1} rowStart={2}>
-    //                 <HStack>
-    //                     <HStack as={Button} gap={5} h="fit-content" padding="0.4em" fontSize="xs">
-    //                         <MinusOutlined onClick={handleDecrementQuantity} />
-    //                         {isLoadingQuantity 
-    //                         ? <CircularProgress isIndeterminate size="1em" />
-    //                         : showStatus 
-    //                             ? <Box color={theme.colors.semantic.success}><CheckCircleFilled /></Box> 
-    //                             : <Text>{basketItem.quantity}</Text>}
-    //                         <PlusOutlined onClick={handleIncrementQuantity} />
-    //                     </HStack>
-    //                     <Text 
-    //                         fontSize="xs"
-    //                         fill={theme.colors.semantic.error}
-    //                         _hover={{ color: theme.colors.text.focus, textDecoration: 'underline', cursor: "pointer" }}
-    //                         onClick={handleDelete}
-    //                         >
-    //                             <DeleteOutlined /> {isLoadingDelete ? <CircularProgress size="1em" isIndeterminate /> : <></>}
-    //                     </Text>
-    //                 </HStack>
-    //             </GridItem>
-
-    //         </Grid>
-
-    //     </HStack>
-    // )
-    return (
-        <HStack gap="0.4em" padding="0.4em" w="full" alignItems="center" justifyContent="space-between" flexDirection={isLessThan350px ? "column" : "row"}>
-
-            {isLessThan600px ? <ProductCompact {...basketItem.product}/> : <ProductWide {...basketItem.product}/>}
-
-            <Stack>
-    
-                <Heading
-                    marginLeft="auto"
-                    marginRight={0}
-                    maxW="fit-content"
-                    overflow="nowrap"
-                    fontSize="lg"
-                    color={theme.colors.accent.tertiary}>
-                    {getProductPrice(basketItem.product.price * basketItem.quantity, basketItem.product.currency.gbp_exchange_rate,  user)}
-                </Heading>
-
-                <HStack>
-                    <HStack as={Button} gap={5} h="fit-content" padding="0.4em" fontSize="xs">
-                        <MinusOutlined onClick={handleDecrementQuantity} />
-                        {isLoadingQuantity 
-                        ? <CircularProgress isIndeterminate size="1em" />
-                        : showStatus 
-                            ? <Box color={theme.colors.semantic.success}><CheckCircleFilled /></Box> 
-                            : <Text>{basketItem.quantity}</Text>}
-                        <PlusOutlined onClick={handleIncrementQuantity} />
-                    </HStack>
-                    <Text 
-                        fontSize="xs"
-                        fill={theme.colors.semantic.error}
-                        _hover={{ color: theme.colors.text.focus, textDecoration: 'underline', cursor: "pointer" }}
-                        onClick={handleDelete}
-                        >
-                            <DeleteOutlined /> {isLoadingDelete ? <CircularProgress size="1em" isIndeterminate /> : <></>}
-                    </Text>
-                </HStack>
-            </Stack>
-
-        </HStack>
+  const updateQuantity = async (quantity: number) => {
+    setIsLoadingQuantity(true);
+    putBasketItemQuantityById(
+      basketItem.id,
+      Math.max(basketItem.quantity + quantity, 0),
     )
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        loadData("reload").then((res) => {
+          setIsLoadingQuantity(false);
+          handleStatus();
+        });
+      });
+  };
 
-    // return (
-    //     <HStack gap="0.4em" padding="0.4em" maxH="100px" alignItems="stretch">
+  const handleStatus = () => {
+    setShowStatus(true);
+    setTimeout(() => setShowStatus(false), 1000);
+  };
 
-    //         <Image h="100px" w="auto" objectFit="cover" borderRadius="md" src={defaultImageUrl} />
+  const handleDelete = async () => {
+    setIsLoadingDelete(true);
+    deleteBasketItemById(basketItem.id)
+      .then((res) => {
+        loadData("reload")
+          .then(() => {})
+          .catch((error) => console.error(error));
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoadingDelete(false);
+      });
+  };
 
-    //         <HStack w="100%" justifyContent="space-between">
+  // return (
+  //     <HStack gap="0.4em" padding="0.4em" maxH="140px" h="fit-content" alignItems="stretch" flexDirection={isLessThan600px ? "column" : "row"}>
 
-    //             <Stack alignItems="stretch" h="full">
-    //                 <Heading fontSize="lg">{basketItem.product.title}</Heading>
-    //                 <Text noOfLines={1} textOverflow="ellipsis">{basketItem.product.description}</Text>
-    //             </Stack>
+  //         <Image h="100px" w="auto" objectFit="cover" borderRadius="md" src={defaultImageUrl} />
 
-    //             <Stack h="full" justifyContent="right" border="1px solid black">
+  //         <Grid templateColumns="3fr 1fr" templateRows="3fr 1fr" w="100%" overflow="hidden">
+  //             <GridItem colStart={1} colEnd={1} maxH="fit-content">
+  //                 <Stack w="full">
+  //                     <Heading fontSize="lg">{basketItem.product.title}</Heading>
+  //                     <Text noOfLines={2} overflow="hidden" textOverflow="ellipsis" display={isLessThan600px ? "none" : "inline"}>
+  //                         {basketItem.product.description}
+  //                     </Text>
+  //                 </Stack>
+  //             </GridItem>
 
-    //                 <Heading
-    //                     marginLeft="auto"
-    //                     marginRight={0}
-    //                     maxW="fit-content"
-    //                     overflow="nowrap"
-    //                     fontSize="lg"
-    //                     color={theme.colors.accent.tertiary}>
-    //                     {getProductPrice(basketItem.product.price * basketItem.quantity, basketItem.product.currency.gbp_exchange_rate,  user)}
-    //                 </Heading>
+  //             <GridItem colStart={2} rowStart={1}>
+  //                 <Heading
+  //                     marginLeft="auto"
+  //                     marginRight={0}
+  //                     maxW="fit-content"
+  //                     overflow="nowrap"
+  //                     fontSize="lg"
+  //                     color={theme.colors.accent.tertiary}>
+  //                     {getProductPrice(basketItem.product.price * basketItem.quantity, basketItem.product.currency.gbp_exchange_rate,  user)}
+  //                 </Heading>
+  //             </GridItem>
 
-    //                 <HStack as={Button} gap={5} h="fit-content" padding="0.4em" w="fit-content">
-    //                     <MinusOutlined onClick={handleDecrementQuantity} />
-    //                     {isLoadingQuantity 
-    //                     ? <CircularProgress isIndeterminate size="1em" />
-    //                     : showStatus 
-    //                     ? <Box color={theme.colors.semantic.success}><CheckCircleFilled /></Box> 
-    //                     : <Text>{basketItem.quantity}</Text>}
-    //                     <PlusOutlined onClick={handleIncrementQuantity} />
-    //                 </HStack>
+  //             <GridItem colStart={1} rowStart={2}>
+  //                 <HStack>
+  //                     <HStack as={Button} gap={5} h="fit-content" padding="0.4em" fontSize="xs">
+  //                         <MinusOutlined onClick={handleDecrementQuantity} />
+  //                         {isLoadingQuantity
+  //                         ? <CircularProgress isIndeterminate size="1em" />
+  //                         : showStatus
+  //                             ? <Box color={theme.colors.semantic.success}><CheckCircleFilled /></Box>
+  //                             : <Text>{basketItem.quantity}</Text>}
+  //                         <PlusOutlined onClick={handleIncrementQuantity} />
+  //                     </HStack>
+  //                     <Text
+  //                         fontSize="xs"
+  //                         fill={theme.colors.semantic.error}
+  //                         _hover={{ color: theme.colors.text.focus, textDecoration: 'underline', cursor: "pointer" }}
+  //                         onClick={handleDelete}
+  //                         >
+  //                             <DeleteOutlined /> {isLoadingDelete ? <CircularProgress size="1em" isIndeterminate /> : <></>}
+  //                     </Text>
+  //                 </HStack>
+  //             </GridItem>
 
-    //                 <Text 
-    //                 fill={theme.colors.semantic.error}
-    //                 _hover={{ color: theme.colors.text.focus, textDecoration: 'underline', cursor: "pointer" }}
-    //                 onClick={handleDelete}>
-    //                     <DeleteOutlined /> {isLoadingDelete ? <CircularProgress size="1em" isIndeterminate /> : <></>}
-    //                 </Text>
+  //         </Grid>
 
-    //             </Stack>
-    //         </HStack>
+  //     </HStack>
+  // )
+  return (
+    <HStack
+      gap="0.4em"
+      padding="0.4em"
+      w="full"
+      alignItems="center"
+      justifyContent="space-between"
+      flexDirection={isLessThan350px ? "column" : "row"}
+    >
+      {isLessThan600px ? (
+        <ProductCompact {...basketItem.product} />
+      ) : (
+        <ProductWide {...basketItem.product} />
+      )}
 
-    //     </HStack>
-    // )
+      <Stack>
+        <Heading
+          marginLeft="auto"
+          marginRight={0}
+          maxW="fit-content"
+          overflow="nowrap"
+          fontSize="lg"
+          color={theme.colors.accent.tertiary}
+        >
+          {getProductPrice(
+            basketItem.product.price * basketItem.quantity,
+            1,
+            user,
+          )}
+        </Heading>
 
+        <HStack>
+          <HStack
+            as={Button}
+            gap={5}
+            h="fit-content"
+            padding="0.4em"
+            fontSize="xs"
+          >
+            <MinusOutlined onClick={handleDecrementQuantity} />
+            {isLoadingQuantity ? (
+              <CircularProgress isIndeterminate size="1em" />
+            ) : showStatus ? (
+              <Box color={theme.colors.semantic.success}>
+                <CheckCircleFilled />
+              </Box>
+            ) : (
+              <Text>{basketItem.quantity}</Text>
+            )}
+            <PlusOutlined onClick={handleIncrementQuantity} />
+          </HStack>
+          <Text
+            fontSize="xs"
+            fill={theme.colors.semantic.error}
+            _hover={{
+              color: theme.colors.text.focus,
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={handleDelete}
+          >
+            <DeleteOutlined />{" "}
+            {isLoadingDelete ? (
+              <CircularProgress size="1em" isIndeterminate />
+            ) : (
+              <></>
+            )}
+          </Text>
+        </HStack>
+      </Stack>
+    </HStack>
+  );
+
+  // return (
+  //     <HStack gap="0.4em" padding="0.4em" maxH="100px" alignItems="stretch">
+
+  //         <Image h="100px" w="auto" objectFit="cover" borderRadius="md" src={defaultImageUrl} />
+
+  //         <HStack w="100%" justifyContent="space-between">
+
+  //             <Stack alignItems="stretch" h="full">
+  //                 <Heading fontSize="lg">{basketItem.product.title}</Heading>
+  //                 <Text noOfLines={1} textOverflow="ellipsis">{basketItem.product.description}</Text>
+  //             </Stack>
+
+  //             <Stack h="full" justifyContent="right" border="1px solid black">
+
+  //                 <Heading
+  //                     marginLeft="auto"
+  //                     marginRight={0}
+  //                     maxW="fit-content"
+  //                     overflow="nowrap"
+  //                     fontSize="lg"
+  //                     color={theme.colors.accent.tertiary}>
+  //                     {getProductPrice(basketItem.product.price * basketItem.quantity, basketItem.product.currency.gbp_exchange_rate,  user)}
+  //                 </Heading>
+
+  //                 <HStack as={Button} gap={5} h="fit-content" padding="0.4em" w="fit-content">
+  //                     <MinusOutlined onClick={handleDecrementQuantity} />
+  //                     {isLoadingQuantity
+  //                     ? <CircularProgress isIndeterminate size="1em" />
+  //                     : showStatus
+  //                     ? <Box color={theme.colors.semantic.success}><CheckCircleFilled /></Box>
+  //                     : <Text>{basketItem.quantity}</Text>}
+  //                     <PlusOutlined onClick={handleIncrementQuantity} />
+  //                 </HStack>
+
+  //                 <Text
+  //                 fill={theme.colors.semantic.error}
+  //                 _hover={{ color: theme.colors.text.focus, textDecoration: 'underline', cursor: "pointer" }}
+  //                 onClick={handleDelete}>
+  //                     <DeleteOutlined /> {isLoadingDelete ? <CircularProgress size="1em" isIndeterminate /> : <></>}
+  //                 </Text>
+
+  //             </Stack>
+  //         </HStack>
+
+  //     </HStack>
+  // )
 }

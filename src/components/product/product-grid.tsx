@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import ProductWide from "@/components/product/product-wide";
 import { Box, useMediaQuery } from "@chakra-ui/react";
@@ -10,42 +10,48 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { parseQueryParams } from "@/api/helpers/utils";
 import ProductWideSkeleton from "./product-wide-skeleton";
 import ProductCompactSkeleton from "./product-compact-skeleton";
-import { ManyWithMetadata, ModelsResponse, ResultType } from "@/api/helpers/types";
+import {
+  ManyWithMetadata,
+  ModelsResponse,
+  ResultType,
+} from "@/api/helpers/types";
 import { Width } from "@/redux/reducers/product";
 import { useSearchStore } from "@/zustand/store";
 import PageNumberGrid from "../basket/pagination/page-number-grid";
 
-
 export default function ProductGrid(): JSX.Element {
-
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  const [products, setProducts] = useState<ResultType<'product', { currency: true}>[]>();
+
+  const [products, setProducts] =
+    useState<ResultType<"product", { currency: true }>[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [isLessThan450px] = useMediaQuery('(max-width: 450px)');
-
+  const [isLessThan450px] = useMediaQuery("(max-width: 450px)");
 
   const width = useSearchStore((state) => state.params.width);
   const setParams = useSearchStore((state) => state.setParams);
-  const getURLSearchParams = useSearchStore((state) => state.getURLSearchParams);
+  const getURLSearchParams = useSearchStore(
+    (state) => state.getURLSearchParams,
+  );
   const getMaxPages = useSearchStore((state) => state.getMaxPages);
-
 
   // when click page number
   const handleClickPageNumber = (pageNumber: number) => {
-      setParams({ pageNumber: pageNumber });
-      router.replace(`/?${getURLSearchParams()}`);
-  }
-  
+    setParams({ pageNumber: pageNumber });
+    router.replace(`/?${getURLSearchParams()}`);
+  };
+
   const loadData = () => {
-      setIsLoading(true);
-      getProductsBySearchParams(parseQueryParams(searchParams)).then((res: ManyWithMetadata<'product', { currency: true }>) => {
+    setIsLoading(true);
+    getProductsBySearchParams(parseQueryParams(searchParams))
+      .then((res: ManyWithMetadata<"product", { currency: true }>) => {
         setProducts(res.data);
-      }).catch(error => {
+      })
+      .catch((error) => {
         console.error(error);
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   };
@@ -53,55 +59,71 @@ export default function ProductGrid(): JSX.Element {
   useEffect(() => {
     loadData();
   }, []);
-  
-  
+
   useEffect(() => {
-    loadData()
+    loadData();
   }, [searchParams]);
 
-  
-  // skeleton 
+  // skeleton
 
   const renderWideSkeleton = () => {
     return (
-    <Box className={styles.container_wide}>
-      {Array.from({ length: 20 }).map((_, index: number) => <ProductWideSkeleton key={index}/>)}
-    </Box>
-    )
+      <Box className={styles.container_wide}>
+        {Array.from({ length: 20 }).map((_, index: number) => (
+          <ProductWideSkeleton key={index} />
+        ))}
+      </Box>
+    );
   };
 
   const renderCompactSkeleton = () => {
     return (
       <Box className={styles.container_compact}>
-        {Array.from({ length: 20 }).map((_, index: number) => <ProductCompactSkeleton key={index}/>)}
+        {Array.from({ length: 20 }).map((_, index: number) => (
+          <ProductCompactSkeleton key={index} />
+        ))}
       </Box>
-    )
-  }
-
-  const renderSkeleton = (): JSX.Element => {
-    return width === Width.COMPACT ? renderCompactSkeleton() : renderWideSkeleton()
+    );
   };
 
+  const renderSkeleton = (): JSX.Element => {
+    return width === Width.COMPACT
+      ? renderCompactSkeleton()
+      : renderWideSkeleton();
+  };
 
   // to do: clean up conditionas
 
-  return (
-    isLoading ?
+  return isLoading ? (
     renderSkeleton()
-    : (
-      products?.length ?
-        (
-        <Box className={styles.wrapper}>
-        {(width == Width.WIDE && !isLessThan450px) 
-              ? (<Box className={styles.container_wide}>
-                   {products.map((product: ResultType<'product', { currency: true }>) => <ProductWide key={product.id} {...product} />)}
-                 </Box>)
-              : (<Box className={styles.container_compact}>
-                  {products.map((product: ResultType<'product', { currency: true }>) => <ProductCompact key={product.id} {...product} />)}
-                </Box>)}
-          <PageNumberGrid params={{ pageNumber: parseQueryParams(searchParams).pageNumber || 0, onClickPageNumber: handleClickPageNumber, maxPages: getMaxPages() }}/>
+  ) : products?.length ? (
+    <Box className={styles.wrapper}>
+      {width == Width.WIDE && !isLessThan450px ? (
+        <Box className={styles.container_wide}>
+          {products.map(
+            (product: ResultType<"product", { currency: true }>) => (
+              <ProductWide key={product.id} {...product} />
+            ),
+          )}
         </Box>
-        )
-        : <></>)
+      ) : (
+        <Box className={styles.container_compact}>
+          {products.map(
+            (product: ResultType<"product", { currency: true }>) => (
+              <ProductCompact key={product.id} {...product} />
+            ),
+          )}
+        </Box>
+      )}
+      <PageNumberGrid
+        params={{
+          pageNumber: parseQueryParams(searchParams).pageNumber || 0,
+          onClickPageNumber: handleClickPageNumber,
+          maxPages: getMaxPages(),
+        }}
+      />
+    </Box>
+  ) : (
+    <></>
   );
 }

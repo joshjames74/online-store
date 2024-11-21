@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "prettier": "npx prettier --write ."
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
@@ -43,6 +44,7 @@
     "jest-mock-extended": "^4.0.0-beta1",
     "node-mocks-http": "^1.16.1",
     "postcss": "^8",
+    "prettier": "^3.3.3",
     "prisma": "^5.19.1",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.2.5",
