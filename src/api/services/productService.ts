@@ -19,27 +19,27 @@ import {
   ModelsResponse,
   ResultType,
 } from "../helpers/types";
-import { convertPrice } from "../helpers/utils";
+
 
 // GET methods
 
 export async function getProductById(
   id: number,
-): Promise<ResultType<"product", { }> | void> {
+): Promise<ResultType<"product", { seller: true }> | void> {
   return getOneEntityByField("product", "id", id);
 }
 
-export async function getProductByUserId(id: number): Promise<Product | void> {
+export async function getProductByUserId(id: number): Promise<ResultType<"product", { seller: true }> | void> {
   return getOneEntityByField("product", "sellerId", id);
 }
 
-export async function getAllProducts(): Promise<Product[] | void> {
+export async function getAllProducts(): Promise<ResultType<"product", { seller: true }>[] | void> {
   return getAllEntity("product");
 }
 
 export async function getProductBySearch(
   params: Partial<ProductParams>,
-): Promise<ManyWithMetadata<"product", {}> | void> {
+): Promise<ManyWithMetadata<"product", { seller: true }> | void> {
 
   // convert parameters to query objects
   const { whereQuery, orderQuery, skip, take } = queryParamsToPrismaQuery(
@@ -54,6 +54,7 @@ export async function getProductBySearch(
     orderQuery,
     skip,
     take,
+    { seller: true }
   );
 
   // get metadata
@@ -71,7 +72,7 @@ export async function getProductBySearch(
     price: { max: max_price, min: 0 },
   };
 
-  const response: ModelsResponse<"product"> = {
+  const response: ManyWithMetadata<"product", { seller: true }> = {
     data: products,
     metadata: metadata,
   };

@@ -2,4 +2,5 @@
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   width: min-content;
+  align-items: center;
 }

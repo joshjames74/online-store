@@ -8,7 +8,7 @@ import { ProductParams } from "../transformers/productSearchTransformer";
 export async function getProductById(
   id: number,
   cache?: RequestCache,
-): Promise<ResultType<"product", { }>> {
+): Promise<ResultType<"product", { seller: true }>> {
   const response = await fetch(`/api/product/${id}`, {
     method: "GET",
     cache: cache ? cache : "force-cache",
@@ -30,7 +30,7 @@ export async function getAllProducts(): Promise<Product[]> {
 export async function getProductsBySearchParams(
   params: Partial<ProductParams>,
   cache?: RequestCache,
-): Promise<ManyWithMetadata<"product", { }>> {
+): Promise<ManyWithMetadata<"product", { seller: true }>> {
   const url = buildUrl("/api/product", params);
   const response = await fetch(url, {
     method: "GET",

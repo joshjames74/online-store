@@ -1,6 +1,7 @@
 import { ThemeContext } from "@/contexts/theme-context";
 import Link from "next/link";
 import {
+  Avatar,
   Box,
   Card,
   CardBody,
@@ -48,7 +49,7 @@ import ProductCompact from "./product-compact";
 
 export default function ProductWide({
   ...product
-}: ResultType<"product", { }>): JSX.Element {
+}: ResultType<"product", { seller: true }>): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { defaultImageUrl } = useContext(SettingsContext);
@@ -82,6 +83,10 @@ export default function ProductWide({
                   {product.title}
                 </Heading>
                 <ProductReviewBox {...product} />
+                <HStack alignItems="center" gap="0.2em">
+                  <Avatar name={product.seller?.name} size="2xs"/>
+                  <Heading fontSize="sm" fontWeight="medium">{product.seller?.name}</Heading>
+                </HStack>
                 <Heading fontSize="lg" color={theme.colors.accent.tertiary}>
                   {convertAndFormatToUserCurrency(
                     product.price,

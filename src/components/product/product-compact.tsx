@@ -1,6 +1,7 @@
 import { ThemeContext } from "@/contexts/theme-context";
 import Link from "next/link";
 import {
+  Avatar,
   Box,
   Card,
   CardBody,
@@ -24,7 +25,7 @@ import { SettingsContext } from "@/contexts/settings-context";
 
 export default function ProductCompact({
   ...product
-}: ResultType<"product", { }>): JSX.Element {
+}: ResultType<"product", { seller: true }>): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { defaultImageUrl } = useContext(SettingsContext);
@@ -51,11 +52,12 @@ export default function ProductCompact({
               )}
             </Heading>
             <HStack gap={1}>
+              <Avatar name={product.seller?.name} size="2xs"/>
               <ReviewStars value={product.review_score}></ReviewStars>
               <Text fontSize="xs" fontWeight="bold">
                 {product.review_score.toPrecision(2).toString()}
               </Text>
-              <Text fontSize="xs">({product.review_count})</Text>
+              <Text fontSize="sm">({product.review_count})</Text>
             </HStack>
           </Stack>
         </CardBody>

@@ -24,7 +24,7 @@ export default function ProductGrid(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [products, setProducts] = useState<ResultType<"product", { }>[]>();
+  const [products, setProducts] = useState<ResultType<"product", { seller: true }>[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [isLessThan450px] = useMediaQuery("(max-width: 450px)");
@@ -47,7 +47,7 @@ export default function ProductGrid(): JSX.Element {
   const loadData = () => {
     setIsLoading(true);
     getProductsBySearchParams(parseQueryParams(searchParams))
-      .then((res: ManyWithMetadata<"product", { }>) => {
+      .then((res: ManyWithMetadata<"product", { seller: true }>) => {
         setProducts(res.data);
       })
       .catch((error) => {
@@ -103,7 +103,7 @@ export default function ProductGrid(): JSX.Element {
       {perPage && (perPage === Width.WIDE && !isLessThan450px) ? (
         <Box className={styles.container_wide}>
           {products.map(
-            (product: ResultType<"product", { }>) => (
+            (product: ResultType<"product", { seller: true }>) => (
               <ProductWide key={product.id} {...product} />
             ),
           )}
