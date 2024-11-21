@@ -18,7 +18,7 @@ import styles from "./product-compact.module.css";
 import { Product } from "@prisma/client";
 import ReviewStars from "../review/review-stars";
 import { ResultType } from "@/api/helpers/types";
-import { getProductPrice } from "@/api/helpers/utils";
+import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import { UserContext } from "@/contexts/user-context";
 import { SettingsContext } from "@/contexts/settings-context";
 
@@ -45,9 +45,8 @@ export default function ProductCompact({
               {product.title}
             </Heading>
             <Heading fontSize="md" color={theme.colors.accent.tertiary}>
-              {getProductPrice(
+              {convertAndFormatToUserCurrency(
                 product.price,
-                1,
                 user,
               )}
             </Heading>

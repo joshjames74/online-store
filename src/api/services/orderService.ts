@@ -29,6 +29,8 @@ export type OrderView = ResultType<
     usr: true;
   }
 >;
+
+
 // GET methods
 
 export async function getOrderViewById(id: number): Promise<any> {

@@ -1,4 +1,4 @@
-import { getProductPrice } from "@/api/helpers/utils";
+import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import {
   deleteBasketItemById,
   getBasketByUserId,
@@ -170,9 +170,8 @@ export default function BasketProductCard({
           fontSize="lg"
           color={theme.colors.accent.tertiary}
         >
-          {getProductPrice(
+          {convertAndFormatToUserCurrency(
             basketItem.product.price * basketItem.quantity,
-            1,
             user,
           )}
         </Heading>

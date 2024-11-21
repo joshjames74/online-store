@@ -1,6 +1,9 @@
 import { Address } from "@prisma/client";
 import { ResultType } from "../helpers/types";
 
+
+// GET methods
+
 export async function getAddressesByUserId(
   id: number,
   cache?: RequestCache,
@@ -14,6 +17,7 @@ export async function getAddressesByUserId(
   }
   return response.json();
 }
+
 
 // POST methods
 
@@ -30,6 +34,7 @@ export async function postAddress(
   }
   return response.json();
 }
+
 
 // DELETE methods
 

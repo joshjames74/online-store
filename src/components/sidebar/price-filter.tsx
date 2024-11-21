@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from "react";
 import { useSearchStore } from "@/zustand/store";
 import {
   formatPrice,
-  getProductPrice,
+  convertAndFormatToUserCurrency,
 } from "@/api/helpers/utils";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { ModelsResponse } from "@/api/helpers/types";
@@ -61,15 +61,14 @@ export default function PriceFilter(): JSX.Element {
       ) : (
         <>
           <Text fontWeight="semibold">
-            {getProductPrice(
+            {convertAndFormatToUserCurrency(
               min,
-              1,
               user,
             )}
             -
-            {formatPrice(
+            {convertAndFormatToUserCurrency(
               (sliderValue || 0),
-              user && user.currency ? user.currency.code : "GBP",
+              user
             )}
           </Text>
           <Slider

@@ -31,7 +31,7 @@ import {
 import { UserContext } from "@/contexts/user-context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getProductPrice } from "@/api/helpers/utils";
+import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import { ResultType } from "@/api/helpers/types";
 import ProductBasketCard from "./product-basket-card";
 
@@ -113,9 +113,8 @@ export default function ProductPage(
                 fontWeight="semibold"
                 color={theme.colors.accent.tertiary}
               >
-                {getProductPrice(
+                {convertAndFormatToUserCurrency(
                   product.price,
-                  1,
                   user,
                 )}
               </Heading>

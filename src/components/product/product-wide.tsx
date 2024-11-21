@@ -21,7 +21,7 @@ import { ResultType } from "@/api/helpers/types";
 import {
   convertPrice,
   formatPrice,
-  getProductPrice,
+  convertAndFormatToUserCurrency,
 } from "@/api/helpers/utils";
 import { UserContext } from "@/contexts/user-context";
 import { SettingsContext } from "@/contexts/settings-context";
@@ -88,9 +88,8 @@ export default function ProductWide({
                 </Heading>
                 <ProductReviewBox {...product} />
                 <Heading fontSize="lg" color={theme.colors.accent.tertiary}>
-                  {getProductPrice(
+                  {convertAndFormatToUserCurrency(
                     product.price,
-                    product.currency.gbp_exchange_rate,
                     user,
                   )}
                 </Heading>

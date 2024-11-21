@@ -21,7 +21,7 @@ import {
   getBasketByUserId,
   getBasketItemsByUserId,
 } from "@/api/request/basketRequest";
-import { getProductPrice } from "@/api/helpers/utils";
+import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import styles from "./basket-page.module.css";
 
 export default function BasketPage(): JSX.Element {
@@ -149,7 +149,7 @@ export default function BasketPage(): JSX.Element {
           <Text color={theme.colors.accent.tertiary} fontWeight="bold">
             {" "}
             {basket.metadata &&
-              getProductPrice(basket.metadata.total.price, 1, user)}
+              convertAndFormatToUserCurrency(basket.metadata.total.price, user)}
           </Text>
         </Heading>
       </CardFooter>
