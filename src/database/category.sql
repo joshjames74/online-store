@@ -1,4 +1,4 @@
-INSERT INTO category (name) VALUES 
+INSERT INTO category (name) VALUES
 ('Electronics'),
 ('Books'),
 ('Clothing'),
@@ -8,4 +8,14 @@ INSERT INTO category (name) VALUES
 ('Toys & Games'),
 ('Automotive'),
 ('Grocery'),
-('Health & Wellness');
+('Health & Wellness'),
+('Wearable Tech'),
+('Gaming'),
+('Furniture'),
+('Outdoor Gear'),
+('Pet Supplies'),
+('Smart Home'),
+('Appliances'),
+('Tools & Home Improvement'),
+('Health Devices'),
+('Office Supplies');

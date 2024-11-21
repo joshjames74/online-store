@@ -15,7 +15,7 @@ export default function SearchResultsInfo(): JSX.Element {
 
   const perPage = useSearchStore((state) => state.params.perPage);
 
-  const handleChangeWidth = (width: Width) => { setSearchParams({ perPage: width }); };
+  const handleChangeWidth = (width: Width) => { setSearchParams({ perPage: width, pageNumber: 1 }); };
 
   const lowerBound: number = params.perPage && params.pageNumber ? (params.pageNumber - 1) * params.perPage + 1 : 1;
   const upperBound: number = params.perPage && params.pageNumber ? Math.min(lowerBound + params.perPage - 1, resultsCount) : 1;
