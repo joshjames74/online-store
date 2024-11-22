@@ -1,7 +1,5 @@
 import {
-  Box,
   Text,
-  Image,
   useToast,
   Card,
   CardHeader,
@@ -12,13 +10,10 @@ import {
   HStack,
   CardFooter,
   IconButton,
-  Stack,
 } from "@chakra-ui/react";
-import { Review } from "@prisma/client";
 import styles from "./review-card.module.css";
 import ReviewStars from "./review-stars";
-import { deleteReviewById } from "@/api/request/reviewRequest";
-import { useRouter } from "next/navigation";
+import { deleteReviewById, getReviewCountsByProductId, getReviewsBySearch } from "@/api/request/reviewRequest";
 import { useReviewSearchStore } from "@/zustand/store";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useContext } from "react";
@@ -26,6 +21,7 @@ import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
 import { ResultType } from "@/api/helpers/types";
 import { formatDate } from "@/api/helpers/utils";
+import { getProductById } from "@/api/request/productRequest";
 
 export default function ReviewCard(
   review: ResultType<"review", { usr: true }>,
@@ -64,6 +60,18 @@ export default function ReviewCard(
       })
       .finally(() => {
         clearParams();
+
+        // reset the cache status of the reviews
+        getReviewsBySearch({ productId: review.productId }, "reload")
+          .then(() => {})
+          .catch((error) => console.error(error));
+        getReviewCountsByProductId(review.productId, "reload")
+          .then(() => {})
+          .catch((error) => console.error(error));
+        getProductById(review.productId, "reload")
+          .then(() => {})
+          .catch((error) => console.error(error));
+
         location.reload();
       });
   };

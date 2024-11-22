@@ -102,5 +102,35 @@ export async function postReview(
 // DELETE methods
 
 export async function deleteReviewById(id: number): Promise<Review | void> {
-  return deleteOneEntityByField("review", "id", id);
+
+  return prisma.$transaction(async (tx) => {
+
+    // find review
+    const review = await tx.review.findFirst({ where: { id: id }});
+    if (!review) { throw new Error('Cannot find review') };
+
+    // find product from review
+    const product = await tx.product.findFirst({ where: { id: review.productId }});
+    if (!product) { throw new Error('Cannot find product') };
+
+    // compute new scores
+    const new_count = product.review_count - 1;
+    const new_score = ((product.review_score * product.review_count) - review.score) / new_count;
+
+    // update product
+    const updated_product = await tx.product.update({
+      where: { id: product.id },
+      data: {
+        review_count: new_count,
+        review_score: new_score,
+      }
+    });
+    if (!updated_product) { throw new Error('Cannot update product')};
+
+    // create review
+    const deleted_review = await tx.review.delete({ where: { id: id }});
+    if (!deleted_review) { throw new Error('Cannot delete review')};
+
+    return deleted_review;
+  });
 }
