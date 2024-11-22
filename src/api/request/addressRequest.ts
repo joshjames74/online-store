@@ -5,20 +5,6 @@ import { fetchData } from ".";
 
 // GET methods
 
-// export async function getAddressesByUserId(
-//   id: number,
-//   cache?: RequestCache,
-// ): Promise<ResultType<"address", { country: true }>[]> {
-//   const response = await fetch(`/api/user/${id}/addresses`, {
-//     method: "GET",
-//     cache: cache ? cache : "force-cache",
-//   });
-//   if (!response.ok) {
-//     throw new Error("Error fetching addresses");
-//   }
-//   return response.json();
-// }
-
 export async function getAddressesByUserId(
   id: number,
   cache?: RequestCache,
@@ -28,8 +14,6 @@ export async function getAddressesByUserId(
     cache
   );
 }
-
-
 
 // POST methods
 

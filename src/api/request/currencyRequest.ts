@@ -1,23 +1,13 @@
 import { Currency } from "@prisma/client";
+import { fetchData } from ".";
+
+
+// GET methods
 
 export async function getCurrencyById(id: number): Promise<Currency> {
-  const response = await fetch(`/api/currency/${id}`, {
-    method: "GET",
-    cache: "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Error fetching currency");
-  }
-  return response.json();
+  return fetchData<Currency>(`/api/currency/${id}`, "force-cache");
 }
 
 export async function getAllCurrencies(): Promise<Currency[]> {
-  const response = await fetch(`/api/currency/all`, {
-    method: "GET",
-    cache: "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Error fetching currencies");
-  }
-  return response.json();
+  return fetchData<Currency[]>(`/api/currency/all`, "force-cache");
 }

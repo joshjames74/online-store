@@ -4,6 +4,8 @@ import {
   BasketItemWithProductAndCurrency,
 } from "../services/basketItemService";
 import { BasketItem } from "@prisma/client";
+import { fetchData } from ".";
+
 
 // GET methods
 
@@ -11,29 +13,16 @@ export async function getBasketItemsByUserId(
   id: number,
   cache?: RequestCache,
 ): Promise<BasketItemWithProductAndCurrency[]> {
-  const response = await fetch(`/api/user/${id}/basket`, {
-    method: "GET",
-    cache: cache ? cache : "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Error fetching basket items");
-  }
-  return response.json();
-}
+  return fetchData<BasketItemWithProductAndCurrency[]>(`/api/user/${id}/basket`, cache);
+};
 
 export async function getBasketByUserId(
   id: number,
   cache?: RequestCache,
 ): Promise<Basket> {
-  const response = await fetch(`/api/user/${id}/basket`, {
-    method: "GET",
-    cache: cache ? cache : "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Error fetching basket");
-  }
-  return response.json();
-}
+  return fetchData<Basket>(`/api/user/${id}/basket`, cache);
+};
+
 
 // PUT methods
 

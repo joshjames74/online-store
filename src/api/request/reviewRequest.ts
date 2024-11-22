@@ -3,43 +3,26 @@ import axios from "axios";
 import { ReviewParams } from "../transformers/reviewSearchTransformer";
 import { ResultType } from "../helpers/types";
 import { buildUrl } from "../helpers/utils";
+import { fetchData } from ".";
 
 // GET methods
 
 export async function getReviewById(id: number): Promise<Review> {
-  const response = await fetch(`/api/review/${id}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch");
-  }
-  return response.json();
+  return fetchData<Review>(`/api/review/${id}`);
 }
 
 export async function getReviewsByProductId(
   id: number,
   cache?: RequestCache,
 ): Promise<Review[]> {
-  const response = await fetch(`/api/product/${id}/reviews`, {
-    method: "GET",
-    cache: cache ? cache : "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch");
-  }
-  return response.json();
+  return fetchData<Review[]>(`/api/product/${id}/reviews`, cache);
 }
 
 export async function getReviewCountsByProductId(
   id: number,
   cache?: RequestCache,
 ): Promise<number[]> {
-  const response = await fetch(`/api/product/${id}/reviews/summary`, {
-    method: "GET",
-    cache: cache ? cache : "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch");
-  }
-  return response.json();
+  return fetchData<number[]>(`/api/product/${id}/reviews/summary`, cache);
 }
 
 export async function getReviewsBySearch(
@@ -47,14 +30,7 @@ export async function getReviewsBySearch(
   cache?: RequestCache,
 ): Promise<ResultType<"review", { usr: true }>[]> {
   const url = buildUrl("/api/review", params);
-  const response = await fetch(url, {
-    method: "GET",
-    cache: cache ? cache : "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch");
-  }
-  return response.json();
+  return fetchData<ResultType<"review", { usr: true }>[]>(url, cache);
 }
 
 // POST methods

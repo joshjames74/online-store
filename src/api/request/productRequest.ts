@@ -4,27 +4,20 @@ import axios from "axios";
 import { ManyWithMetadata, ModelsResponse, ResultType } from "../helpers/types";
 import { buildUrl } from "../helpers/utils";
 import { ProductParams } from "../transformers/productSearchTransformer";
+import { fetchData } from ".";
+
+
+// GET methods
 
 export async function getProductById(
   id: number,
   cache?: RequestCache,
 ): Promise<ResultType<"product", { seller: true }>> {
-  const response = await fetch(`/api/product/${id}`, {
-    method: "GET",
-    cache: cache ? cache : "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch");
-  }
-  return response.json();
+  return fetchData<ResultType<"product", { seller: true }>>(`/api/product/${id}`, cache);
 }
 
 export async function getAllProducts(): Promise<Product[]> {
-  const response = await fetch(`/api/product/all`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch");
-  }
-  return response.json();
+  return fetchData<Product[]>(`/api/product/all`, "force-cache");
 }
 
 export async function getProductsBySearchParams(
@@ -32,12 +25,5 @@ export async function getProductsBySearchParams(
   cache?: RequestCache,
 ): Promise<ManyWithMetadata<"product", { seller: true }>> {
   const url = buildUrl("/api/product", params);
-  const response = await fetch(url, {
-    method: "GET",
-    cache: cache ? cache : "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Error fetching product by search params");
-  }
-  return response.json();
+  return fetchData<ManyWithMetadata<"product", { seller: true }>>(url, cache);
 }
