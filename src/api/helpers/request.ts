@@ -18,18 +18,22 @@ type getFunctionType<T extends ModelType> = (
 
 // Get types
 
-type GetModelWithMetadata<T extends ModelType> = (
-  params: any,
-) => Promise<ModelResponse<T> | void>;
-type GetModelsWithMetadata<T extends ModelType> = (
-  params: any,
-) => Promise<ModelsResponse<T> | void>;
-type GetModel<T extends ModelType> = (
-  params: any,
-) => Promise<ModelMap[T] | void>;
-type GetModels<T extends ModelType> = (
-  params: any,
-) => Promise<ModelMap[T][] | void>;
+// type GetModelWithMetadata<T extends ModelType> = (
+//   params: any,
+// ) => Promise<ModelResponse<T> | void>;
+
+// type GetModelsWithMetadata<T extends ModelType> = (
+//   params: any,
+// ) => Promise<ModelsResponse<T> | void>;
+
+// type GetModel<T extends ModelType> = (
+//   params: any,
+// ) => Promise<ModelMap[T] | void>;
+
+// type GetModels<T extends ModelType> = (
+//   params: any
+// ) => Promise<ModelMap[T][] | void>;
+
 type GetType<T extends ModelType> = (
   params: any,
 ) => Promise<

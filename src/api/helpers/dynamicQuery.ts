@@ -270,15 +270,6 @@ export async function putOneEntityByField<T extends ModelType>(
   }
 }
 
-export interface GetOneByField {
-  <T extends keyof TableMap, I extends keyof IncludeMap[T]>(
-    modelName: T,
-    field: TableMap[T],
-    value: any,
-    include?: I,
-  ): Promise<ResultType<T, I> | void>;
-}
-
 export async function upsertOneEntityByField<T extends ModelType>(
   modelName: T,
   whereQuery: any,

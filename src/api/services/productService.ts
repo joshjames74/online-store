@@ -33,7 +33,7 @@ export async function getProductByUserId(id: number): Promise<ResultType<"produc
   return getOneEntityByField("product", "sellerId", id);
 }
 
-export async function getAllProducts(): Promise<ResultType<"product", { seller: true }>[] | void> {
+export async function getAllProducts(): Promise<ResultType<"product", { }>[] | void> {
   return getAllEntity("product");
 }
 
@@ -73,7 +73,7 @@ export async function getProductBySearch(
   };
 
   const response: ManyWithMetadata<"product", { seller: true }> = {
-    data: products,
+    data: products || [],
     metadata: metadata,
   };
 
