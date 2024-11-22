@@ -1,15 +1,7 @@
 "use client";
 import {
-  Box,
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   Divider,
-  Flex,
-  FormControl,
-  FormLabel,
   Heading,
   HStack,
   Input,
@@ -22,9 +14,7 @@ import {
   ModalOverlay,
   Stack,
   Text,
-  Textarea,
   useToast,
-  UseToastOptions,
 } from "@chakra-ui/react";
 import { FormEvent, useContext, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
@@ -37,6 +27,7 @@ import {
 import { useReviewSearchStore } from "@/zustand/store";
 import { UserContext } from "@/contexts/user-context";
 import { useForm } from "react-hook-form";
+import { getProductById } from "@/api/request/productRequest";
 
 export default function ReviewForm({
   id,
@@ -50,6 +41,7 @@ export default function ReviewForm({
   const { theme } = useContext(ThemeContext);
   const { user, isAuthenticated } = useContext(UserContext);
 
+  const toast = useToast();
   const {
     register,
     handleSubmit,
@@ -60,7 +52,6 @@ export default function ReviewForm({
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
-  const toast = useToast();
   const clearParams = useReviewSearchStore((state) => state.clearParams);
 
   // handle hover actions
@@ -73,6 +64,7 @@ export default function ReviewForm({
     setIsHovering(false);
   };
 
+  // handle submit review
   const onSubmit = (event: FormEvent<any>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -104,6 +96,7 @@ export default function ReviewForm({
       })
       .finally(() => {
         clearParams();
+
         // reset the cache status of the reviews
         getReviewsBySearch({ productId: id }, "reload")
           .then(() => {})
@@ -111,6 +104,11 @@ export default function ReviewForm({
         getReviewCountsByProductId(id, "reload")
           .then(() => {})
           .catch((error) => console.error(error));
+        getProductById(id, "reload")
+          .then(() => {})
+          .catch((error) => console.error(error));
+
+        // reload page
         location.reload();
       });
   };

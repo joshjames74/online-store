@@ -117,3 +117,7 @@ export function convertAndFormatToUserCurrency(
   const userPrice = convertPrice(price,  currency.gbp_exchange_rate);
   return formatPrice(userPrice, currency.code);
 }
+
+export function formatReviewScore(score: number): number {
+  return Math.round(score * 100) / 100;
+}

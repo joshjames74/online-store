@@ -19,6 +19,7 @@ import { getReviewCountsByProductId } from "@/api/request/reviewRequest";
 import ReviewCardSkeleton from "./review-card-skeleton";
 import { useReviewSearchStore } from "@/zustand/store";
 import { useRouter } from "next/navigation";
+import { formatReviewScore } from "@/api/helpers/utils";
 
 // export default function ReviewSummary({ id, score }: { id: number, score: number }): JSX.Element {
 
@@ -171,7 +172,7 @@ export default function ReviewSummary({
               <HStack>
                 <ReviewStars value={score} fontSize="xl" />
                 <Heading fontSize="md" fontWeight="semibold">
-                  {score} out of 5
+                  {formatReviewScore(score)} out of 5
                 </Heading>
               </HStack>
               <Heading fontSize="md" fontWeight="semibold">

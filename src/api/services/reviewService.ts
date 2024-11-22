@@ -15,6 +15,7 @@ import {
   transformQueryToPrismaQuery,
 } from "../transformers";
 import { ResultType } from "../helpers/types";
+import prisma from "@/lib/prisma";
 
 // GET methods
 
@@ -64,13 +65,39 @@ export async function getReviewCountsByProductId(
   );
 }
 
+
 // POST methods
 
 export async function postReview(
   review: Omit<Review, "review_id">,
 ): Promise<Review | void> {
-  return postOneEntity("review", review);
+  
+  return prisma.$transaction(async (tx) => {
+
+    // find product and compute new scores
+    const product = await tx.product.findFirst({ where: { id: review.productId }});
+    if (!product) { throw new Error('Cannot find product'); }
+    const new_count = product.review_count + 1;
+    const new_score = ((product.review_score * product.review_count) + review.score) / new_count;
+
+    // update product
+    const updated_product = await tx.product.update({
+      where: { id: review.productId },
+      data: {
+        review_count: new_count,
+        review_score: new_score,
+      }
+    });
+    if (!updated_product) { throw new Error('Cannot update product') };
+
+    // create review
+    const new_review = await tx.review.create({ data: review });
+    if (!new_review) { throw new Error('Cannot create review')};
+
+    return review;
+  });
 }
+
 
 // DELETE methods
 
