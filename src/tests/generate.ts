@@ -3,15 +3,15 @@ import { faker } from "@faker-js/faker";
 
 export const generateMockProduct = (): Product => {
     const product: Product = {} as Product;
-    product.sellerId = faker.number.int();
+    product.sellerId = faker.number.int({ max: 10000 });
     product.title = faker.commerce.productName();
     product.description = faker.commerce.productDescription();
-    product.price = faker.number.float({ fractionDigits: 2});
-    product.review_count = faker.number.int({ min: 0});
+    product.price = faker.number.float({ fractionDigits: 2, max: 10000});
+    product.review_count = faker.number.int({ min: 0, max: 10000});
     product.review_score = faker.number.float({ min: 0, max: 5 });
     product.image_url = faker.image.url();
     product.image_alt = faker.image.urlPlaceholder();
-    product.order_count = faker.number.int({ min: 0});
+    product.order_count = faker.number.int({ min: 0, max: 10000});
     return product;
 }
 
@@ -58,6 +58,10 @@ export const generateMockCountry = (): Country => {
     country.name = faker.location.country();
     country.image_url = faker.image.url();
     return country;
+}
+
+export const generateMockCountries = (count: number): Country[] => {
+    return Array.from({ length: 10 }, generateMockCountry);
 }
 
 export const generateMockCurrency = (): Currency => {
