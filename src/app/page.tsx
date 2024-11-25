@@ -31,8 +31,8 @@ const Page = () => {
     }
     setParams(parsedParams);
 
-    // set results count
-    const { perPage, pageNumber, ...searchParamsWithoutPagination } = params;
+    // set results count but don't include filter or pagination
+    const { perPage, pageNumber, product_filter, ...searchParamsWithoutPagination } = params;
     getProductsBySearchParams(searchParamsWithoutPagination, "reload").then(
       (res) => setResultsCount(res.metadata?.count || 0),
     );
@@ -49,6 +49,10 @@ const Page = () => {
   useEffect(() => {
     fetchData();
   }, [searchParams]);
+
+  useEffect(() => {
+    console.log(params);
+  }, [params]);
 
   return (
     <Box className={styles.container} fontFamily={"Montserrat"}>

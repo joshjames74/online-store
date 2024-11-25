@@ -70,7 +70,7 @@ export const useSearchStore = create<SearchState>((set, get) => {
     isLoading: false,
     setIsLoading: (status) => set({ isLoading: status }),
     // remove all params except pagination. to do: remove product_filter
-    clearParams: () => set({ params: { ...get().params, query: "", min_review: 0, max_price: 0, categories: [] } }),
+    clearParams: () => set({ params: { ...get().params, query: "", min_review: 0, max_price: 0, categories: [], product_filter: NaN } }),
     resultsCount: 0,
     setResultsCount: (count: number) => set({ resultsCount: count }),
     getMaxPages: () =>

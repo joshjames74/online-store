@@ -46,7 +46,8 @@ export const parseQueryParams = (
         .filter((val) => !isNaN(parseInt(val)))
         .map((val) => parseInt(val))
     : [];
-  return { query, max_price, min_review, categories, perPage, pageNumber };
+  const product_filter = parseInt(searchParams.get("product_filter") || "");
+  return { query, max_price, min_review, categories, perPage, pageNumber, product_filter };
 };
 
 export const parseOrderSearchParams = (

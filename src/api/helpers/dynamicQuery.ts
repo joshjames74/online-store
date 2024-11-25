@@ -111,9 +111,14 @@ export async function getEntitiesByField<
 
 export async function getAllEntity<T extends keyof TableMap>(
   modelName: T,
+  orderQuery?: any,
 ): Promise<ModelMap[T][] | void> {
   if (prisma[modelName] && typeof prisma[modelName].findMany == "function") {
-    return await (prisma[modelName] as any).findMany({ where: {} });
+    const query = { where: {} };
+    if (orderQuery) {
+      Object.assign(query, { orderBy: orderQuery });
+    }
+    return await (prisma[modelName] as any).findMany(query);
   }
   return;
 }

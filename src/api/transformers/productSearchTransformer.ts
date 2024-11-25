@@ -108,9 +108,6 @@ export const productQueryTransformer: ProductQueryTransformer = (
     params.pageNumber || 0,
   );
 
-  console.log(whereFields);
-  console.log(params.categories);
-
   return {
     whereFields: whereFields,
     orderFields: orderFields,

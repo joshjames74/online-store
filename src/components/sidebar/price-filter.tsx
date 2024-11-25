@@ -34,15 +34,21 @@ export default function PriceFilter(): JSX.Element {
 
   useEffect(() => {
     // set the max price when no filters are applied
-
     setIsLoading(true);
-    getProductsBySearchParams({}).then((res: ModelsResponse<"product">) => {
-      if (res.metadata && res.metadata["price"]) {
-        setMaxPrice(res.metadata["price"]?.max);
-      }
-      setIsLoading(false);
+    getProductsBySearchParams({})
+      .then((res: ModelsResponse<"product">) => {
+        if (res.metadata && res.metadata["price"]) {
+          setMaxPrice(res.metadata["price"]?.max);
+        }
+    }).catch(error => console.error(error))
+      .finally(() => {
+        setIsLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    console.log(sliderValue, maxPrice);
+  }, [maxPrice, sliderValue]);
 
   useEffect(() => {
     setSliderValue(maxPrice);
