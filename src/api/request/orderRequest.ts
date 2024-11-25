@@ -1,6 +1,11 @@
 import axios from "axios";
 import { OrderParams } from "../transformers/orderSearchTransformer";
 import { buildUrl } from "../helpers/utils";
+import { BasketItem, Order } from "@prisma/client";
+import { url } from "inspector";
+
+
+// GET methods 
 
 export async function getOrderViewById(id: number): Promise<any> {
   const response = await axios(`/api/order/${id}`, { method: "GET" });
@@ -22,5 +27,23 @@ export async function getOrdersByUserId({
   if (!response.ok) {
     throw new Error("Error in fetching order views by search");
   }
+  return response.json();
+}
+
+
+// POST methods
+
+export async function postOrder({ order, basketItems } : { order: Omit<Order, "id">, basketItems: BasketItem[]}): Promise<Order> {
+  const url = "";
+  const response = await fetch(url, {
+    method: "POST",
+    body: {
+      order: JSON.stringify(order),
+      basketItems: JSON.stringify(basketItems),
+    }
+  });
+  if (!response.ok) {
+    throw new Error("Error posting order");
+  };
   return response.json();
 }

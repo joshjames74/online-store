@@ -1,4 +1,4 @@
-import { Address, Currency, Order, OrderItem, Usr } from "@prisma/client";
+import { Address, BasketItem, Currency, Order, OrderItem, Usr } from "@prisma/client";
 import {
   getEntitiesByFields,
   getOneEntityByField,
@@ -9,6 +9,8 @@ import {
 } from "../transformers/orderSearchTransformer";
 import { queryParamsToPrismaQuery } from "../transformers";
 import { ResultType } from "../helpers/types";
+import { Basket } from "./basketItemService";
+import prisma from "@/lib/prisma";
 
 // export type OrderView = Order & { OrderItem: OrderItem[], address: Address, currency: Currency, usr: Usr };
 
@@ -66,4 +68,31 @@ export async function getOrderViewsBySearch(
     },
   );
   return orders;
+}
+
+
+// POST methods 
+
+export async function postOrder(order: Omit<Order, "id">, basketItems: BasketItem[]) {
+
+  return prisma.$transaction(async (tx) => {
+
+    // post order
+    const postedOrder = await tx.order.create({ data: order });
+    if (!postedOrder) { throw new Error("Cannot post order"); };
+
+    // post basket items
+    const orderItems: Omit<OrderItem, "id">[] = basketItems.map((item) => {
+      return {
+      orderId: postedOrder.id,
+      productId: item.productId,
+      price: 10,
+      quantity: item.quantity
+    }})
+    const postedBasketItems = await tx.orderItem.createMany({ data: orderItems });
+    if (!postedBasketItems) { throw new Error("Cannot post basketItems ") };
+
+    return postedOrder;
+  });
+
 }
