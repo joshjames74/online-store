@@ -3,176 +3,223 @@
  */
 import { GET } from "@/app/api/review/route";
 import prisma from "@/lib/prisma";
-import { generateMany, generateMockProduct, generateMockReview, generateMockUser } from "@/tests/generate";
+import {
+  generateMany,
+  generateMockProduct,
+  generateMockReview,
+  generateMockUser,
+} from "@/tests/generate";
 import { Product, Review, Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 
-
 export const normaliseReviewDate = (review: Review) => {
-    return { ...review, date: new Date(review.date).toISOString() }
-}
+  return { ...review, date: new Date(review.date).toISOString() };
+};
 
+describe("GET /api/review ", () => {
+  let testProducts: Product[];
+  let testUsers: Usr[];
+  let testReviews: Review[];
 
-describe('GET /api/review ', () => {
+  beforeAll(async () => {
+    const count = 2;
 
-    let testProducts: Product[];
-    let testUsers: Usr[];
-    let testReviews: Review[];
+    // create users
+    const mockUsers = generateMany<Usr>(count, generateMockUser);
+    testUsers = await prisma.usr.createManyAndReturn({ data: mockUsers });
+    const userIds = testUsers.map((user) => user.id);
 
-    beforeAll(async () => {
-        const count = 2;
-        
-        // create users
-        const mockUsers = generateMany<Usr>(count, generateMockUser);
-        testUsers = await prisma.usr.createManyAndReturn({ data: mockUsers });
-        const userIds = testUsers.map(user => user.id);
-    
-        // create products
-        const mockProducts = Array.from({ length: count }, () => generateMockProduct(userIds));
-        testProducts = await prisma.product.createManyAndReturn({ data: mockProducts });
-        const productIds = testProducts.map(product => product.id);
-
-        // create reviews
-        const mockReviews = Array.from({ length: count }, () => generateMockReview(productIds, userIds));
-        testReviews = await prisma.review.createManyAndReturn({ data: mockReviews, include: { usr: true } });
+    // create products
+    const mockProducts = Array.from({ length: count }, () =>
+      generateMockProduct(userIds),
+    );
+    testProducts = await prisma.product.createManyAndReturn({
+      data: mockProducts,
     });
-    
-    afterAll(async () => {
-        await prisma.review.deleteMany({});
-        await prisma.product.deleteMany({});
-        await prisma.usr.deleteMany({});
+    const productIds = testProducts.map((product) => product.id);
+
+    // create reviews
+    const mockReviews = Array.from({ length: count }, () =>
+      generateMockReview(productIds, userIds),
+    );
+    testReviews = await prisma.review.createManyAndReturn({
+      data: mockReviews,
+      include: { usr: true },
     });
+  });
 
-    // no args
+  afterAll(async () => {
+    await prisma.review.deleteMany({});
+    await prisma.product.deleteMany({});
+    await prisma.usr.deleteMany({});
+  });
 
-    it('no args: should return a 200', async () => {
-        const req = new NextRequest(`http://localhost/api/review`, { method: "GET" });
-        const res = await GET(req);
+  // no args
 
-        expect(res.status).toBe(200);
+  it("no args: should return a 200", async () => {
+    const req = new NextRequest(`http://localhost/api/review`, {
+      method: "GET",
     });
+    const res = await GET(req);
 
-    it('no args: should return an array', async () => {
-        const req = new NextRequest(`http://localhost/api/review`, { method: "GET" });
-        const res = await GET(req);
-        const json = await res.json();
+    expect(res.status).toBe(200);
+  });
 
-        expect(Array.isArray(json)).toBe(true);
+  it("no args: should return an array", async () => {
+    const req = new NextRequest(`http://localhost/api/review`, {
+      method: "GET",
     });
+    const res = await GET(req);
+    const json = await res.json();
 
-    it('no args: should return all reviews', async () => {
-        const req = new NextRequest(`http://localhost/api/review`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
-        const normalisedReviews = json.map((review) => normaliseReviewDate(review));
+    expect(Array.isArray(json)).toBe(true);
+  });
 
-        expect(normalisedReviews).toEqual(testReviews.map((review) => normaliseReviewDate(review)));
+  it("no args: should return all reviews", async () => {
+    const req = new NextRequest(`http://localhost/api/review`, {
+      method: "GET",
     });
+    const res = await GET(req);
+    const json: Review[] = await res.json();
+    const normalisedReviews = json.map((review) => normaliseReviewDate(review));
 
-    // score tests
+    expect(normalisedReviews).toEqual(
+      testReviews.map((review) => normaliseReviewDate(review)),
+    );
+  });
 
-    it('score: should return no reviews when score > 5', async () => {
-        const score = 6;
+  // score tests
 
-        const req = new NextRequest(`http://localhost/api/review?score=${score}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("score: should return no reviews when score > 5", async () => {
+    const score = 6;
 
-        expect(json).toEqual([]);
+    const req = new NextRequest(`http://localhost/api/review?score=${score}`, {
+      method: "GET",
     });
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-    it('score: should return no reviews when score < 0', async () => {
-        const score = -1;
+    expect(json).toEqual([]);
+  });
 
-        const req = new NextRequest(`http://localhost/api/review?score=${score}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("score: should return no reviews when score < 0", async () => {
+    const score = -1;
 
-        expect(json).toEqual([]);
+    const req = new NextRequest(`http://localhost/api/review?score=${score}`, {
+      method: "GET",
     });
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-    // review filter tests
+    expect(json).toEqual([]);
+  });
 
-    it('filter: should return all products ', async () => {
-        const filter = 1;
+  // review filter tests
 
-        const req = new NextRequest(`http://localhost/api/review?review_filter=${filter}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("filter: should return all products ", async () => {
+    const filter = 1;
 
-        expect(json.length).toEqual(2);
-    });
+    const req = new NextRequest(
+      `http://localhost/api/review?review_filter=${filter}`,
+      { method: "GET" },
+    );
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-    it('filter: should return score low to high when arg is 1 ', async () => {
-        const filter = 1;
+    expect(json.length).toEqual(2);
+  });
 
-        const req = new NextRequest(`http://localhost/api/review?review_filter=${filter}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("filter: should return score low to high when arg is 1 ", async () => {
+    const filter = 1;
 
-        const sorted = json.sort((a, b) => a.score - b.score);
+    const req = new NextRequest(
+      `http://localhost/api/review?review_filter=${filter}`,
+      { method: "GET" },
+    );
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-        expect(json).toEqual(sorted);
-    });
+    const sorted = json.sort((a, b) => a.score - b.score);
 
-    it('filter: should return score high to low when arg is 2', async () => {
-        const filter = 2;
+    expect(json).toEqual(sorted);
+  });
 
-        const req = new NextRequest(`http://localhost/api/review?review_filter=${filter}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("filter: should return score high to low when arg is 2", async () => {
+    const filter = 2;
 
-        const sorted = json.sort((a, b) => b.score - a.score);
+    const req = new NextRequest(
+      `http://localhost/api/review?review_filter=${filter}`,
+      { method: "GET" },
+    );
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-        expect(json).toEqual(sorted);
-    });
+    const sorted = json.sort((a, b) => b.score - a.score);
 
-    it('filter: should return date new to old when arg is 3', async () => {
-        const filter = 3;
+    expect(json).toEqual(sorted);
+  });
 
-        const req = new NextRequest(`http://localhost/api/review?review_filter=${filter}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("filter: should return date new to old when arg is 3", async () => {
+    const filter = 3;
 
-        const sorted = json.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const req = new NextRequest(
+      `http://localhost/api/review?review_filter=${filter}`,
+      { method: "GET" },
+    );
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-        expect(json).toEqual(sorted);
-    });
+    const sorted = json.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    );
 
-    it('filter: should return date old to new when arg is 4', async () => {
-        const filter = 4;
+    expect(json).toEqual(sorted);
+  });
 
-        const req = new NextRequest(`http://localhost/api/review?review_filter=${filter}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("filter: should return date old to new when arg is 4", async () => {
+    const filter = 4;
 
-        const sorted = json.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const req = new NextRequest(
+      `http://localhost/api/review?review_filter=${filter}`,
+      { method: "GET" },
+    );
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-        expect(json).toEqual(sorted);
-    });
+    const sorted = json.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
 
-    // productId tests
+    expect(json).toEqual(sorted);
+  });
 
-    it('productId: should return products for correct productId', async () => {
-        const productId = testReviews[0].id;
+  // productId tests
 
-        const req = new NextRequest(`http://localhost/api/review?productId=${productId}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("productId: should return products for correct productId", async () => {
+    const productId = testReviews[0].id;
 
-        const reduced = json.filter(review => review.productId ==- productId);
+    const req = new NextRequest(
+      `http://localhost/api/review?productId=${productId}`,
+      { method: "GET" },
+    );
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-        expect(reduced.length).toEqual(json.length);
-    });
+    const reduced = json.filter((review) => review.productId == -productId);
 
-    it('productId: should return no products for incorrect productId', async () => {
-        const productId = Math.max(...testReviews.map(review => review.id)) + 1;
+    expect(reduced.length).toEqual(json.length);
+  });
 
-        const req = new NextRequest(`http://localhost/api/review?productId=${productId}`, { method: "GET" });
-        const res = await GET(req);
-        const json: Review[] = await res.json();
+  it("productId: should return no products for incorrect productId", async () => {
+    const productId = Math.max(...testReviews.map((review) => review.id)) + 1;
 
-        expect(json).toEqual([]);
-    });
+    const req = new NextRequest(
+      `http://localhost/api/review?productId=${productId}`,
+      { method: "GET" },
+    );
+    const res = await GET(req);
+    const json: Review[] = await res.json();
 
-})
+    expect(json).toEqual([]);
+  });
+});

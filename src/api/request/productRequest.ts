@@ -6,14 +6,16 @@ import { buildUrl } from "../helpers/utils";
 import { ProductParams } from "../transformers/productSearchTransformer";
 import { fetchData } from ".";
 
-
 // GET methods
 
 export async function getProductById(
   id: number,
   cache?: RequestCache,
 ): Promise<ResultType<"product", { seller: true }>> {
-  return fetchData<ResultType<"product", { seller: true }>>(`/api/product/${id}`, cache);
+  return fetchData<ResultType<"product", { seller: true }>>(
+    `/api/product/${id}`,
+    cache,
+  );
 }
 
 export async function getAllProducts(): Promise<Product[]> {

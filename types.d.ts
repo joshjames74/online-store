@@ -1,7 +1,7 @@
 declare global {
-    namespace NodeJS {
-      interface Global {
-        prisma: any;
-      }
+  namespace NodeJS {
+    interface Global {
+      prisma: any;
     }
   }
+}

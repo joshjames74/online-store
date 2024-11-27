@@ -22,7 +22,6 @@ export async function GET(
   return await getHelper(getBasketByUserId, parseInt(id));
 }
 
-
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } },

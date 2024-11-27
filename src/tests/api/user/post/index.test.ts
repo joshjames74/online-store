@@ -3,86 +3,87 @@
  */
 import { POST } from "@/app/api/user/route";
 import prisma from "@/lib/prisma";
-import { generateMany, generateMockProduct, generateMockReview, generateMockUser } from "@/tests/generate";
+import {
+  generateMany,
+  generateMockProduct,
+  generateMockReview,
+  generateMockUser,
+} from "@/tests/generate";
 import { Product, Review, Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 
-
 export const normaliseReviewDate = (review: Review) => {
-    return { ...review, date: new Date(review.date).toISOString() }
-}
+  return { ...review, date: new Date(review.date).toISOString() };
+};
 
+describe("POST /api/user/", () => {
+  beforeAll(async () => {});
 
-describe('POST /api/user/', () => {
+  afterEach(async () => {
+    await prisma.usr.deleteMany({});
+  });
 
-    beforeAll(async () => {
+  afterAll(async () => {});
+
+  it("should return a 201 for a valid user", async () => {
+    const user = generateMockUser();
+    const req = new NextRequest(`http://localhost/api/user`, {
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    const res = await POST(req);
 
-    afterEach(async () => {
-        await prisma.usr.deleteMany({});
-    })
-    
-    afterAll(async () => {
+    expect(res.status).toBe(201);
+  });
+
+  it("should create the user", async () => {
+    const user = generateMockUser();
+    const req = new NextRequest(`http://localhost/api/user`, {
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    const res = await POST(req);
+    const postedUser = await prisma.usr.findFirst({});
 
-    it('should return a 201 for a valid user', async () => {
-        
-        const user = generateMockUser();
-        const req = new NextRequest(`http://localhost/api/user`, { 
-            method: "POST",
-            body: JSON.stringify(user),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const res = await POST(req);
+    expect(postedUser).not.toBeNull();
+    expect({ ...user, id: postedUser?.id || 0 }).toEqual(
+      postedUser || ({} as Usr),
+    );
+  });
 
-        expect(res.status).toBe(201);
+  it("should return a 500 for an invalid country id", async () => {
+    const user = generateMockUser();
+    user.countryId = 1;
+    const req = new NextRequest(`http://localhost/api/user`, {
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    const res = await POST(req);
 
-    it('should create the user', async () => {
-        const user = generateMockUser();
-        const req = new NextRequest(`http://localhost/api/user`, { 
-            method: "POST",
-            body: JSON.stringify(user),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const res = await POST(req);
-        const postedUser = await prisma.usr.findFirst({});
+    expect(res.status).toBe(500);
+  });
 
-        expect(postedUser).not.toBeNull();
-        expect({...user, id: postedUser?.id || 0}).toEqual(postedUser || {} as Usr); 
+  it("should return a 500 for an invalid currency id", async () => {
+    const user = generateMockUser();
+    user.countryId = 1;
+    const req = new NextRequest(`http://localhost/api/user`, {
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    const res = await POST(req);
 
-    it('should return a 500 for an invalid country id', async () => {
-        const user = generateMockUser();
-        user.countryId = 1;
-        const req = new NextRequest(`http://localhost/api/user`, { 
-            method: "POST",
-            body: JSON.stringify(user),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const res = await POST(req);
-
-        expect(res.status).toBe(500);
-    });
-
-    it('should return a 500 for an invalid currency id', async () => {
-        const user = generateMockUser();
-        user.countryId = 1;
-        const req = new NextRequest(`http://localhost/api/user`, { 
-            method: "POST",
-            body: JSON.stringify(user),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const res = await POST(req);
-
-        expect(res.status).toBe(500);
-    });
-})
+    expect(res.status).toBe(500);
+  });
+});

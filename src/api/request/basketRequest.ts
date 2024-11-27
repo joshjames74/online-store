@@ -1,11 +1,7 @@
 import axios from "axios";
-import {
-  Basket,
-  BasketItemWithProduct,
-} from "../services/basketItemService";
+import { Basket, BasketItemWithProduct } from "../services/basketItemService";
 import { BasketItem } from "@prisma/client";
 import { fetchData } from ".";
-
 
 // GET methods
 
@@ -14,15 +10,14 @@ export async function getBasketItemsByUserId(
   cache?: RequestCache,
 ): Promise<BasketItemWithProduct[]> {
   return fetchData<BasketItemWithProduct[]>(`/api/user/${id}/basket`, cache);
-};
+}
 
 export async function getBasketByUserId(
   id: number,
   cache?: RequestCache,
 ): Promise<Basket> {
   return fetchData<Basket>(`/api/user/${id}/basket`, cache);
-};
-
+}
 
 // PUT methods
 

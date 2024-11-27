@@ -46,13 +46,10 @@ export default function ProductCompact({
               {product.title}
             </Heading>
             <Heading fontSize="md" color={theme.colors.accent.tertiary}>
-              {convertAndFormatToUserCurrency(
-                product.price,
-                user,
-              )}
+              {convertAndFormatToUserCurrency(product.price, user)}
             </Heading>
             <HStack gap={1}>
-              <Avatar name={product.seller?.name} size="2xs"/>
+              <Avatar name={product.seller?.name} size="2xs" />
               <ReviewStars value={product.review_score}></ReviewStars>
               <Text fontSize="xs" fontWeight="bold">
                 {product.review_score.toPrecision(2).toString()}

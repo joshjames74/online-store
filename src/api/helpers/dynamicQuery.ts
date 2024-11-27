@@ -2,7 +2,6 @@ import prisma from "../../lib/prisma";
 import { FieldValuePair } from "./request";
 import { ModelType, ModelMap, TableMap, IncludeMap, ResultType } from "./types";
 
-
 type EntityQueryParams<T extends keyof TableMap, I extends IncludeMap[T]> = {
   modelName: T;
   field: TableMap[T];
@@ -11,9 +10,8 @@ type EntityQueryParams<T extends keyof TableMap, I extends IncludeMap[T]> = {
   orderQuery?: any;
 };
 
-
 /**
- * Creates a database query object based on a field, value, and optional parameters like inclusion, ordering, 
+ * Creates a database query object based on a field, value, and optional parameters like inclusion, ordering,
  * pagination, etc. This query can be used with Prisma or similar ORMs.
  *
  * @template T - A key of the `TableMap` type representing the target model.
@@ -44,7 +42,7 @@ function createQueryFromField<
   skip?: number,
   take?: number,
 ): {
-  where: { [key in typeof field]: typeof value};
+  where: { [key in typeof field]: typeof value };
   include?: I;
   orderBy?: typeof orderQuery;
   skip?: number;
@@ -57,7 +55,7 @@ function createQueryFromField<
     orderBy?: typeof orderQuery;
     skip?: number;
     take?: number;
-  } = { where: { [field]: value } as { [ key in typeof field]: typeof value } };
+  } = { where: { [field]: value } as { [key in typeof field]: typeof value } };
 
   if (include) {
     Object.assign(query, { include: include });

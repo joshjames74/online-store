@@ -2,7 +2,10 @@
 import { getBasketByUserId } from "@/api/request/basketRequest";
 import { Basket } from "@/api/services/basketItemService";
 import { OrderParams } from "@/api/transformers/orderSearchTransformer";
-import { ProductFilter, ProductParams } from "@/api/transformers/productSearchTransformer";
+import {
+  ProductFilter,
+  ProductParams,
+} from "@/api/transformers/productSearchTransformer";
 import { ReviewParams } from "@/api/transformers/reviewSearchTransformer";
 import { create } from "zustand";
 
@@ -70,7 +73,17 @@ export const useSearchStore = create<SearchState>((set, get) => {
     isLoading: false,
     setIsLoading: (status) => set({ isLoading: status }),
     // remove all params except pagination. to do: remove product_filter
-    clearParams: () => set({ params: { ...get().params, query: "", min_review: 0, max_price: 0, categories: [], product_filter: NaN } }),
+    clearParams: () =>
+      set({
+        params: {
+          ...get().params,
+          query: "",
+          min_review: 0,
+          max_price: 0,
+          categories: [],
+          product_filter: NaN,
+        },
+      }),
     resultsCount: 0,
     setResultsCount: (count: number) => set({ resultsCount: count }),
     getMaxPages: () =>

@@ -84,14 +84,13 @@ export default function ProductWide({
                 </Heading>
                 <ProductReviewBox {...product} />
                 <HStack alignItems="center" gap="0.2em">
-                  <Avatar name={product.seller?.name} size="2xs"/>
-                  <Heading fontSize="sm" fontWeight="medium">{product.seller?.name}</Heading>
+                  <Avatar name={product.seller?.name} size="2xs" />
+                  <Heading fontSize="sm" fontWeight="medium">
+                    {product.seller?.name}
+                  </Heading>
                 </HStack>
                 <Heading fontSize="lg" color={theme.colors.accent.tertiary}>
-                  {convertAndFormatToUserCurrency(
-                    product.price,
-                    user,
-                  )}
+                  {convertAndFormatToUserCurrency(product.price, user)}
                 </Heading>
                 <Text
                   fontSize="xs"

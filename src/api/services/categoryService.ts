@@ -8,5 +8,5 @@ export function getCategoryById(id: number): Promise<Category | void> {
 }
 
 export function getAllCategories(): Promise<Category[] | void> {
-  return getAllEntity("category", { "name": "asc" });
+  return getAllEntity("category", { name: "asc" });
 }

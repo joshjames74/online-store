@@ -13,7 +13,11 @@ import {
 } from "@chakra-ui/react";
 import styles from "./review-card.module.css";
 import ReviewStars from "./review-stars";
-import { deleteReviewById, getReviewCountsByProductId, getReviewsBySearch } from "@/api/request/reviewRequest";
+import {
+  deleteReviewById,
+  getReviewCountsByProductId,
+  getReviewsBySearch,
+} from "@/api/request/reviewRequest";
 import { useReviewSearchStore } from "@/zustand/store";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useContext } from "react";

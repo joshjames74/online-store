@@ -107,4 +107,3 @@ export type IncludeMap = {
   review: Prisma.ReviewInclude;
   usr: Prisma.UsrInclude;
 };
-

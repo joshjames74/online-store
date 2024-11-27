@@ -72,7 +72,6 @@ export type SearchFieldType<T extends ModelType> = {
   relation: Relation[];
 };
 
-
 // define fields
 
 export type OrderField<T extends ModelType> = {
@@ -93,19 +92,18 @@ export type QueryField<T extends ModelType> = {
   take?: number;
 };
 
-
 export function getSkipTakeFromPage(
   perPage: number | undefined,
   pageNumber: number | undefined,
 ): { skip: number; take: number } {
   if (perPage == undefined && pageNumber == undefined) {
     // don't do any pagination
-    return { skip: NaN, take: NaN}
+    return { skip: NaN, take: NaN };
   }
 
   // if per page not provided, do no pagination
   if (perPage == undefined || isNaN(parseInt(perPage.toString()))) {
-    return { skip: NaN, take: NaN } ;
+    return { skip: NaN, take: NaN };
   }
 
   // if pageNumber not provided, assume page 1
@@ -115,7 +113,7 @@ export function getSkipTakeFromPage(
 
   if (pageNumber < 0 || perPage < 0) {
     // return 0 results
-    return { skip: 0, take: 0};
+    return { skip: 0, take: 0 };
   }
 
   // at this point: per page exists and is gte 0; pageNumber exists and is gte 0
@@ -125,11 +123,7 @@ export function getSkipTakeFromPage(
   return { take: take, skip: skip };
 }
 
-
-export function createDynamicRelationObject(
-  relations: Relation[],
-  data: any,
-) {
+export function createDynamicRelationObject(relations: Relation[], data: any) {
   /**
    *  Convert an array of relations [relation 1, relation 2, ...] to nested structure
    *  {
@@ -202,11 +196,10 @@ export function transformOrderFieldToQuery<T extends ModelType>(
 export function queryParamsToPrismaQuery<T extends ModelType>(
   params: Partial<ParamMap[T]>,
   transformer: TransformerMap[T],
-): { whereQuery: any, orderQuery: any, skip: any, take: any} {
-
+): { whereQuery: any; orderQuery: any; skip: any; take: any } {
   if (!transformer) {
     // change this
-    return {} as { whereQuery: any, orderQuery: any, skip: any, take: any};
+    return {} as { whereQuery: any; orderQuery: any; skip: any; take: any };
   }
 
   const { whereFields, orderFields, skip, take } = transformer(params);

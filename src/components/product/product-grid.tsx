@@ -19,12 +19,12 @@ import { Width } from "@/redux/reducers/product";
 import { useSearchStore } from "@/zustand/store";
 import PageNumberGrid from "../basket/pagination/page-number-grid";
 
-
 export default function ProductGrid(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [products, setProducts] = useState<ResultType<"product", { seller: true }>[]>();
+  const [products, setProducts] =
+    useState<ResultType<"product", { seller: true }>[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [isLessThan450px] = useMediaQuery("(max-width: 450px)");
@@ -100,21 +100,17 @@ export default function ProductGrid(): JSX.Element {
     renderSkeleton()
   ) : products?.length ? (
     <Box className={styles.wrapper}>
-      {perPage && (perPage === Width.WIDE && !isLessThan450px) ? (
+      {perPage && perPage === Width.WIDE && !isLessThan450px ? (
         <Box className={styles.container_wide}>
-          {products.map(
-            (product: ResultType<"product", { seller: true }>) => (
-              <ProductWide key={product.id} {...product} />
-            ),
-          )}
+          {products.map((product: ResultType<"product", { seller: true }>) => (
+            <ProductWide key={product.id} {...product} />
+          ))}
         </Box>
       ) : (
         <Box className={styles.container_compact}>
-          {products.map(
-            (product: ResultType<"product", { }>) => (
-              <ProductCompact key={product.id} {...product} />
-            ),
-          )}
+          {products.map((product: ResultType<"product", {}>) => (
+            <ProductCompact key={product.id} {...product} />
+          ))}
         </Box>
       )}
       <PageNumberGrid

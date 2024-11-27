@@ -17,7 +17,6 @@ import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import styles from "./address-page.module.css";
 
-
 export default function AddressesPage({
   params,
 }: {

@@ -32,7 +32,12 @@ const Page = () => {
     setParams(parsedParams);
 
     // set results count but don't include filter or pagination
-    const { perPage, pageNumber, product_filter, ...searchParamsWithoutPagination } = params;
+    const {
+      perPage,
+      pageNumber,
+      product_filter,
+      ...searchParamsWithoutPagination
+    } = params;
     getProductsBySearchParams(searchParamsWithoutPagination, "reload").then(
       (res) => setResultsCount(res.metadata?.count || 0),
     );

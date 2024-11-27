@@ -1,7 +1,6 @@
 import { Currency } from "@prisma/client";
 import { fetchData } from ".";
 
-
 // GET methods
 
 export async function getCurrencyById(id: number): Promise<Currency> {

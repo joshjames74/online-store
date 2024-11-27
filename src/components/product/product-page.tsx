@@ -31,12 +31,15 @@ import {
 import { UserContext } from "@/contexts/user-context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { convertAndFormatToUserCurrency, formatReviewScore } from "@/api/helpers/utils";
+import {
+  convertAndFormatToUserCurrency,
+  formatReviewScore,
+} from "@/api/helpers/utils";
 import { ResultType } from "@/api/helpers/types";
 import ProductBasketCard from "./product-basket-card";
 
 export default function ProductPage(
-  product: ResultType<"product", { }>,
+  product: ResultType<"product", {}>,
 ): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
@@ -113,10 +116,7 @@ export default function ProductPage(
                 fontWeight="semibold"
                 color={theme.colors.accent.tertiary}
               >
-                {convertAndFormatToUserCurrency(
-                  product.price,
-                  user,
-                )}
+                {convertAndFormatToUserCurrency(product.price, user)}
               </Heading>
               <Text>{product.description}</Text>
             </Stack>

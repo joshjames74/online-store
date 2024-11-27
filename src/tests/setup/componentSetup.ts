@@ -1,7 +1,5 @@
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
-beforeAll(async () => {
-});
+beforeAll(async () => {});
 
-afterAll(async () => {
-});
+afterAll(async () => {});

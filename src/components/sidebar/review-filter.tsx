@@ -5,7 +5,6 @@ import ReviewStars from "../review/review-stars";
 import { useSearchStore } from "@/zustand/store";
 
 export default function ReviewFilter(): JSX.Element {
-
   const [selected, setSelected] = useState<number>(0);
   const setSearchParams = useSearchStore((state) => state.setParams);
 
@@ -13,7 +12,7 @@ export default function ReviewFilter(): JSX.Element {
 
   useEffect(() => {
     setSelected(min_review || 0);
-  }, [])
+  }, []);
 
   useEffect(() => {
     setSearchParams({ min_review: selected });

@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { generateMockProducts } from "./generate"
+import { generateMockProducts } from "./generate";
 import { faker } from "@faker-js/faker";
 
 // export const seedDatabase = async () => {

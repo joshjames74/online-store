@@ -47,7 +47,16 @@ export const parseQueryParams = (
         .map((val) => parseInt(val))
     : [];
   const product_filter = parseInt(searchParams.get("product_filter") || "");
-  return { query, max_price, min_review, categories, perPage, pageNumber, product_filter, width: Width.WIDE };
+  return {
+    query,
+    max_price,
+    min_review,
+    categories,
+    perPage,
+    pageNumber,
+    product_filter,
+    width: Width.WIDE,
+  };
 };
 
 export const parseOrderSearchParams = (
@@ -115,7 +124,7 @@ export function convertAndFormatToUserCurrency(
     user && user.currency
       ? user.currency
       : { symbol: "£", code: "GBP", id: "1", gbp_exchange_rate: 1 };
-  const userPrice = convertPrice(price,  currency.gbp_exchange_rate);
+  const userPrice = convertPrice(price, currency.gbp_exchange_rate);
   return formatPrice(userPrice, currency.code);
 }
 

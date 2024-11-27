@@ -16,10 +16,7 @@ import { OrderRelation, SearchFieldType } from "../transformers";
 import { FieldValuePair } from "../helpers/request";
 import { convertPrice } from "../helpers/utils";
 
-export type BasketItemWithProduct = ResultType<
-  "basketItem",
-  { product: true }
->;
+export type BasketItemWithProduct = ResultType<"basketItem", { product: true }>;
 export type Basket = {
   items: BasketItemWithProduct[];
   metadata: {
@@ -94,12 +91,7 @@ export async function getBasketByUserId(id: number): Promise<Basket | void> {
 
   // sum price (in gbp)
   const total_price = items.reduce(
-    (prev, curr) =>
-      prev +
-      convertPrice(
-        curr.product.price * curr.quantity,
-        1,
-      ),
+    (prev, curr) => prev + convertPrice(curr.product.price * curr.quantity, 1),
     0,
   );
   basket.metadata.total.price = Math.round(total_price * 100) / 100;

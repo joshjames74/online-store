@@ -33,7 +33,6 @@ export type ProductParams = {
   perPage?: number;
 };
 
-
 export const productQueryTransformer: ProductQueryTransformer = (
   params: Partial<ProductParams>,
 ): QueryField<"product"> => {
@@ -100,10 +99,7 @@ export const productQueryTransformer: ProductQueryTransformer = (
     });
   }
 
-  const { take, skip } = getSkipTakeFromPage(
-    params.perPage,
-    params.pageNumber,
-  );
+  const { take, skip } = getSkipTakeFromPage(params.perPage, params.pageNumber);
 
   return {
     whereFields: whereFields,
@@ -111,5 +107,4 @@ export const productQueryTransformer: ProductQueryTransformer = (
     take: take,
     skip: skip,
   };
-
 };

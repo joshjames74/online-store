@@ -19,7 +19,6 @@ import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { ModelsResponse } from "@/api/helpers/types";
 import { UserContext } from "@/contexts/user-context";
 
-
 // to do: use default currency
 export default function PriceFilter(): JSX.Element {
   const min = 0;
@@ -40,10 +39,11 @@ export default function PriceFilter(): JSX.Element {
         if (res.metadata && res.metadata["price"]) {
           setMaxPrice(res.metadata["price"]?.max);
         }
-    }).catch(error => console.error(error))
+      })
+      .catch((error) => console.error(error))
       .finally(() => {
         setIsLoading(false);
-    });
+      });
   }, []);
 
   useEffect(() => {
@@ -67,15 +67,8 @@ export default function PriceFilter(): JSX.Element {
       ) : (
         <>
           <Text fontWeight="semibold">
-            {convertAndFormatToUserCurrency(
-              min,
-              user,
-            )}
-            -
-            {convertAndFormatToUserCurrency(
-              (sliderValue || 0),
-              user
-            )}
+            {convertAndFormatToUserCurrency(min, user)}-
+            {convertAndFormatToUserCurrency(sliderValue || 0, user)}
           </Text>
           <Slider
             onChange={handlePriceChange}

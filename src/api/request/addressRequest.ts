@@ -2,7 +2,6 @@ import { Address } from "@prisma/client";
 import { ResultType } from "../helpers/types";
 import { fetchData } from ".";
 
-
 // GET methods
 
 export async function getAddressesByUserId(
@@ -11,7 +10,7 @@ export async function getAddressesByUserId(
 ): Promise<ResultType<"address", { country: true }>[]> {
   return fetchData<ResultType<"address", { country: true }>[]>(
     `/api/user/${id}/addresses`,
-    cache
+    cache,
   );
 }
 
@@ -30,7 +29,6 @@ export async function postAddress(
   }
   return response.json();
 }
-
 
 // DELETE methods
 

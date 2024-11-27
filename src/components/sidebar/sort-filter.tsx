@@ -5,13 +5,12 @@ import { Heading, Select } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function SortFilter(): JSX.Element {
-
   const [fitler, setFilter] = useState<ProductFilter>();
 
   const setSearchParams = useSearchStore((state) => state.setParams);
 
   const handleChange = (event) => {
-    setSearchParams({ product_filter: event.currentTarget.value})
+    setSearchParams({ product_filter: event.currentTarget.value });
   };
 
   return (

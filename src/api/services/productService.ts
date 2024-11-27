@@ -21,7 +21,6 @@ import {
   ResultType,
 } from "../helpers/types";
 
-
 // GET methods
 
 export async function getProductById(
@@ -30,18 +29,21 @@ export async function getProductById(
   return getOneEntityByField("product", "id", id);
 }
 
-export async function getProductsByUserId(id: number): Promise<ResultType<"product", { seller: true }>[] | void> {
+export async function getProductsByUserId(
+  id: number,
+): Promise<ResultType<"product", { seller: true }>[] | void> {
   return getEntitiesByField("product", "sellerId", id);
 }
 
-export async function getAllProducts(): Promise<ResultType<"product", { }>[] | void> {
+export async function getAllProducts(): Promise<
+  ResultType<"product", {}>[] | void
+> {
   return getAllEntity("product");
 }
 
 export async function getProductBySearch(
   params: Partial<ProductParams>,
 ): Promise<ManyWithMetadata<"product", { seller: true }> | void> {
-
   // convert parameters to query objects
   const { whereQuery, orderQuery, skip, take } = queryParamsToPrismaQuery(
     params,
@@ -55,17 +57,13 @@ export async function getProductBySearch(
     orderQuery,
     skip,
     take,
-    { seller: true }
+    { seller: true },
   );
 
   // get metadata
   const count = products?.length;
   const max_price = Math.max(
-    ...(products?.length
-      ? products?.map(
-          (product) => product.price
-        )
-      : [0]),
+    ...(products?.length ? products?.map((product) => product.price) : [0]),
   );
 
   const metadata: Metadata<"product"> = {

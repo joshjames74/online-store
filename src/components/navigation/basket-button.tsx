@@ -6,7 +6,6 @@ import { Button, HStack, Link, Text } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 
 export default function BasketButton(): JSX.Element {
-
   const { user } = useContext(UserContext);
   const [count, setCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -16,14 +15,17 @@ export default function BasketButton(): JSX.Element {
       return;
     }
     setIsLoading(true);
-    getBasketByUserId(user.id).then((res) => {
-      setCount(res.metadata.count);
-    }).catch((error) => {
-      console.error(error);
-    }).finally(() => {
-      setIsLoading(false);
-    })
-  }
+    getBasketByUserId(user.id)
+      .then((res) => {
+        setCount(res.metadata.count);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   useEffect(() => {
     loadCount();
@@ -31,14 +33,16 @@ export default function BasketButton(): JSX.Element {
 
   useEffect(() => {
     loadCount();
-  }, [user])
+  }, [user]);
 
   return (
     <Link href={"/user/basket"}>
       <Button fontSize="2xl">
         <HStack>
           <ShoppingCartOutlined />
-          <Text display={count && count > 0 ? "block" : "none"} fontSize="md">({count && count > 0 ? count : <></>})</Text>
+          <Text display={count && count > 0 ? "block" : "none"} fontSize="md">
+            ({count && count > 0 ? count : <></>})
+          </Text>
         </HStack>
       </Button>
     </Link>

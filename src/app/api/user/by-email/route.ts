@@ -1,7 +1,5 @@
 import { postHelper } from "@/api/helpers/request";
-import {
-  postUser,
-} from "@/api/services/userService";
+import { postUser } from "@/api/services/userService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {

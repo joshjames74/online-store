@@ -10,9 +10,7 @@ import {
   ReviewParams,
   reviewQueryTransformer,
 } from "../transformers/reviewSearchTransformer";
-import {
-  queryParamsToPrismaQuery,
-} from "../transformers";
+import { queryParamsToPrismaQuery } from "../transformers";
 import { ResultType } from "../helpers/types";
 import prisma from "@/lib/prisma";
 
@@ -64,20 +62,22 @@ export async function getReviewCountsByProductId(
   );
 }
 
-
 // POST methods
 
 export async function postReview(
   review: Omit<Review, "review_id">,
 ): Promise<Review | void> {
-  
   return prisma.$transaction(async (tx) => {
-
     // find product and compute new scores
-    const product = await tx.product.findFirst({ where: { id: review.productId }});
-    if (!product) { throw new Error('Cannot find product'); }
+    const product = await tx.product.findFirst({
+      where: { id: review.productId },
+    });
+    if (!product) {
+      throw new Error("Cannot find product");
+    }
     const new_count = product.review_count + 1;
-    const new_score = ((product.review_score * product.review_count) + review.score) / new_count;
+    const new_score =
+      (product.review_score * product.review_count + review.score) / new_count;
 
     // update product
     const updated_product = await tx.product.update({
@@ -85,36 +85,44 @@ export async function postReview(
       data: {
         review_count: new_count,
         review_score: new_score,
-      }
+      },
     });
-    if (!updated_product) { throw new Error('Cannot update product') };
+    if (!updated_product) {
+      throw new Error("Cannot update product");
+    }
 
     // create review
     const new_review = await tx.review.create({ data: review });
-    if (!new_review) { throw new Error('Cannot create review')};
+    if (!new_review) {
+      throw new Error("Cannot create review");
+    }
 
     return review;
   });
 }
 
-
 // DELETE methods
 
 export async function deleteReviewById(id: number): Promise<Review | void> {
-
   return prisma.$transaction(async (tx) => {
-
     // find review
-    const review = await tx.review.findFirst({ where: { id: id }});
-    if (!review) { throw new Error('Cannot find review') };
+    const review = await tx.review.findFirst({ where: { id: id } });
+    if (!review) {
+      throw new Error("Cannot find review");
+    }
 
     // find product from review
-    const product = await tx.product.findFirst({ where: { id: review.productId }});
-    if (!product) { throw new Error('Cannot find product') };
+    const product = await tx.product.findFirst({
+      where: { id: review.productId },
+    });
+    if (!product) {
+      throw new Error("Cannot find product");
+    }
 
     // compute new scores
     const new_count = product.review_count - 1;
-    const new_score = ((product.review_score * product.review_count) - review.score) / new_count;
+    const new_score =
+      (product.review_score * product.review_count - review.score) / new_count;
 
     // update product
     const updated_product = await tx.product.update({
@@ -122,13 +130,17 @@ export async function deleteReviewById(id: number): Promise<Review | void> {
       data: {
         review_count: new_count,
         review_score: new_score,
-      }
+      },
     });
-    if (!updated_product) { throw new Error('Cannot update product')};
+    if (!updated_product) {
+      throw new Error("Cannot update product");
+    }
 
     // create review
-    const deleted_review = await tx.review.delete({ where: { id: id }});
-    if (!deleted_review) { throw new Error('Cannot delete review')};
+    const deleted_review = await tx.review.delete({ where: { id: id } });
+    if (!deleted_review) {
+      throw new Error("Cannot delete review");
+    }
 
     return deleted_review;
   });
