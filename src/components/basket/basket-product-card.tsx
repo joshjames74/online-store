@@ -4,7 +4,7 @@ import {
   getBasketByUserId,
   putBasketItemQuantityById,
 } from "@/api/request/basketRequest";
-import { BasketItemWithProductAndCurrency } from "@/api/services/basketItemService";
+import { BasketItemWithProduct } from "@/api/services/basketItemService";
 import { SettingsContext } from "@/contexts/settings-context";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
@@ -36,7 +36,7 @@ export default function BasketProductCard({
   basketItem,
   loadData,
 }: {
-  basketItem: BasketItemWithProductAndCurrency;
+  basketItem: BasketItemWithProduct;
   loadData: (cache?: RequestCache) => Promise<void>;
 }): JSX.Element {
   const { theme } = useContext(ThemeContext);
@@ -155,11 +155,12 @@ export default function BasketProductCard({
       justifyContent="space-between"
       flexDirection={isLessThan350px ? "column" : "row"}
     >
-      {isLessThan600px ? (
+      {/* {isLessThan600px ? (
         <ProductCompact {...basketItem.product} />
       ) : (
         <ProductWide {...basketItem.product} />
-      )}
+      )} */}
+      <Heading>{basketItem.product.title}</Heading>
 
       <Stack>
         <Heading

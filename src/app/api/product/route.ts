@@ -22,7 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   // parse enum
   const product_filter_raw = parseInt(searchParams.get("product_filter") || "");
-  let product_filter: ProductFilter;
+  let product_filter: ProductFilter | undefined = undefined;
 
   if (
     product_filter_raw &&

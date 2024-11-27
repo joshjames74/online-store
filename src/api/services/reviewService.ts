@@ -12,7 +12,6 @@ import {
 } from "../transformers/reviewSearchTransformer";
 import {
   queryParamsToPrismaQuery,
-  transformQueryToPrismaQuery,
 } from "../transformers";
 import { ResultType } from "../helpers/types";
 import prisma from "@/lib/prisma";

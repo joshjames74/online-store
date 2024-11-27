@@ -29,9 +29,9 @@ export async function POST(req: Request): Promise<NextResponse> {
   const body = await req.json();
   const review: Omit<Review, "review_id"> = body;
 
-  review.score = parseInt(review.score.toString());
-  review.usrId = parseInt(review.usrId.toString());
-  review.productId = parseInt(review.productId.toString());
+  review.score = parseInt(review.score?.toString() || "");
+  review.usrId = parseInt(review.usrId?.toString() || "");
+  review.productId = parseInt(review.productId?.toString() || "");
 
   return await postHelper("review", postReview, review);
 }

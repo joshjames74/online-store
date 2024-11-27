@@ -1,15 +1,12 @@
-import { QueryParams } from "@/redux/reducers/product";
 import {
   getSkipTakeFromPage,
   OrderField,
   OrderRelation,
-  PrismaRelation,
   QueryField,
-  SearchFieldType,
   WhereField,
   WhereRelation,
 } from ".";
-import { ModelType, TableMap } from "../helpers/types";
+import { TableMap } from "../helpers/types";
 
 export type ProductQueryTransformer = (
   params: Partial<ProductParams>,
@@ -46,7 +43,7 @@ export const productQueryTransformer: ProductQueryTransformer = (
   if (params.query) {
     whereFields.push({
       targets: ["title", "description"],
-      data: params.query,
+      data: params.query.toLowerCase(),
       relation: [WhereRelation.CONTAINS],
     });
   }
@@ -104,8 +101,8 @@ export const productQueryTransformer: ProductQueryTransformer = (
   }
 
   const { take, skip } = getSkipTakeFromPage(
-    params.perPage || 0,
-    params.pageNumber || 0,
+    params.perPage,
+    params.pageNumber,
   );
 
   return {
@@ -114,4 +111,5 @@ export const productQueryTransformer: ProductQueryTransformer = (
     take: take,
     skip: skip,
   };
+
 };

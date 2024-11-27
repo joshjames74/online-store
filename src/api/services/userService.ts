@@ -22,7 +22,7 @@ export async function getUserById(id: number): Promise<Usr | void> {
   return getOneEntityByField("usr", "id", id);
 }
 
-export async function getUsersByCountryId(id: number): Promise<Usr | void> {
+export async function getUsersByCountryId(id: number): Promise<Usr[] | void> {
   return getEntitiesByField("usr", "countryId", id);
 }
 

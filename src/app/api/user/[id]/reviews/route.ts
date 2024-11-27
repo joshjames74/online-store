@@ -1,5 +1,5 @@
 import { getHelper } from "@/api/helpers/request";
-import { getProductByUserId } from "@/api/services/productService";
+import { getProductsByUserId } from "@/api/services/productService";
 import { getReviewsByUserId } from "@/api/services/reviewService";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,5 +15,5 @@ export async function GET(
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await getHelper("review", getReviewsByUserId, parseInt(id));
+  return await getHelper(getReviewsByUserId, parseInt(id));
 }

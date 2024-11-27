@@ -15,12 +15,12 @@ export type QueryTransformer = ProductQueryTransformer;
 export type TransformerMap = {
   address: null;
   basket: null;
-  basket_item: null;
+  basketItem: null;
   category: null;
   country: null;
   currency: null;
   order: null;
-  order_item: OrderQueryTransformer;
+  orderItem: OrderQueryTransformer;
   product: ProductQueryTransformer;
   review: ReviewQueryTransformer;
   usr: null;
@@ -29,36 +29,15 @@ export type TransformerMap = {
 export type ParamMap = {
   address: null;
   basket: null;
-  basket_item: null;
+  basketItem: null;
   category: null;
   country: null;
   currency: null;
   order: null;
-  order_item: OrderParams;
+  orderItem: OrderParams;
   product: ProductParams;
   review: ReviewParams;
   usr: null;
-};
-
-// delete
-export enum PrismaRelation {
-  CONTAINS = "contains",
-  LESS_THAN = "lt",
-  LESS_THAN_OR_EQUAL = "lte",
-  GREATER_THAN = "gt",
-  GREATHER_THAN_OR_EQUAL = "gte",
-  EQUALS = "equals",
-  NOT = "not",
-  SOME = "some",
-  ID = "categoryId",
-  IN = "in",
-}
-
-// delete
-export type SearchFieldType<T extends ModelType> = {
-  data: any;
-  targets: TableMap[T][];
-  relation: PrismaRelation[];
 };
 
 // define relations
@@ -81,6 +60,19 @@ export enum OrderRelation {
   DESC = "desc",
 }
 
+export type Relation = WhereRelation | OrderRelation;
+
+// // delete
+// export enum PrismaRelation (WhereRelation & OrderRelation)
+
+// delete
+export type SearchFieldType<T extends ModelType> = {
+  data: any;
+  targets: TableMap[T][];
+  relation: Relation[];
+};
+
+
 // define fields
 
 export type OrderField<T extends ModelType> = {
@@ -101,30 +93,41 @@ export type QueryField<T extends ModelType> = {
   take?: number;
 };
 
+
 export function getSkipTakeFromPage(
-  perPage: number,
-  pageNumber: number,
+  perPage: number | undefined,
+  pageNumber: number | undefined,
 ): { skip: number; take: number } {
-  const error = { skip: NaN, take: NaN };
-
-  if (!perPage || isNaN(parseInt(perPage.toString()))) {
-    return error;
-  }
-  if (!pageNumber || isNaN(parseInt(pageNumber.toString()))) {
-    return error;
-  }
-  if (pageNumber < 1 || perPage < 1) {
-    return error;
+  if (perPage == undefined && pageNumber == undefined) {
+    // don't do any pagination
+    return { skip: NaN, take: NaN}
   }
 
-  const take = perPage;
-  const skip = (pageNumber - 1) * perPage;
+  // if per page not provided, do no pagination
+  if (perPage == undefined || isNaN(parseInt(perPage.toString()))) {
+    return { skip: NaN, take: NaN } ;
+  }
+
+  // if pageNumber not provided, assume page 1
+  if (pageNumber == undefined || isNaN(parseInt(pageNumber.toString()))) {
+    pageNumber = 1;
+  }
+
+  if (pageNumber < 0 || perPage < 0) {
+    // return 0 results
+    return { skip: 0, take: 0};
+  }
+
+  // at this point: per page exists and is gte 0; pageNumber exists and is gte 0
+  const take = Math.max(perPage, 0);
+  const skip = Math.max((pageNumber - 1) * perPage, 0);
 
   return { take: take, skip: skip };
 }
 
+
 export function createDynamicRelationObject(
-  relations: WhereRelation[],
+  relations: Relation[],
   data: any,
 ) {
   /**
@@ -199,7 +202,13 @@ export function transformOrderFieldToQuery<T extends ModelType>(
 export function queryParamsToPrismaQuery<T extends ModelType>(
   params: Partial<ParamMap[T]>,
   transformer: TransformerMap[T],
-) {
+): { whereQuery: any, orderQuery: any, skip: any, take: any} {
+
+  if (!transformer) {
+    // change this
+    return {} as { whereQuery: any, orderQuery: any, skip: any, take: any};
+  }
+
   const { whereFields, orderFields, skip, take } = transformer(params);
 
   const whereQuery = transformWhereFieldToQuery(whereFields);
@@ -213,9 +222,9 @@ export function queryParamsToPrismaQuery<T extends ModelType>(
   };
 }
 
-export function transformQueryToPrismaQuery<T extends ModelType>(
-  query: Partial<QueryParams>,
-  transformer: QueryTransformer,
-) {
-  return transformSearchFieldToPrismaQuery(transformer(query));
-}
+// export function transformQueryToPrismaQuery<T extends ModelType>(
+//   query: Partial<QueryParams>,
+//   transformer: QueryTransformer,
+// ) {
+//   return transformSearchFieldToPrismaQuery(transformer(query));
+// }

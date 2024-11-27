@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import "@fontsource/open-sans";
-import "@fontsource/raleway";
+// import "@fontsource/open-sans";
+// import "@fontsource/raleway";
 
 // create interface theme
 export interface ITheme {
@@ -47,7 +47,7 @@ export interface ITheme {
 }
 
 // set default theme
-const theme: ITheme = {
+export const theme: ITheme = {
   theme: {
     sizes: {
       minWidth: "320px",

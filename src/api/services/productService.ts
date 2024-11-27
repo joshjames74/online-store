@@ -2,6 +2,7 @@ import { Prisma, Product } from "@prisma/client";
 import {
   deleteOneEntityByField,
   getAllEntity,
+  getEntitiesByField,
   getEntitiesByFields,
   getOneEntityByField,
   postOneEntity,
@@ -29,8 +30,8 @@ export async function getProductById(
   return getOneEntityByField("product", "id", id);
 }
 
-export async function getProductByUserId(id: number): Promise<ResultType<"product", { seller: true }> | void> {
-  return getOneEntityByField("product", "sellerId", id);
+export async function getProductsByUserId(id: number): Promise<ResultType<"product", { seller: true }>[] | void> {
+  return getEntitiesByField("product", "sellerId", id);
 }
 
 export async function getAllProducts(): Promise<ResultType<"product", { }>[] | void> {
@@ -64,7 +65,7 @@ export async function getProductBySearch(
       ? products?.map(
           (product) => product.price
         )
-      : []),
+      : [0]),
   );
 
   const metadata: Metadata<"product"> = {

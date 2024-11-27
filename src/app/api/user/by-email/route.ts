@@ -1,8 +1,6 @@
 import { postHelper } from "@/api/helpers/request";
 import {
-  findOrPostUser,
   postUser,
-  upsertUserByEmail,
 } from "@/api/services/userService";
 import { NextRequest, NextResponse } from "next/server";
 

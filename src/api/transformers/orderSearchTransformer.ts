@@ -1,14 +1,11 @@
-import { QueryParams } from "@/redux/reducers/product";
 import {
   OrderField,
   OrderRelation,
-  PrismaRelation,
   QueryField,
-  SearchFieldType,
   WhereField,
   WhereRelation,
 } from ".";
-import { ModelType, TableMap } from "../helpers/types";
+import { TableMap } from "../helpers/types";
 
 export type OrderQueryTransformer = (
   params: Partial<OrderParams>,

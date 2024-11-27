@@ -176,10 +176,10 @@ export async function getEntitiesByFields<
     if (include) {
       Object.assign(query, { include });
     }
-    if (skip && !isNaN(skip)) {
+    if (skip !== undefined && !isNaN(skip)) {
       Object.assign(query, { skip: skip });
     }
-    if (take && !isNaN(take)) {
+    if (take !== undefined && !isNaN(take)) {
       Object.assign(query, { take: take });
     }
 

@@ -1,5 +1,5 @@
 import { QueryParams } from "@/redux/reducers/product";
-import { ProductParams } from "../transformers/productSearchTransformer";
+import { ProductParams, Width } from "../transformers/productSearchTransformer";
 import {
   OrderFilter,
   OrderParams,
@@ -47,7 +47,7 @@ export const parseQueryParams = (
         .map((val) => parseInt(val))
     : [];
   const product_filter = parseInt(searchParams.get("product_filter") || "");
-  return { query, max_price, min_review, categories, perPage, pageNumber, product_filter };
+  return { query, max_price, min_review, categories, perPage, pageNumber, product_filter, width: Width.WIDE };
 };
 
 export const parseOrderSearchParams = (

@@ -16,12 +16,12 @@ import { OrderRelation, SearchFieldType } from "../transformers";
 import { FieldValuePair } from "../helpers/request";
 import { convertPrice } from "../helpers/utils";
 
-export type BasketItemWithProductAndCurrency = ResultType<
+export type BasketItemWithProduct = ResultType<
   "basketItem",
-  { product: { include: { currency: true } } }
+  { product: true }
 >;
 export type Basket = {
-  items: BasketItemWithProductAndCurrency[];
+  items: BasketItemWithProduct[];
   metadata: {
     count: number;
     total: {
@@ -35,13 +35,13 @@ export type Basket = {
 
 export async function getBasketItemById(
   id: number,
-): Promise<BasketItemWithProductAndCurrency[] | void> {
+): Promise<BasketItemWithProduct[] | void> {
   return getOneEntityByField("basketItem", "id", id);
 }
 
 export async function getBasketItemsByUserId(
   id: number,
-): Promise<BasketItemWithProductAndCurrency[] | void> {
+): Promise<BasketItemWithProduct[] | void> {
   return getEntitiesByField("basketItem", "usrId", id, { product: true });
 }
 

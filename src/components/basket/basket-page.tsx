@@ -29,6 +29,7 @@ import { BasketItem, Order } from "@prisma/client";
 
 
 export default function BasketPage(): JSX.Element {
+
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
 
@@ -77,21 +78,23 @@ export default function BasketPage(): JSX.Element {
   };
 
   const onSubmit = (event: FormEvent<any>) => {
-    const formData = new FormData(event.target);
-    const formObject: Order & { basketItems: BasketItem[] } = Object.fromEntries(formData)
+    // needs sorting out
+    const formElement = event.target;
+    const formData = new FormData(formElement);
+    //const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const formObject: Order & { basketItems: BasketItem[] } = Object.fromEntries(formData) as unknown as Order & { basketItems: BasketItem[] }
 
     const order: Omit<Order, "id"> = {} as Order;
-    order.addressId = parseInt(formObject["addressId"] || "");
-    order.currencyId = parseInt(formObject["currencyId"] || "");
-    order.usrId = parseInt(formObject["usrId"] || "");
-    order.date = new Date(parseInt(formObject["date"]) || "").toISOString();
+    order.addressId = formObject.addressId;
+    order.currencyId = formObject.currencyId
+    order.usrId = formObject.usrId;
+    order.date = formObject.date;
+    //order.date = new Date(parseInt(formObject["date"]) || "").toISOString();
 
-    const basketItems = JSON.parse(formObject["basketItems"])
-    console.log(order);
-    console.log(basketItems);
+    //const basketItems = JSON.parse(formObject["basketItems"])
   }
 
-  const handleFormSubmit = (event: FormEvent<any>) => {
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleSubmit(() => onSubmit(event))();
   }
@@ -104,7 +107,7 @@ export default function BasketPage(): JSX.Element {
     return <Box>Loading</Box>;
   }
 
-  if (!basket || !basket.items.length) {
+  if (!basket || !basket?.items?.length) {
     return (
       <Card
         minW={theme.sizes.minWidth}
@@ -115,6 +118,7 @@ export default function BasketPage(): JSX.Element {
         <CardHeader>
           <Heading fontSize="3xl" fontWeight="semibold">
             Basket is empty
+            {JSON.stringify(basket)}
           </Heading>
         </CardHeader>
         <Divider />

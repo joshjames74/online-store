@@ -14,7 +14,7 @@ export async function GET(
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await getHelper("review", getReviewById, parseInt(id));
+  return await getHelper(getReviewById, parseInt(id));
 }
 
 // DELETE method

@@ -71,13 +71,13 @@ export function formatBodyToField<T extends ModelType>(
 
 export async function getHelper<T extends ModelType>(
   func: GetType<T>,
-  params: any,
+  params?: any,
 ): Promise<NextResponse> {
   try {
     const response = await func(params);
     if (!response) {
       return NextResponse.json(
-        { error: `${response} not found` },
+        { message: `${response} not found` },
         { status: 404 },
       );
     }
