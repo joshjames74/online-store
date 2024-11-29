@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import prisma from "@/lib/prisma";
 import {
   generateMany,
@@ -10,7 +7,6 @@ import {
 import { Product, Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 import { faker } from "@faker-js/faker";
-import { ManyWithMetadata } from "@/api/helpers/types";
 import { GET } from "@/app/api/product/route";
 
 describe("GET /api/product", () => {

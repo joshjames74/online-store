@@ -12,6 +12,7 @@
     "lint": "next lint",
     "test:api": "dotenv -e .env -- npx jest --selectProjects api",
     "test:components": "jest --selectProjects components",
+    "test:contexts": "jest --selectProjects contexts",
     "prettier": "npx prettier --write ."
   },
   "dependencies": {

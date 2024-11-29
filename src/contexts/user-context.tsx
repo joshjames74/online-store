@@ -4,6 +4,9 @@ import { UserWithCurrencyAndCountry } from "@/api/services/userService";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
+
+// define context types
+
 export interface IUser {
   user: UserWithCurrencyAndCountry;
   isAuthenticated: boolean;
@@ -19,6 +22,8 @@ const userData: IUser = {
 };
 
 
+// helper method
+
 export const findOrPostUser = async (
   email: string,
   name: string,
@@ -26,96 +31,54 @@ export const findOrPostUser = async (
 ): Promise<UserWithCurrencyAndCountry> => {
 
   // find user. if found, return
-  try {
-    const user = await getUserByEmail(email);
-    if (user) {
-      return user;
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  const user = await getUserByEmail(email).catch(error => console.error(error));
+  if (user) { return user }
 
   // if not found (or error), post user
-  try {
-    const post = await postUser({ email, name, image_url });
-    if (post) {
-      try {
-        const user = await getUserByEmail(post.email);
-        if (user) {
-          return user;
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  const post = await postUser({ email, name, image_url }).catch(error => console.error(error))
+  if (!post) { return {} as UserWithCurrencyAndCountry };
+
+  // now get the new user 
+  const newUser = await getUserByEmail(post.email).catch(error => console.error(error));
+  if (newUser) { return newUser };
 
   return {} as UserWithCurrencyAndCountry;
 };
 
 
-export const UserContext = React.createContext<IUser>(userData);
+// define context
 
+export const UserContext = React.createContext<IUser>(userData);
 
 export const UserProvider = (props: { children: JSX.Element }): JSX.Element => {
   const { children } = props;
 
   // set state
   const { data: session, status } = useSession();
-  const [user, setUser] = useState<UserWithCurrencyAndCountry>(
-    {} as UserWithCurrencyAndCountry,
-  );
+  const [user, setUser] = useState<UserWithCurrencyAndCountry>({} as UserWithCurrencyAndCountry);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  // load user from session, 
+  
+  // if logged out, do nothing. if logged in, find or create profile
   const loadUser = async () => {
-    if (!session?.user) {
-      return;
-    }
+    if (!session?.user || !session?.user?.email) { return }
+
     const { name, email, image: image_url } = session.user;
-    if (!email) {
-      return;
-    }
     findOrPostUser(email, name ? name : "", image_url ? image_url : "")
-      .then((user) => {
-        setUser(user);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      .then(user => setUser(user))
+      .catch(error => console.error(error))
   };
 
+  // on reload, if logged in then get the user again (force reload)
   const reload = async (): Promise<void> => {
+    if (!session?.user || !session?.user?.email) { return }
     setIsLoading(true);
-    if (!session?.user) {
-      return;
-    }
-
-    const { email } = session.user;
-    if (!email) {
-      return;
-    }
-    getUserByEmail(email, "reload")
-      .then((user) => {
-        setUser(user);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    getUserByEmail(session.user.email, "reload")
+      .then(user => setUser(user))
+      .catch(error => console.error(error))
+      .finally(() => setIsLoading(false));
   };
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   loadUser();
-  //   setIsAuthenticated(status === "authenticated");
-  //   setIsLoading(false);
-  // }, []);
 
   useEffect(() => {
     setIsLoading(true);
