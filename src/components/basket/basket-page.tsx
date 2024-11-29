@@ -28,6 +28,7 @@ import { useForm } from "react-hook-form";
 import { BasketItem, Order } from "@prisma/client";
 import { postOrder } from "@/api/request/orderRequest";
 
+
 export default function BasketPage(): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
@@ -129,7 +130,6 @@ export default function BasketPage(): JSX.Element {
         <CardHeader>
           <Heading fontSize="3xl" fontWeight="semibold">
             Basket is empty
-            {JSON.stringify(basket)}
           </Heading>
         </CardHeader>
         <Divider />
@@ -206,11 +206,7 @@ export default function BasketPage(): JSX.Element {
       <form onSubmit={(event) => handleFormSubmit(event)}>
         <input id="usrId" name="usrId" type="hidden" value={user.id} />
         <input id="date" name="date" type="hidden" value={Date.now()} />
-        <input
-          id="currencyId"
-          name="currencyId"
-          type="hidden"
-          value={user.currency.id}
+        <input id="currencyId" name="currencyId" type="hidden" value={user.currency?.id || "1"}
         />
         {/** TO do: make set address and use it here */}
         <input id="addressId" name="addressId" type="hidden" value={1} />

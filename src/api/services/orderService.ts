@@ -87,28 +87,26 @@ export async function postOrder(data: {
 
   return prisma.$transaction(async (tx) => {
 
-    console.log(order);
     // post order
     const postedOrder = await tx.order.create({ data: order });
-    if (!postedOrder) {
-      throw new Error("Cannot post order");
-    }
+    if (!postedOrder) { throw new Error("Cannot post order") };
 
     // post basket items
-    const orderItems: Omit<OrderItem, "id">[] = basketItems.map((item) => {
+    const orderItems: Omit<OrderItem, "id">[] = await Promise.all(basketItems.map(async (item) => {
+      // get product price
+      const product = await tx.product.findFirst({ where: { id: item.productId }});
+      if (!product) { throw new Error ("Cannot find product")}
+
       return {
         orderId: postedOrder.id,
         productId: item.productId,
-        price: 10,
+        price: product.price,
         quantity: item.quantity,
       };
-    });
-    const postedBasketItems = await tx.orderItem.createMany({
-      data: orderItems,
-    });
-    if (!postedBasketItems) {
-      throw new Error("Cannot post basketItems ");
-    }
+    }));
+
+    const postedBasketItems = await tx.orderItem.createMany({ data: orderItems });
+    if (!postedBasketItems) { throw new Error("Cannot post basketItems ") };
 
     return postedOrder;
   });

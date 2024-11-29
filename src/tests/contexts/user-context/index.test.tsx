@@ -13,6 +13,9 @@ jest.mock("./../../../api/request/userRequest", () => ({
     postUser: jest.fn()
 }));
 
+
+// to do: simulate error in posting user
+
 describe("Mock the user context", () => {
 
     let activeUser: UserWithCurrencyAndCountry;

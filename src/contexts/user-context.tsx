@@ -39,7 +39,7 @@ export const findOrPostUser = async (
   if (!post) { return {} as UserWithCurrencyAndCountry };
 
   // now get the new user 
-  const newUser = await getUserByEmail(post.email).catch(error => console.error(error));
+  const newUser = await getUserByEmail(post.email, "force-cache").catch(error => console.error(error));
   if (newUser) { return newUser };
 
   return {} as UserWithCurrencyAndCountry;
