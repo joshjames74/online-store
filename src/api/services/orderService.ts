@@ -1,10 +1,7 @@
 import {
-  Address,
   BasketItem,
-  Currency,
   Order,
   OrderItem,
-  Usr,
 } from "@prisma/client";
 import {
   getEntitiesByFields,
@@ -47,7 +44,7 @@ export async function getOrderViewById(id: number): Promise<any> {
 
 export async function getOrderViewsBySearch(
   params: OrderParams,
-): Promise<OrderView | void> {
+): Promise<OrderView[] | void> {
   const { whereQuery, orderQuery } = queryParamsToPrismaQuery(
     params,
     orderQueryTransformer,
@@ -78,6 +75,8 @@ export async function getOrderViewsBySearch(
 
 // POST methods
 
+
+// to do: do we need to provide basket items?
 export async function postOrder(data: {
   order: Omit<Order, "id">,
   basketItems: BasketItem[],
@@ -107,6 +106,10 @@ export async function postOrder(data: {
 
     const postedBasketItems = await tx.orderItem.createMany({ data: orderItems });
     if (!postedBasketItems) { throw new Error("Cannot post basketItems ") };
+
+    // delete basket items from user
+    const oldBasketItems = await tx.basketItem.deleteMany({ where: { usrId: order.usrId }});
+    if (!oldBasketItems) { throw new Error("Cannot delete old basket items")};
 
     return postedOrder;
   });

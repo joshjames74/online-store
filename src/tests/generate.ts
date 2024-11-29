@@ -1,8 +1,10 @@
 import {
   Address,
+  BasketItem,
   Category,
   Country,
   Currency,
+  Order,
   Product,
   Review,
   Usr,
@@ -154,6 +156,18 @@ export const generateMockBasketItemWithProduct = (
   return basketItem;
 };
 
+export const generateMockBasketItem = (productIds: number[], usrIds: number[]): BasketItem => {
+  
+  const basketItem: BasketItem = {} as BasketItem;
+
+  basketItem.date_added = faker.date.recent();
+  basketItem.productId = getRandomElement(productIds);
+  basketItem.quantity = faker.number.int({ min: 1, max: 100 });
+  basketItem.usrId = getRandomElement(usrIds);
+
+  return basketItem;
+}
+
 export const generateMockBasketFromItems = (
   items: BasketItemWithProduct[],
 ): Basket => {
@@ -195,3 +209,13 @@ export const generateMockBasket = (
   const basket: Basket = { items: items, metadata: metadata };
   return basket;
 };
+
+
+export const generateMockOrder = (usrIds: number[], addressIds: number[], currencyIds: number[]): Order => {
+  const order: Order = {} as Order;
+  order.addressId = getRandomElement(addressIds);
+  order.currencyId = getRandomElement(currencyIds);
+  order.usrId = getRandomElement(usrIds);
+  order.date = faker.date.recent();
+  return order;
+}

@@ -117,7 +117,6 @@ export async function postHelper<T extends ModelType>(
     );
   } catch (error) {
     console.log((error as any).message);
-    console.log(modelInstance)
     return NextResponse.json(
       { message: "Error processing request", error: error },
       { status: 500 },

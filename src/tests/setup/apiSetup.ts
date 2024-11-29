@@ -2,6 +2,7 @@ require("dotenv").config();
 import prisma from "@/lib/prisma";
 
 const deleteAllData = async () => {
+  
   await prisma.basketItem.deleteMany({});
 
   // orderItem before order
