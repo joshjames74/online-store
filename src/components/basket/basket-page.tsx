@@ -26,6 +26,7 @@ import { convertAndFormatToUserCurrency, parseDate } from "@/api/helpers/utils";
 import styles from "./basket-page.module.css";
 import { useForm } from "react-hook-form";
 import { BasketItem, Order } from "@prisma/client";
+import { postOrder } from "@/api/request/orderRequest";
 
 export default function BasketPage(): JSX.Element {
   const { theme } = useContext(ThemeContext);
@@ -80,23 +81,28 @@ export default function BasketPage(): JSX.Element {
   };
 
   const onSubmit = (event: FormEvent<any>) => {
-    // needs sorting out
-    const formElement = event.target;
-    const formData = new FormData(formElement);
-    //const formData = new FormData(event.currentTarget as HTMLFormElement);
-    const formObject: Order & { basketItems: BasketItem[] } =
-      Object.fromEntries(formData) as unknown as Order & {
-        basketItems: BasketItem[];
-      };
+    const element = event.target as HTMLFormElement;
+    const data = new FormData(element);
+
+    type OrderWithItems = Order & { basketItems: BasketItem[] }
+    const formObject: OrderWithItems = Object.fromEntries(data) as unknown as OrderWithItems;
 
     const order: Omit<Order, "id"> = {} as Order;
-    order.addressId = formObject.addressId;
-    order.currencyId = formObject.currencyId;
-    order.usrId = formObject.usrId;
-    order.date = formObject.date;
-    //order.date = new Date(parseInt(formObject["date"]) || "").toISOString();
+    order.addressId = parseInt(formObject.addressId.toString() || "");
+    order.currencyId = parseInt(formObject.currencyId.toString() || "");
+    order.usrId = parseInt(formObject.usrId.toString() || "");
+    order.date = new Date (parseInt(formObject.date.toString() || "")).toISOString() as unknown as Date;
 
-    //const basketItems = JSON.parse(formObject["basketItems"])
+    const basketItems: BasketItem[] = JSON.parse(formObject.basketItems.toString());
+
+    postOrder({ order, basketItems }).then(res => {
+      console.log(res);
+    }).catch(error => {
+      console.error(error);
+    }).finally(() => {
+      console.log("finished");
+    });
+
   };
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {

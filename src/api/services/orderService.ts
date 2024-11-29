@@ -78,11 +78,16 @@ export async function getOrderViewsBySearch(
 
 // POST methods
 
-export async function postOrder(
+export async function postOrder(data: {
   order: Omit<Order, "id">,
   basketItems: BasketItem[],
-) {
+}): Promise<Order> {
+
+  const { order, basketItems } = data;
+
   return prisma.$transaction(async (tx) => {
+
+    console.log(order);
     // post order
     const postedOrder = await tx.order.create({ data: order });
     if (!postedOrder) {

@@ -10,7 +10,7 @@ export const objectToQueryParams = (params: any): string => {
   return Object.entries(params)
     .map(
       ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+        `${encodeURIComponent(key)}=${encodeURIComponent(`${value}`)}`,
     )
     .join("&");
 };
@@ -33,7 +33,7 @@ export const parseDate = (
 export const parseQueryParams = (
   searchParams: URLSearchParams,
 ): ProductParams => {
-  // to do: only add to params if truthy
+  // to do: only add to params if truthy, change away from wide
   const query = searchParams.get("query") || "";
   const max_price = parseFloat(searchParams.get("max_price") || "0");
   const min_review = parseFloat(searchParams.get("min_review") || "0");

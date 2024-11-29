@@ -1,7 +1,6 @@
 "use client";
 import { getUserByEmail, postUser } from "@/api/request/userRequest";
 import { UserWithCurrencyAndCountry } from "@/api/services/userService";
-import { Currency, Usr } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
@@ -19,11 +18,14 @@ const userData: IUser = {
   reload: () => new Promise(() => {}),
 };
 
+
 export const findOrPostUser = async (
   email: string,
   name: string,
   image_url: string,
 ): Promise<UserWithCurrencyAndCountry> => {
+
+  // find user. if found, return
   try {
     const user = await getUserByEmail(email);
     if (user) {
@@ -33,6 +35,7 @@ export const findOrPostUser = async (
     console.error(error);
   }
 
+  // if not found (or error), post user
   try {
     const post = await postUser({ email, name, image_url });
     if (post) {
@@ -48,14 +51,18 @@ export const findOrPostUser = async (
   } catch (error) {
     console.error(error);
   }
+
   return {} as UserWithCurrencyAndCountry;
 };
 
+
 export const UserContext = React.createContext<IUser>(userData);
+
 
 export const UserProvider = (props: { children: JSX.Element }): JSX.Element => {
   const { children } = props;
 
+  // set state
   const { data: session, status } = useSession();
   const [user, setUser] = useState<UserWithCurrencyAndCountry>(
     {} as UserWithCurrencyAndCountry,
@@ -63,11 +70,11 @@ export const UserProvider = (props: { children: JSX.Element }): JSX.Element => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
+  // load user from session, 
   const loadUser = async () => {
     if (!session?.user) {
       return;
     }
-
     const { name, email, image: image_url } = session.user;
     if (!email) {
       return;
@@ -103,12 +110,12 @@ export const UserProvider = (props: { children: JSX.Element }): JSX.Element => {
       });
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    loadUser();
-    setIsAuthenticated(status === "authenticated");
-    setIsLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   loadUser();
+  //   setIsAuthenticated(status === "authenticated");
+  //   setIsLoading(false);
+  // }, []);
 
   useEffect(() => {
     setIsLoading(true);

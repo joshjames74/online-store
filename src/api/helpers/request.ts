@@ -46,7 +46,7 @@ type GetType<T extends ModelType> = (
 >;
 
 type postFunctionType<T extends ModelType> = (
-  model: ModelMap[T],
+  model: any,
 ) => Promise<ModelMap[T] | void>;
 type deleteFunctionType<T extends ModelType> = (
   params: any,
@@ -93,11 +93,11 @@ export async function getHelper<T extends ModelType>(
 export async function postHelper<T extends ModelType>(
   entity: T,
   func: postFunctionType<T>,
-  modelInstance: ModelMap[T],
+  modelInstance: any,
 ): Promise<NextResponse> {
   try {
-    const response = await func(modelInstance);
 
+    const response = await func(modelInstance);
     if (!response) {
       return NextResponse.json(
         {
@@ -117,6 +117,7 @@ export async function postHelper<T extends ModelType>(
     );
   } catch (error) {
     console.log((error as any).message);
+    console.log(modelInstance)
     return NextResponse.json(
       { message: "Error processing request", error: error },
       { status: 500 },

@@ -31,20 +31,35 @@ export async function getOrdersByUserId({
 
 // POST methods
 
-export async function postOrder({
-  order,
-  basketItems,
-}: {
-  order: Omit<Order, "id">;
-  basketItems: BasketItem[];
-}): Promise<Order> {
-  const url = "";
+// export async function postOrder({
+//   order,
+//   basketItems,
+// }: {
+//   order: Omit<Order, "id">;
+//   basketItems: BasketItem[];
+// }): Promise<Order> {
+//   const url = "/api/order";
+//   const response = await fetch(url, {
+//     method: "POST",
+//     body: {
+//       order: JSON.stringify(order),
+//       basketItems: JSON.stringify(basketItems),
+//     },
+//   });
+//   if (!response.ok) {
+//     throw new Error("Error posting order");
+//   }
+//   return response.json();
+// }
+
+
+export async function postOrder(data: { order: Omit<Order, "id">, basketItems: BasketItem[], }): Promise<Order> {
+  const url = "/api/order";
+  console.log(JSON.stringify(data))
+  
   const response = await fetch(url, {
     method: "POST",
-    body: {
-      order: JSON.stringify(order),
-      basketItems: JSON.stringify(basketItems),
-    },
+    body: JSON.stringify(data)
   });
   if (!response.ok) {
     throw new Error("Error posting order");
