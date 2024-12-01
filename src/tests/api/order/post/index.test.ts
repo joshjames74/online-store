@@ -61,9 +61,21 @@ describe("POST /api/order", () => {
     mockOrder = generateMockOrder([activeUser.id], addressIds, currencyIds);
   });
 
+  beforeEach(async () => {
+
+    const count = 2;
+
+    const productIds = products.map(product => product.id);
+
+    // create basket items
+    const mockBasketItems = Array.from({ length: count }, () => generateMockBasketItem(productIds, [activeUser.id]));
+    basketItems = await prisma.basketItem.createManyAndReturn({ data: mockBasketItems });
+  })
+
   afterEach(async () => {
     await prisma.orderItem.deleteMany({});
     await prisma.order.deleteMany({});
+    await prisma.basketItem.deleteMany({});
   });
 
   afterAll(async () => {});
@@ -75,9 +87,7 @@ describe("POST /api/order", () => {
         order: mockOrder,
         basketItems: basketItems
       }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
     const res = await POST(req);
 
@@ -91,9 +101,7 @@ describe("POST /api/order", () => {
         order: mockOrder,
         basketItems: basketItems
       }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
     const res = await POST(req);
     const json: { data: Order } = await res.json();
@@ -108,9 +116,7 @@ describe("POST /api/order", () => {
         order: mockOrder,
         basketItems: basketItems
       }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
     const res = await POST(req);
     const json: { data: Order } = await res.json();
@@ -126,9 +132,7 @@ describe("POST /api/order", () => {
         order: mockOrder,
         basketItems: basketItems
       }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
     const res = await POST(req);
     const json: { data: Order } = await res.json();
@@ -144,13 +148,11 @@ describe("POST /api/order", () => {
         order: mockOrder,
         basketItems: basketItems
       }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" }, 
     });
     const res = await POST(req);
 
     const newBasketItems = await prisma.basketItem.findMany({ where: { usrId: activeUser.id }});
-    expect(newBasketItems).toBe([]);
+    expect(newBasketItems).toEqual([]);
   });
 });

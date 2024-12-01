@@ -75,14 +75,9 @@ export async function getOrderViewsBySearch(
 
 // POST methods
 
+export async function postOrder(data: { order: Omit<Order, "id"> }): Promise<Order> {
 
-// to do: do we need to provide basket items?
-export async function postOrder(data: {
-  order: Omit<Order, "id">,
-  basketItems: BasketItem[],
-}): Promise<Order> {
-
-  const { order, basketItems } = data;
+  const { order } = data;
 
   return prisma.$transaction(async (tx) => {
 
@@ -90,20 +85,16 @@ export async function postOrder(data: {
     const postedOrder = await tx.order.create({ data: order });
     if (!postedOrder) { throw new Error("Cannot post order") };
 
-    // post basket items
-    const orderItems: Omit<OrderItem, "id">[] = await Promise.all(basketItems.map(async (item) => {
-      // get product price
-      const product = await tx.product.findFirst({ where: { id: item.productId }});
-      if (!product) { throw new Error ("Cannot find product")}
-
-      return {
+    // find items from the users basket
+    const items = await tx.basketItem.findMany({ where: { usrId: order.usrId }, include: { product: true }});
+    const orderItems: Omit<OrderItem, "id">[] = items.map(item => { return {
         orderId: postedOrder.id,
         productId: item.productId,
-        price: product.price,
-        quantity: item.quantity,
-      };
-    }));
+        price: item.product.price,
+        quantity: item.quantity
+    }});
 
+    // post basket items
     const postedBasketItems = await tx.orderItem.createMany({ data: orderItems });
     if (!postedBasketItems) { throw new Error("Cannot post basketItems ") };
 
