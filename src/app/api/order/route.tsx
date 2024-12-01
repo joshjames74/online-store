@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const body = await req.json();
-  const data: { order: Omit<Order, "id">, basketItems: BasketItem[] } = body;
+  const data: { order: Omit<Order, "id"> } = body;
 
   return await postHelper("order", postOrder, data)
 }

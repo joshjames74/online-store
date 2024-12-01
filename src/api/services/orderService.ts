@@ -13,10 +13,8 @@ import {
 } from "../transformers/orderSearchTransformer";
 import { queryParamsToPrismaQuery } from "../transformers";
 import { ResultType } from "../helpers/types";
-import { Basket } from "./basketItemService";
 import prisma from "@/lib/prisma";
 
-// export type OrderView = Order & { OrderItem: OrderItem[], address: Address, currency: Currency, usr: Usr };
 
 export type OrderView = ResultType<
   "order",
@@ -45,7 +43,7 @@ export async function getOrderViewById(id: number): Promise<any> {
 export async function getOrderViewsBySearch(
   params: OrderParams,
 ): Promise<OrderView[] | void> {
-  const { whereQuery, orderQuery } = queryParamsToPrismaQuery(
+  const { whereQuery, orderQuery, skip, take } = queryParamsToPrismaQuery(
     params,
     orderQueryTransformer,
   );
@@ -53,8 +51,8 @@ export async function getOrderViewsBySearch(
     "order",
     whereQuery,
     orderQuery,
-    0,
-    0,
+    skip,
+    take,
     {
       OrderItem: {
         include: {

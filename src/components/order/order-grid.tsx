@@ -29,7 +29,7 @@ export default function OrderGrid({
     const searchData = parseOrderSearchParams(searchParams);
     setIsLoading(true);
 
-    getOrdersByUserId({ id: 1, params: searchData })
+    getOrdersByUserId({ id: id, params: searchData })
       .then((res: OrderView[]) => {
         setOrders(res);
       })

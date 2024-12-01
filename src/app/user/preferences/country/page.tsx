@@ -1,9 +1,7 @@
 "use client";
 import { getAllCountries } from "@/api/request/countryRequest";
-import { getAllCurrencies } from "@/api/request/currencyRequest";
 import {
   putUserCountryById,
-  putUserCurrencyById,
 } from "@/api/request/userRequest";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
