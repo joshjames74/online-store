@@ -56,7 +56,7 @@ export const UserProvider = (props: { children: JSX.Element }): JSX.Element => {
   // set state
   const { data: session, status } = useSession();
   const [user, setUser] = useState<UserWithCurrencyAndCountry>({} as UserWithCurrencyAndCountry);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   

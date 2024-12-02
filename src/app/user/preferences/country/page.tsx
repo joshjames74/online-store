@@ -3,6 +3,7 @@ import { getAllCountries } from "@/api/request/countryRequest";
 import {
   putUserCountryById,
 } from "@/api/request/userRequest";
+import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
 import {
@@ -28,10 +29,9 @@ export default function Page({
   const redirectUrl = params.redirectUrl || "/";
 
   const { theme } = useContext(ThemeContext);
-  const { user, isAuthenticated, reload } = useContext(UserContext);
+  const { user, reload } = useContext(UserContext);
   const router = useRouter();
   const toast = useToast();
-  const toastIdRef = useRef();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [countries, setCountries] = useState<Country[]>();
@@ -50,9 +50,9 @@ export default function Page({
       });
   }, []);
 
-  if (!isAuthenticated || !user) {
-    return <Box>Sign in</Box>;
-  }
+  // if (!isAuthenticated || !user) {
+  //   return <Box>Sign in</Box>;
+  // }
 
   const handleSubmit = () => {
     const pendingToast = toast({
@@ -101,6 +101,8 @@ export default function Page({
   };
 
   return (
+    <RenderPageIfLoggedIn>
+
     <Box w="full" justifyItems="center" marginTop="1em">
       <Stack w="fit-content">
         <Heading>Change country</Heading>
@@ -115,7 +117,7 @@ export default function Page({
               onChange={(event) =>
                 setSelectedCountry(parseInt(event.target.value || ""))
               }
-            >
+              >
               {countries.map((country: Country, index: number) => {
                 return (
                   <option key={index} value={country.id}>
@@ -129,14 +131,14 @@ export default function Page({
               <Button
                 bgColor={theme.colors.background.secondary}
                 onClick={handleCancel}
-              >
+                >
                 Cancel
               </Button>
               <Button
                 bgColor={theme.colors.accent.primary}
                 isDisabled={!!!selectedCountry}
                 onClick={handleSubmit}
-              >
+                >
                 Save changes
               </Button>
             </Box>
@@ -144,5 +146,7 @@ export default function Page({
         )}
       </Stack>
     </Box>
+
+    </RenderPageIfLoggedIn>
   );
 }

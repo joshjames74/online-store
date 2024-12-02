@@ -1,6 +1,7 @@
 "use client"
 import { getBasketByUserId } from "@/api/request/basketRequest";
 import { Basket } from "@/api/services/basketItemService";
+import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 import CheckoutPage from "@/components/checkout/checkout-page";
 import { UserContext } from "@/contexts/user-context";
 import { Box } from "@chakra-ui/react";
@@ -21,19 +22,18 @@ export default function Page(): JSX.Element {
             .finally(() => setIsLoading(false));
     }, [user]);
 
-    if (!user || !user.id) { return <></> }
-
     if (isLoading) { return <></> }
-
     if (!basket || !basket.items?.length) { return <></>}
 
     return (
-    <Box 
-    w="full"
-    display="flex"
-    justifyContent="center"
-    marginTop="1em">
-        <CheckoutPage params={{ basket: basket }} />
-    </Box>
+        <RenderPageIfLoggedIn>
+            <Box 
+            w="full"
+            display="flex"
+            justifyContent="center"
+            marginTop="1em">
+                <CheckoutPage params={{ basket: basket }} />
+            </Box>
+        </RenderPageIfLoggedIn>
     )
 }

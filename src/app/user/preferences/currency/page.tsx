@@ -1,6 +1,7 @@
 "use client";
 import { getAllCurrencies } from "@/api/request/currencyRequest";
 import { putUserCurrencyById } from "@/api/request/userRequest";
+import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
 import {
@@ -46,9 +47,9 @@ export default function Page({
       });
   }, []);
 
-  if (!isAuthenticated || !user) {
-    return <Box>Sign in</Box>;
-  }
+  // if (!isAuthenticated || !user) {
+  //   return <Box>Sign in</Box>;
+  // }
 
   const handleSubmit = () => {
     const pendingToast = toast({
@@ -96,6 +97,8 @@ export default function Page({
   };
 
   return (
+    <RenderPageIfLoggedIn>
+
     <Box w="full" justifyItems="center" marginTop="1em">
       <Stack w="fit-content">
         <Heading>Change currency</Heading>
@@ -139,5 +142,6 @@ export default function Page({
         )}
       </Stack>
     </Box>
+    </RenderPageIfLoggedIn>
   );
 }
