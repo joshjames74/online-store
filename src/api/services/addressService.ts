@@ -40,11 +40,13 @@ export async function getAllAddresses(): Promise<Address[] | void> {
   return await getAllEntities("address");
 }
 
+
 // DELETE methods
 
 export async function deleteAddressById(id: number): Promise<Address | void> {
   return await deleteOneEntityByField("address", "id", id);
 }
+
 
 // POST methods
 

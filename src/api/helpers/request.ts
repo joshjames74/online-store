@@ -1,60 +1,52 @@
 import { NextResponse } from "next/server";
 import {
   ModelMap,
-  ModelResponse,
-  ModelsResponse,
   ModelType,
   TableMap,
 } from "./types.js";
+import { Method } from "axios";
 
 export type FieldValuePair<T extends ModelType> = {
   field: TableMap[T];
   value: any;
 };
 
-type getFunctionType<T extends ModelType> = (
+
+// Define types of CRUD functions
+
+// so many return types are used that generic is better
+type GetHandler<T extends ModelType> = (
   params: any,
-) => Promise<ModelMap[T] | ModelMap[T][] | void>;
+) => Promise<any>;
 
-// Get types
-
-// type GetModelWithMetadata<T extends ModelType> = (
-//   params: any,
-// ) => Promise<ModelResponse<T> | void>;
-
-// type GetModelsWithMetadata<T extends ModelType> = (
-//   params: any,
-// ) => Promise<ModelsResponse<T> | void>;
-
-// type GetModel<T extends ModelType> = (
-//   params: any,
-// ) => Promise<ModelMap[T] | void>;
-
-// type GetModels<T extends ModelType> = (
-//   params: any
-// ) => Promise<ModelMap[T][] | void>;
-
-type GetType<T extends ModelType> = (
-  params: any,
-) => Promise<
-  | ModelMap[T]
-  | ModelMap[T][]
-  | ModelResponse<T>
-  | ModelsResponse<T>
-  | number[]
-  | void
->;
-
-type postFunctionType<T extends ModelType> = (
+type PostHandler<T extends ModelType> = (
   model: any,
 ) => Promise<ModelMap[T] | void>;
-type deleteFunctionType<T extends ModelType> = (
+
+type DeleteHandler<T extends ModelType> = (
   params: any,
 ) => Promise<ModelMap[T] | void>;
-type putFunctionType<T extends ModelType> = (
+
+type PutHandler<T extends ModelType> = (
   searchParam: FieldValuePair<T>,
   putParam: FieldValuePair<T>[],
 ) => Promise<ModelMap[T] | void>;
+
+// Messages
+
+type HTTPMessage = {
+  success: string;
+  failure: string;
+  error: string;
+}
+
+const generateMessage = (request: Method): HTTPMessage => {
+  return { 
+    success: `${request} request completed successfully`,
+    failure: `${request} request failed`,
+    error: `Error processing ${request} request`
+  };
+};
 
 // Helpers
 
@@ -70,21 +62,22 @@ export function formatBodyToField<T extends ModelType>(
 // GET method
 
 export async function getHelper<T extends ModelType>(
-  func: GetType<T>,
+  func: GetHandler<T>,
   params?: any,
 ): Promise<NextResponse> {
+  const message = generateMessage("GET");
   try {
     const response = await func(params);
     if (!response) {
       return NextResponse.json(
-        { message: `${response} not found` },
+        { message: message.failure },
         { status: 404 },
       );
     }
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     console.log((error as any).message);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: message.error }, { status: 500 });
   }
 }
 
@@ -92,15 +85,16 @@ export async function getHelper<T extends ModelType>(
 
 export async function postHelper<T extends ModelType>(
   entity: T,
-  func: postFunctionType<T>,
+  func: PostHandler<T>,
   modelInstance: any,
 ): Promise<NextResponse> {
+  const message = generateMessage("POST");
   try {
     const response = await func(modelInstance);
     if (!response) {
       return NextResponse.json(
         {
-          message: "POST failed to save",
+          message: message.failure,
           data: modelInstance,
         },
         { status: 400 },
@@ -109,7 +103,7 @@ export async function postHelper<T extends ModelType>(
 
     return NextResponse.json(
       {
-        message: "POST request received successfully",
+        message: message.success,
         data: response,
       },
       { status: 201 },
@@ -117,7 +111,7 @@ export async function postHelper<T extends ModelType>(
   } catch (error) {
     console.log((error as any).message);
     return NextResponse.json(
-      { message: "Error processing request", error: error },
+      { message: message.error, error: error },
       { status: 500 },
     );
   }
@@ -127,7 +121,7 @@ export async function postHelper<T extends ModelType>(
 
 export async function deleteHelper<T extends ModelType>(
   entity: T,
-  func: deleteFunctionType<T>,
+  func: DeleteHandler<T>,
   params: any,
 ): Promise<NextResponse> {
   try {
@@ -154,7 +148,7 @@ export async function deleteHelper<T extends ModelType>(
 
 export async function putHelper<T extends ModelType>(
   entity: T,
-  func: putFunctionType<T>,
+  func: PutHandler<T>,
   searchData: FieldValuePair<T>,
   putData: FieldValuePair<T>[],
 ): Promise<NextResponse> {

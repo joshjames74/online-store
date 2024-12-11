@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import { FieldValuePair } from "./request";
 import {
@@ -19,27 +19,6 @@ type EntityQueryParams<T extends keyof TableMap, I extends IncludeMap[T]> = {
   orderQuery?: any;
 };
 
-/**
- * Creates a database query object based on a field, value, and optional parameters like inclusion, ordering,
- * pagination, etc. This query can be used with Prisma or similar ORMs.
- *
- * @template T - A key of the `TableMap` type representing the target model.
- * @template I - The `IncludeMap` type for the target model, specifying the relations to include.
- *
- * @param {TableMap[T]} field - The field to filter the query by. Must be a valid key in the model.
- * @param {any} value - The value to match for the given field.
- * @param {I} [include] - Optional. Relations to include in the query, as defined in the `IncludeMap`.
- * @param {any} [orderQuery] - Optional. Specifies the order of the query results.
- * @param {number} [skip] - Optional. Number of results to skip (for pagination).
- * @param {number} [take] - Optional. Number of results to take (for pagination).
- *
- * @returns {any} - A query object compatible with Prisma.
- *
- * @example
- * // Example usage:
- * const query = createQueryFromField('productId', 42, { currency: true }, { review_score: 'DESC' }, 10, 5);
- * const results = prisma.product.findMany(query);
- */
 function createQueryFromField<
   T extends keyof TableMap,
   I extends IncludeMap[T],

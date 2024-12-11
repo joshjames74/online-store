@@ -1,15 +1,15 @@
-import axios from "axios";
 import { OrderParams } from "../transformers/orderSearchTransformer";
 import { buildUrl } from "../helpers/utils";
-import { BasketItem, Order } from "@prisma/client";
-import { url } from "inspector";
+import { Order } from "@prisma/client";
+import { fetchData } from ".";
+import { OrderWithMetadata } from "../services/orderService";
 
 // GET methods
 
 export async function getOrderViewById(id: number): Promise<any> {
-  const response = await axios(`/api/order/${id}`, { method: "GET" });
-  return response;
-}
+  const url = `/api/order/${id}`;
+  return await fetchData(url);
+};
 
 // rename to order view?
 export async function getOrdersByUserId({
@@ -20,17 +20,10 @@ export async function getOrdersByUserId({
   id: number;
   params: Omit<OrderParams, "usrId">;
   cache?: RequestCache;
-}): Promise<any> {
+}): Promise<OrderWithMetadata[]> {
   const url = buildUrl(`/api/user/${id}/orders`, params);
-  const response = await fetch(url, {
-    method: "GET",
-    cache: cache ? cache : "force-cache",
-  });
-  if (!response.ok) {
-    throw new Error("Error in fetching order views by search");
-  }
-  return response.json();
-}
+  return await fetchData(url, cache);
+};
 
 // POST methods
 
@@ -38,7 +31,6 @@ export async function postOrder(data: {
   order: Omit<Order, "id">;
 }): Promise<Order> {
   const url = "/api/order";
-
   const response = await fetch(url, {
     method: "POST",
     body: JSON.stringify(data),

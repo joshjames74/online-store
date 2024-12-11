@@ -16,8 +16,6 @@ export async function GET(
   const { searchParams } = new URL(req.url);
   const parsedParams = parseOrderSearchParams(searchParams);
 
-  console.log("Running");
-
   return await getHelper(getOrderViewsBySearch, {
     usrId: parseInt(id),
     ...parsedParams,
