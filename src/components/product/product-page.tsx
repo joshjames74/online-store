@@ -1,5 +1,6 @@
 "use client";
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -35,11 +36,11 @@ import {
   convertAndFormatToUserCurrency,
   formatReviewScore,
 } from "@/api/helpers/utils";
-import { ResultType } from "@/api/helpers/types";
+import { ResultType } from "@/api/helpers/types.module";
 import ProductBasketCard from "./product-basket-card";
 
 export default function ProductPage(
-  product: ResultType<"product", {}>,
+  product: ResultType<"product", { seller: true }>,
 ): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
@@ -105,6 +106,12 @@ export default function ProductPage(
                     {product.review_count} ratings
                   </Text>
                 </a>
+              </HStack>
+              <HStack>
+                <Avatar name={product.seller?.name} size="xs" />
+                <Link href="">
+                  <Text fontSize="md">{product.seller?.name}</Text>
+                </Link>
               </HStack>
               <Divider
                 w="100%"

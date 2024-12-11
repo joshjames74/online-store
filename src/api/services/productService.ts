@@ -1,4 +1,4 @@
-import { Prisma, Product } from "@prisma/client";
+import { Product } from "@prisma/client";
 import {
   deleteOneEntityByField,
   getAllEntity,
@@ -14,30 +14,32 @@ import {
   ProductParams,
   productQueryTransformer,
 } from "../transformers/productSearchTransformer";
-import {
-  ManyWithMetadata,
-  Metadata,
-  ModelsResponse,
-  ResultType,
-} from "../helpers/types";
+import { ManyWithMetadata, Metadata, ResultType } from "../helpers/types.js";
 
 // GET methods
 
 export async function getProductById(
   id: number,
 ): Promise<ResultType<"product", { seller: true }> | void> {
-  return getOneEntityByField("product", "id", id);
+  return getOneEntityByField({
+    modelName: "product",
+    whereQuery: { id: id },
+    include: { seller: true },
+  });
 }
 
 export async function getProductsByUserId(
   id: number,
 ): Promise<ResultType<"product", { seller: true }>[] | void> {
-  return getEntitiesByField("product", "sellerId", id);
+  return getEntitiesByField({
+    modelName: "product",
+    whereQuery: { sellerId: id },
+    include: { seller: true },
+  });
 }
 
-export async function getAllProducts(): Promise<
-  ResultType<"product", {}>[] | void
-> {
+// to do: delete
+export async function getAllProducts(): Promise<Product[] | void> {
   return getAllEntity("product");
 }
 
@@ -51,14 +53,14 @@ export async function getProductBySearch(
   );
 
   // fetch products
-  const products = await getEntitiesByFields(
-    "product",
-    whereQuery,
-    orderQuery,
-    skip,
-    take,
-    { seller: true },
-  );
+  const products = await getEntitiesByFields({
+    modelName: "product",
+    whereQuery: whereQuery,
+    orderQuery: orderQuery,
+    skip: skip,
+    take: take,
+    include: { seller: true },
+  });
 
   // get metadata
   const count = products?.length;

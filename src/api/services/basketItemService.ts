@@ -4,14 +4,12 @@ import {
   deleteOneEntityByField,
   getCountByField,
   getEntitiesByField,
-  getEntitiesByFields,
   getOneEntityByField,
   getOneEntityByFields,
-  getSumByField,
   postOneEntity,
   putOneEntityByField,
 } from "../helpers/dynamicQuery";
-import { Metadata, ResultType } from "../helpers/types";
+import { Metadata, ResultType } from "../helpers/types.js";
 import { OrderRelation, SearchFieldType } from "../transformers";
 import { FieldValuePair } from "../helpers/request";
 import { convertPrice } from "../helpers/utils";
@@ -32,28 +30,36 @@ export type Basket = {
 
 export async function getBasketItemById(
   id: number,
-): Promise<BasketItemWithProduct[] | void> {
-  return getOneEntityByField("basketItem", "id", id);
+): Promise<BasketItemWithProduct | void> {
+  return getOneEntityByField({
+    modelName: "basketItem",
+    whereQuery: { id: id },
+    include: { product: true },
+  });
 }
 
 export async function getBasketItemsByUserId(
   id: number,
 ): Promise<BasketItemWithProduct[] | void> {
-  return getEntitiesByField("basketItem", "usrId", id, { product: true });
+  return getEntitiesByField({
+    modelName: "basketItem",
+    whereQuery: { usrId: id },
+    include: { product: true },
+  });
 }
 
 export async function getBasketItemByUserIdAndProductId(
   userId: number,
   productId: number,
 ): Promise<BasketItem | void> {
-  return await getOneEntityByFields("basketItem", {
-    productId: productId,
-    usrId: userId,
+  return await getOneEntityByFields({
+    modelName: "basketItem",
+    whereQuery: { productId: productId, usrId: userId },
   });
 }
 
 export async function getBasketByUserId(id: number): Promise<Basket | void> {
-  let basket: Basket = {
+  const basket: Basket = {
     items: [],
     metadata: { count: NaN, total: { quantity: NaN, price: NaN } },
   };
@@ -61,13 +67,13 @@ export async function getBasketByUserId(id: number): Promise<Basket | void> {
   // get items by user id
   let items;
   try {
-    items = await getEntitiesByField(
-      "basketItem",
-      "usrId",
-      id,
-      { product: true },
-      { id: OrderRelation.ASC },
-    );
+    items = await getEntitiesByField({
+      modelName: "basketItem",
+      whereQuery: { usrId: id },
+      orderQuery: { id: OrderRelation.ASC },
+      include: { product: true },
+    });
+
     if (!items) {
       return;
     }

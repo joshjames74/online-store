@@ -1,3 +1,4 @@
+"use client";
 import { ThemeContext } from "@/contexts/theme-context";
 import {
   Box,
@@ -27,7 +28,6 @@ import { convertAndFormatToUserCurrency, parseDate } from "@/api/helpers/utils";
 import styles from "./basket-page.module.css";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
-
 export default function BasketPage(): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
@@ -41,12 +41,8 @@ export default function BasketPage(): JSX.Element {
       return;
     }
     getBasketByUserId(user.id, cache ? cache : "force-cache")
-      .then((res) => {
-        setBasket(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      .then((res) => setBasket(res))
+      .catch((error) => console.error(error));
   };
 
   // load on first load and when user changes
@@ -66,20 +62,16 @@ export default function BasketPage(): JSX.Element {
           .then(() => {})
           .catch((error) => console.error(error));
       })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
   };
-
-  if (!user || !user.id) {
-    return <Box>User not found</Box>;
-  }
 
   if (isLoading) {
     return <Box>Loading</Box>;
+  }
+
+  if (!user || !user.id) {
+    return <Box>User not found</Box>;
   }
 
   if (!basket || !basket?.items?.length) {
@@ -89,13 +81,13 @@ export default function BasketPage(): JSX.Element {
         className={styles.container}
         marginY="20px"
         flexGrow={1}
+        maxW="xl"
       >
-        <CardHeader>
+        <CardHeader paddingBottom={0}>
           <Heading fontSize="3xl" fontWeight="semibold">
             Basket is empty
           </Heading>
         </CardHeader>
-        <Divider />
         <CardBody>
           <Link href="/">
             <Text>Click here to shop for products</Text>
@@ -151,12 +143,13 @@ export default function BasketPage(): JSX.Element {
               flexDirection="row"
             >
               Subtotal ({basket.metadata && basket.metadata.total.quantity}{" "}
-              items): 
+              items):
             </Heading>
-            <Text 
-            fontWeight="bold"
-            fontSize="xl"
-            color={theme.colors.semantic.success}>
+            <Text
+              fontWeight="bold"
+              fontSize="xl"
+              color={theme.colors.semantic.success}
+            >
               {basket.metadata &&
                 convertAndFormatToUserCurrency(
                   basket.metadata.total.price,
@@ -164,12 +157,13 @@ export default function BasketPage(): JSX.Element {
                 )}
             </Text>
           </HStack>
-
         </CardBody>
 
         <CardFooter marginRight={0} marginLeft="auto">
           <Link href="/user/basket/checkout">
-                <Button bgColor={theme.colors.accent.primary}>Checkout <ArrowRightOutlined /></Button>
+            <Button bgColor={theme.colors.accent.primary}>
+              Checkout <ArrowRightOutlined />
+            </Button>
           </Link>
         </CardFooter>
       </Card>

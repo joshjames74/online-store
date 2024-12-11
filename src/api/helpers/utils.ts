@@ -67,7 +67,7 @@ export const parseOrderSearchParams = (
   const skip = parseInt(searchParams.get("skip") || "");
   const take = parseInt(searchParams.get("take") || "");
 
-  let params = {};
+  const params = {};
   if (min_date) {
     Object.assign(params, { min_date });
   }

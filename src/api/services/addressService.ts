@@ -6,24 +6,34 @@ import {
   getOneEntityByField,
   postOneEntity,
 } from "../helpers/dynamicQuery";
-import { ResultType } from "../helpers/types";
+import { ResultType } from "../helpers/types.js";
 
 // GET method
 
 export async function getAddressById(id: number): Promise<Address | void> {
-  return await getOneEntityByField("address", "id", id);
+  return await getOneEntityByField({
+    modelName: "address",
+    whereQuery: { id: id },
+  });
 }
 
 export async function getAddressesByUserId(
   id: number,
 ): Promise<ResultType<"address", { country: true }>[] | void> {
-  return await getEntitiesByField("address", "usrId", id, { country: true });
+  return await getEntitiesByField({
+    modelName: "address",
+    whereQuery: { usrId: id },
+    include: { country: true },
+  });
 }
 
 export async function getAddressesByCountryId(
   id: number,
 ): Promise<Address[] | void> {
-  return await getEntitiesByField("address", "countryId", id);
+  return await getEntitiesByField({
+    modelName: "address",
+    whereQuery: { countryId: id },
+  });
 }
 
 export async function getAllAddresses(): Promise<Address[] | void> {

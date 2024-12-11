@@ -5,7 +5,10 @@ import { getOneEntityByField, getAllEntity } from "../helpers/dynamicQuery";
 // GET methods
 
 export async function getCurrencyById(id: number): Promise<Currency | void> {
-  return getOneEntityByField("currency", "id", id);
+  return getOneEntityByField({
+    modelName: "currency",
+    whereQuery: { id: id },
+  });
 }
 
 export async function getAllCurrencies(): Promise<Currency[] | void> {

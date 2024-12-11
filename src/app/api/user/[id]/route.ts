@@ -24,7 +24,7 @@ export async function GET(
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await getHelper("usr", getUserById, parseInt(id));
+  return await getHelper(getUserById, parseInt(id));
 }
 
 // DELETE method

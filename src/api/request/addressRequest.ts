@@ -1,5 +1,5 @@
 import { Address } from "@prisma/client";
-import { ResultType } from "../helpers/types";
+import { ResultType } from "../helpers/types.js";
 import { fetchData } from ".";
 
 // GET methods

@@ -1,8 +1,6 @@
 import { POST } from "@/app/api/user/by-email/route";
 import prisma from "@/lib/prisma";
-import {
-  generateMockUser,
-} from "@/tests/generate";
+import { generateMockUser } from "@/tests/generate";
 import { Review, Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 
@@ -21,7 +19,11 @@ describe("POST /api/user/by-email", () => {
 
   it("should return a 201 for a valid user", async () => {
     const user = generateMockUser();
-    const userBasicData = { email: user.email, name: user.name, image: user.image_url };
+    const userBasicData = {
+      email: user.email,
+      name: user.name,
+      image: user.image_url,
+    };
     const req = new NextRequest(`http://localhost/api/user`, {
       method: "POST",
       body: JSON.stringify(userBasicData),
@@ -36,7 +38,11 @@ describe("POST /api/user/by-email", () => {
 
   it("should create the user", async () => {
     const user = generateMockUser();
-    const userBasicData = { email: user.email, name: user.name, image: user.image_url };
+    const userBasicData = {
+      email: user.email,
+      name: user.name,
+      image: user.image_url,
+    };
     const req = new NextRequest(`http://localhost/api/user`, {
       method: "POST",
       body: JSON.stringify(userBasicData),
@@ -48,6 +54,8 @@ describe("POST /api/user/by-email", () => {
     const postedUser = await prisma.usr.findFirst({});
 
     expect(postedUser).not.toBeNull();
-    expect({ ...user, id: postedUser?.id || 0 }).toEqual(postedUser || ({} as Usr));
+    expect({ ...user, id: postedUser?.id || 0 }).toEqual(
+      postedUser || ({} as Usr),
+    );
   });
 });

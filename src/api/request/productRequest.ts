@@ -1,7 +1,11 @@
 import { QueryParams } from "@/redux/reducers/product";
 import { Product } from "@prisma/client";
 import axios from "axios";
-import { ManyWithMetadata, ModelsResponse, ResultType } from "../helpers/types";
+import {
+  ManyWithMetadata,
+  ModelsResponse,
+  ResultType,
+} from "../helpers/types.js";
 import { buildUrl } from "../helpers/utils";
 import { ProductParams } from "../transformers/productSearchTransformer";
 import { fetchData } from ".";

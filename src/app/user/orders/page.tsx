@@ -1,21 +1,14 @@
 "use client";
-import { getOrderViewById } from "@/api/request/orderRequest";
-import OrderGrid from "@/components/order/order-grid";
+import { RenderComponentIfLoggedIn } from "@/components/auth/render-conditionally";
+import OrderPage from "@/components/order/order-page";
 import { UserContext } from "@/contexts/user-context";
-import { Box } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 
-export default function OrderPage(): JSX.Element {
-  const { user, isAuthenticated, isLoading } = useContext(UserContext);
-
-  // create loading skeleton
-  if (isLoading) return <Box>Loading... </Box>;
-
-  // to do: redirect to 404 page
-  if (!isLoading && !isAuthenticated) return <Box>404 not found</Box>;
-
-  // redirect this
-  if (!user || !user.id) return <Box>User not found</Box>;
-
-  return <OrderGrid params={{ id: user.id }} />;
+export default function Page(): JSX.Element {
+  const { user } = useContext(UserContext);
+  return (
+    <RenderComponentIfLoggedIn>
+      <OrderPage params={{ id: user.id }} />
+    </RenderComponentIfLoggedIn>
+  );
 }

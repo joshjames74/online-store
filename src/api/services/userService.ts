@@ -9,7 +9,7 @@ import {
   upsertOneEntityByField,
 } from "../helpers/dynamicQuery";
 import { FieldValuePair } from "../helpers/request";
-import { ResultType } from "../helpers/types";
+import { ResultType } from "../helpers/types.js";
 
 export type UserWithCurrencyAndCountry = ResultType<
   "usr",
@@ -19,11 +19,17 @@ export type UserWithCurrencyAndCountry = ResultType<
 // GET methods
 
 export async function getUserById(id: number): Promise<Usr | void> {
-  return getOneEntityByField("usr", "id", id);
+  return getOneEntityByField({
+    modelName: "usr",
+    whereQuery: { id: id },
+  });
 }
 
 export async function getUsersByCountryId(id: number): Promise<Usr[] | void> {
-  return getEntitiesByField("usr", "countryId", id);
+  return getEntitiesByField({
+    modelName: "usr",
+    whereQuery: { countryId: id },
+  });
 }
 
 export async function getAllUsers(): Promise<Usr[] | void> {
@@ -33,9 +39,10 @@ export async function getAllUsers(): Promise<Usr[] | void> {
 export async function getUserByEmail(
   email: string,
 ): Promise<UserWithCurrencyAndCountry | void> {
-  return getOneEntityByField("usr", "email", email, {
-    currency: true,
-    country: true,
+  return getOneEntityByField({
+    modelName: "usr",
+    whereQuery: { email: email },
+    include: { currency: true, country: true },
   });
 }
 

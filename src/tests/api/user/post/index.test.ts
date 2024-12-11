@@ -3,9 +3,7 @@
  */
 import { POST } from "@/app/api/user/route";
 import prisma from "@/lib/prisma";
-import {
-  generateMockUser,
-} from "@/tests/generate";
+import { generateMockUser } from "@/tests/generate";
 import { Review, Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 

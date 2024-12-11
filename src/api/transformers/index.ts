@@ -1,5 +1,5 @@
 import { QueryParams } from "@/redux/reducers/product";
-import { ModelType, TableMap } from "../helpers/types";
+import { ModelType, TableMap } from "../helpers/types.js";
 import {
   ProductParams,
   ProductQueryTransformer,

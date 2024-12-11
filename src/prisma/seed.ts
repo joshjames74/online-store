@@ -3,7 +3,6 @@ const { readFile } = require("fs/promises");
 
 const prisma = new PrismaClient();
 
-
 async function main() {
   await prisma.$executeRaw`TRUNCATE TABLE Country RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE Currency RESTART IDENTITY CASCADE`;

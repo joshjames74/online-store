@@ -8,9 +8,10 @@ import { Product, Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 import { faker } from "@faker-js/faker";
 import { GET } from "@/app/api/product/route";
+import { ResultType } from "@/api/helpers/types";
 
 describe("GET /api/product", () => {
-  let testProducts: Product[];
+  let testProducts: ResultType<"product", { seller: true }>[];
   let testUsers: Usr[];
 
   beforeAll(async () => {

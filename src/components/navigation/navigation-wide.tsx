@@ -1,6 +1,5 @@
 import { HStack } from "@chakra-ui/react";
 import SearchBar from "./search-bar";
-import AccountButton from "./account-button";
 import BasketButton from "./basket-button";
 import DeliveryButtonLoggedOut from "./delivery-button/delivery-button-logged-out";
 import DeliveryButtonLoggedIn from "./delivery-button/delivery-button-logged-in";
@@ -15,10 +14,6 @@ import Logo from "./logo";
 export default function NavigationWide(): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user, isAuthenticated, isLoading } = useContext(UserContext);
-
-  // render the whole navigation bar as one unit. this is to avoid load time deltas.
-  // for instace, if the account button finishes loading but the basket button has not,
-  // then the user would appear both logged in and logged out
 
   const renderLoading = (): JSX.Element => {
     return (
@@ -76,4 +71,6 @@ export default function NavigationWide(): JSX.Element {
   if (isAuthenticated && user) {
     return renderLoggedIn();
   }
+
+  return <></>;
 }

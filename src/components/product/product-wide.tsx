@@ -18,7 +18,7 @@ import { useContext } from "react";
 import styles from "./product-wide.module.css";
 import { Product } from "@prisma/client";
 import ProductReviewBox from "./product-review-box";
-import { ResultType } from "@/api/helpers/types";
+import { ResultType } from "@/api/helpers/types.module";
 import {
   convertPrice,
   formatPrice,

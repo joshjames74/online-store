@@ -113,19 +113,19 @@ model Order {
   currencyId Int 
   address    Address    @relation(fields: [addressId], references: [id])
   addressId  Int 
-  OrderItem  OrderItem[]
+  orderItem  OrderItem[]
 
   @@map("order")
 }
 
 model OrderItem {
   id        Int      @id @default(autoincrement())
-  order     Order    @relation(fields: [orderId], references: [id])
   orderId   Int 
   product   Product  @relation(fields: [productId], references: [id])
   productId Int
   price     Float
   quantity  Int
+  Order     Order    @relation(fields: [orderId], references: [id])
 
   @@map("order_item")
 }

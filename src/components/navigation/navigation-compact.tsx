@@ -79,7 +79,7 @@ export default function NavigationCompact(): JSX.Element {
                   Your orders
                 </Heading>
               </Link>
-              <Link href="/user/orders">
+              <Link href="/user/addresses">
                 <Heading fontSize="md" fontWeight="semibold">
                   Your addresses
                 </Heading>

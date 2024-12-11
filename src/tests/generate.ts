@@ -14,6 +14,7 @@ import {
   Basket,
   BasketItemWithProduct,
 } from "@/api/services/basketItemService";
+import { ResultType } from "@/api/helpers/types";
 
 function getRandomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -42,6 +43,26 @@ export const generateMockProduct = (ids?: number[]): Product => {
   if (ids) {
     product.sellerId = getRandomElement(ids);
   }
+  product.title = faker.commerce.productName();
+  product.description = faker.commerce.productDescription();
+  product.price = faker.number.float({ fractionDigits: 2, max: 10000 });
+  product.review_count = faker.number.int({ min: 0, max: 10000 });
+  product.review_score = faker.number.float({ min: 0, max: 5 });
+  product.image_url = faker.image.url();
+  product.image_alt = faker.image.urlPlaceholder();
+  product.order_count = faker.number.int({ min: 0, max: 10000 });
+  product.url = faker.internet.url();
+  return product;
+};
+
+export const generateMockProductWithSeller = (
+  sellers: Usr[],
+): ResultType<"product", { seller: true }> => {
+  type ProductWithSeller = ResultType<"product", { seller: true }>;
+  const product: ProductWithSeller = {} as ProductWithSeller;
+  const seller = getRandomElement(sellers);
+  product.seller = seller;
+  product.sellerId = seller.id;
   product.title = faker.commerce.productName();
   product.description = faker.commerce.productDescription();
   product.price = faker.number.float({ fractionDigits: 2, max: 10000 });
@@ -156,8 +177,10 @@ export const generateMockBasketItemWithProduct = (
   return basketItem;
 };
 
-export const generateMockBasketItem = (productIds: number[], usrIds: number[]): BasketItem => {
-  
+export const generateMockBasketItem = (
+  productIds: number[],
+  usrIds: number[],
+): BasketItem => {
   const basketItem: BasketItem = {} as BasketItem;
 
   basketItem.date_added = faker.date.recent();
@@ -166,7 +189,7 @@ export const generateMockBasketItem = (productIds: number[], usrIds: number[]): 
   basketItem.usrId = getRandomElement(usrIds);
 
   return basketItem;
-}
+};
 
 export const generateMockBasketFromItems = (
   items: BasketItemWithProduct[],
@@ -210,12 +233,15 @@ export const generateMockBasket = (
   return basket;
 };
 
-
-export const generateMockOrder = (usrIds: number[], addressIds: number[], currencyIds: number[]): Order => {
+export const generateMockOrder = (
+  usrIds: number[],
+  addressIds: number[],
+  currencyIds: number[],
+): Order => {
   const order: Order = {} as Order;
   order.addressId = getRandomElement(addressIds);
   order.currencyId = getRandomElement(currencyIds);
   order.usrId = getRandomElement(usrIds);
   order.date = faker.date.recent();
   return order;
-}
+};

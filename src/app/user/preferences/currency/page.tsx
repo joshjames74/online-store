@@ -98,50 +98,49 @@ export default function Page({
 
   return (
     <RenderPageIfLoggedIn>
+      <Box w="full" justifyItems="center" marginTop="1em">
+        <Stack w="fit-content">
+          <Heading>Change currency</Heading>
+          <Text>Select the currency you want to shop with.</Text>
 
-    <Box w="full" justifyItems="center" marginTop="1em">
-      <Stack w="fit-content">
-        <Heading>Change currency</Heading>
-        <Text>Select the currency you want to shop with.</Text>
-
-        {isLoading || !currencies || !currencies.length ? (
-          <></>
-        ) : (
-          <Stack>
-            <Select
-              placeholder="Select currency"
-              onChange={(event) =>
-                setSelectedCurrency(parseInt(event.target.value || ""))
-              }
-            >
-              {currencies.map((currency: Currency, index: number) => {
-                return (
-                  <option key={index} value={currency.id}>
-                    {currency.code}
-                  </option>
-                );
-              })}
-            </Select>
-
-            <Box display="flex" gap="1em">
-              <Button
-                bgColor={theme.colors.background.secondary}
-                onClick={handleCancel}
+          {isLoading || !currencies || !currencies.length ? (
+            <></>
+          ) : (
+            <Stack>
+              <Select
+                placeholder="Select currency"
+                onChange={(event) =>
+                  setSelectedCurrency(parseInt(event.target.value || ""))
+                }
               >
-                Cancel
-              </Button>
-              <Button
-                bgColor={theme.colors.accent.primary}
-                isDisabled={!!!selectedCurrency}
-                onClick={handleSubmit}
-              >
-                Save changes
-              </Button>
-            </Box>
-          </Stack>
-        )}
-      </Stack>
-    </Box>
+                {currencies.map((currency: Currency, index: number) => {
+                  return (
+                    <option key={index} value={currency.id}>
+                      {currency.code}
+                    </option>
+                  );
+                })}
+              </Select>
+
+              <Box display="flex" gap="1em">
+                <Button
+                  bgColor={theme.colors.background.secondary}
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  bgColor={theme.colors.accent.primary}
+                  isDisabled={!!!selectedCurrency}
+                  onClick={handleSubmit}
+                >
+                  Save changes
+                </Button>
+              </Box>
+            </Stack>
+          )}
+        </Stack>
+      </Box>
     </RenderPageIfLoggedIn>
   );
 }

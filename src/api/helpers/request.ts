@@ -5,7 +5,7 @@ import {
   ModelsResponse,
   ModelType,
   TableMap,
-} from "./types";
+} from "./types.js";
 
 export type FieldValuePair<T extends ModelType> = {
   field: TableMap[T];
@@ -96,7 +96,6 @@ export async function postHelper<T extends ModelType>(
   modelInstance: any,
 ): Promise<NextResponse> {
   try {
-
     const response = await func(modelInstance);
     if (!response) {
       return NextResponse.json(

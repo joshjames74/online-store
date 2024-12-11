@@ -11,12 +11,11 @@ export async function getOrderViewById(id: number): Promise<any> {
   return response;
 }
 
-
 // rename to order view?
 export async function getOrdersByUserId({
   id,
   params,
-  cache
+  cache,
 }: {
   id: number;
   params: Omit<OrderParams, "usrId">;
@@ -25,7 +24,7 @@ export async function getOrdersByUserId({
   const url = buildUrl(`/api/user/${id}/orders`, params);
   const response = await fetch(url, {
     method: "GET",
-    cache: cache ? cache : "force-cache"
+    cache: cache ? cache : "force-cache",
   });
   if (!response.ok) {
     throw new Error("Error in fetching order views by search");
@@ -35,12 +34,14 @@ export async function getOrdersByUserId({
 
 // POST methods
 
-export async function postOrder(data: { order: Omit<Order, "id"> }): Promise<Order> {
+export async function postOrder(data: {
+  order: Omit<Order, "id">;
+}): Promise<Order> {
   const url = "/api/order";
-  
+
   const response = await fetch(url, {
     method: "POST",
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
   if (!response.ok) {
     throw new Error("Error posting order");

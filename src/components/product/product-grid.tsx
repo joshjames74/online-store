@@ -2,7 +2,6 @@
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import ProductWide from "@/components/product/product-wide";
 import { Box, Card, CardBody, Heading, useMediaQuery } from "@chakra-ui/react";
-import { Product } from "@prisma/client";
 import { useState, useEffect } from "react";
 import ProductCompact from "./product-compact";
 import styles from "./product-grid.module.css";
@@ -10,11 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { parseQueryParams } from "@/api/helpers/utils";
 import ProductWideSkeleton from "./product-wide-skeleton";
 import ProductCompactSkeleton from "./product-compact-skeleton";
-import {
-  ManyWithMetadata,
-  ModelsResponse,
-  ResultType,
-} from "@/api/helpers/types";
+import { ManyWithMetadata, ResultType } from "@/api/helpers/types";
 import { Width } from "@/redux/reducers/product";
 import { useSearchStore } from "@/zustand/store";
 import PageNumberGrid from "../basket/pagination/page-number-grid";

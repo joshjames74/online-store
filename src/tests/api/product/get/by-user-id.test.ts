@@ -1,14 +1,12 @@
 /**
  * @jest-environment node
  */
+import { ResultType } from "@/api/helpers/types";
 import { GET } from "@/app/api/user/[id]/products/route";
 import prisma from "@/lib/prisma";
 import {
   generateMany,
-  generateMockAddress,
-  generateMockCountry,
   generateMockProduct,
-  generateMockReview,
   generateMockUser,
 } from "@/tests/generate";
 import { Product, Review, Usr } from "@prisma/client";
@@ -19,7 +17,7 @@ export const normaliseReviewDate = (review: Review) => {
 };
 
 describe("GET /api/user/[id]/products", () => {
-  let testProducts: Product[];
+  let testProducts: ResultType<"product", { seller: true }>[];
   let testUsers: Usr[];
   let activeUser: Usr;
 
@@ -39,6 +37,7 @@ describe("GET /api/user/[id]/products", () => {
     );
     testProducts = await prisma.product.createManyAndReturn({
       data: mockProducts,
+      include: { seller: true },
     });
   });
 

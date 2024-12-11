@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma";
 import {
   Address,
   BasketItem,
@@ -12,7 +13,10 @@ import {
   Review,
   Usr,
 } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import {
+  DefaultArgs,
+  PrismaClientOptions,
+} from "@prisma/client/runtime/library";
 
 export type ModelType =
   | "address"
@@ -38,6 +42,74 @@ export type ModelMap = {
   review: Review;
   usr: Usr;
 };
+
+export type PrismaMapType = {
+  [K in keyof ModelMap]: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    DefaultArgs
+  >[K];
+};
+
+export const PrismaMap: PrismaMapType = {
+  address: prisma.address,
+  basketItem: prisma.basketItem,
+  category: prisma.category,
+  country: prisma.country,
+  currency: prisma.currency,
+  order: prisma.order,
+  orderItem: prisma.orderItem,
+  product: prisma.product,
+  review: prisma.review,
+  usr: prisma.usr,
+};
+
+// define relationships ----------
+
+export enum Relationship {
+  ONE_TO_ONE = "one-to-one",
+  ONE_TO_MANY = "one-to-many",
+  MANY_TO_ONE = "many-to-one",
+  MANY_TO_MANY = "many-to-many",
+}
+
+export type RelationshipMap = {
+  [K in keyof ModelMap]?: {
+    [P in keyof ModelMap]?: Relationship;
+  };
+};
+
+export const RelationshipMap: RelationshipMap = {
+  order: { orderItem: Relationship.ONE_TO_MANY },
+  orderItem: { order: Relationship.MANY_TO_ONE },
+};
+
+export function getRelationshipType(
+  model: keyof ModelMap,
+  subModel: keyof ModelMap,
+): Relationship | void {
+  if (RelationshipMap[model]?.[subModel]) {
+    return RelationshipMap[model][subModel];
+  }
+  return;
+}
+
+export type GetRelationshipType<
+  M extends keyof ModelMap,
+  S extends keyof ModelMap,
+> = M extends keyof RelationshipMap
+  ? S extends keyof RelationshipMap[M]
+    ? RelationshipMap[M][S]
+    : never
+  : never;
+
+// define aliases -----------
+
+export type AliasMap = {
+  seller: Usr;
+};
+
+// define metadata ------------
 
 export type FieldMetadata = {
   min: number;
@@ -70,16 +142,43 @@ export type ManyWithMetadata<T extends ModelType, I extends IncludeMap[T]> = {
   metadata: Metadata<T>;
 };
 
-// export type ResultType<T extends keyof ModelMap, I extends keyof IncludeMap[T]> = ModelMap[T] & (I extends undefined ? {} : { [K in I]: ModelMap[I]})
+// build types ---------------
+
+// remove the parent include from an inclusion relation
+export type ExtractInclude<I, K> = K extends keyof I
+  ? I[K] extends { include: infer U }
+    ? K extends keyof IncludeMap
+      ? U extends IncludeMap[K]
+        ? U
+        : never
+      : never
+    : never
+  : never;
 
 export type ResultType<
   T extends keyof ModelMap,
   I extends IncludeMap[T],
 > = ModelMap[T] &
   (I extends undefined
-    ? {}
+    ? never
     : {
-        [K in keyof I]: I[K] extends true ? ModelMap[K] : ResultType<K, I[K]>;
+        // iterate include relations
+        [K in keyof I]: // check validity
+        K extends keyof ModelMap
+          ? // if we have { modelName: true } then stop and return the modelName
+            I[K] extends true
+            ? ModelMap[K]
+            : // check that we have a correct sub-relation
+              ExtractInclude<I, K> extends never
+              ? never
+              : // if recursive, check if many-to-one relationship exists
+                GetRelationshipType<T, K> extends RelationshipMap
+                ? ResultType<K, ExtractInclude<I, K>>[]
+                : ResultType<K, ExtractInclude<I, K>>
+          : // check if it's an alias, for instance, seller is an alias of user
+            K extends keyof AliasMap
+            ? AliasMap[K]
+            : never;
       });
 
 export type TableMap = {

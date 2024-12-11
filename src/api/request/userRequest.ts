@@ -1,6 +1,6 @@
 import { Usr } from "@prisma/client";
 import axios from "axios";
-import { ResultType } from "../helpers/types";
+import { ResultType } from "../helpers/types.js";
 import { UserWithCurrencyAndCountry } from "../services/userService";
 import { fetchData } from ".";
 

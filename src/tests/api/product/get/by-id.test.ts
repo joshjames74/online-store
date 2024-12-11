@@ -12,9 +12,10 @@ import {
 } from "../../../generate";
 import { Product, Usr } from "@prisma/client";
 import prisma from "@/lib/prisma";
+import { ResultType } from "@/api/helpers/types";
 
 describe("GET /api/product/[id]", () => {
-  let testProducts: Product[];
+  let testProducts: ResultType<"product", { seller: true }>[];
   let testUsers: Usr[];
 
   beforeAll(async () => {
@@ -29,6 +30,7 @@ describe("GET /api/product/[id]", () => {
     );
     testProducts = await prisma.product.createManyAndReturn({
       data: mockProducts,
+      include: { seller: true },
     });
   });
 

@@ -11,23 +11,32 @@ import {
   reviewQueryTransformer,
 } from "../transformers/reviewSearchTransformer";
 import { queryParamsToPrismaQuery } from "../transformers";
-import { ResultType } from "../helpers/types";
+import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
 
 // GET methods
 
 export async function getReviewById(id: number): Promise<Review | void> {
-  return await getOneEntityByField("review", "id", id);
+  return await getOneEntityByField({
+    modelName: "review",
+    whereQuery: { id: id },
+  });
 }
 
 export async function getReviewsByProductId(
   id: number,
 ): Promise<Review[] | void> {
-  return getEntitiesByField("review", "productId", id);
+  return getEntitiesByField({
+    modelName: "review",
+    whereQuery: { productId: id },
+  });
 }
 
 export async function getReviewsByUserId(id: number): Promise<Review[] | void> {
-  return getEntitiesByField("review", "usrId", id);
+  return getEntitiesByField({
+    modelName: "review",
+    whereQuery: { usrId: id },
+  });
 }
 
 export async function getReviewsBySearch(
@@ -37,14 +46,12 @@ export async function getReviewsBySearch(
     params,
     reviewQueryTransformer,
   );
-  return await getEntitiesByFields(
-    "review",
-    whereQuery,
-    orderQuery,
-    undefined,
-    undefined,
-    { usr: true },
-  );
+  return await getEntitiesByFields({
+    modelName: "review",
+    whereQuery: whereQuery,
+    orderQuery: orderQuery,
+    include: { usr: true },
+  });
 }
 
 export async function getReviewCountsByProductId(
@@ -53,9 +60,9 @@ export async function getReviewCountsByProductId(
   const arr: number[] = Array.from({ length: 6 });
   return await Promise.all(
     arr.map(async (_, index) => {
-      const reviews = await getEntitiesByFields("review", {
-        score: index,
-        productId: id,
+      const reviews = await getEntitiesByFields({
+        modelName: "review",
+        whereQuery: { score: index, productId: id },
       });
       return reviews ? reviews.length : 0;
     }),

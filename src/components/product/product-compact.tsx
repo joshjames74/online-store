@@ -18,7 +18,7 @@ import { useContext } from "react";
 import styles from "./product-compact.module.css";
 import { Product } from "@prisma/client";
 import ReviewStars from "../review/review-stars";
-import { ResultType } from "@/api/helpers/types";
+import { ResultType } from "@/api/helpers/types.module";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import { UserContext } from "@/contexts/user-context";
 import { SettingsContext } from "@/contexts/settings-context";

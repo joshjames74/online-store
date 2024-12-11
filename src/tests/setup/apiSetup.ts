@@ -2,7 +2,6 @@ require("dotenv").config();
 import prisma from "@/lib/prisma";
 
 const deleteAllData = async () => {
-  
   await prisma.basketItem.deleteMany({});
 
   // orderItem before order
@@ -32,3 +31,8 @@ beforeAll(async () => {
 afterAll(async () => {
   await prisma.$disconnect();
 });
+
+global.console = {
+  ...global.console,
+  log: jest.fn(console.log), // Enable console log in Jest
+};

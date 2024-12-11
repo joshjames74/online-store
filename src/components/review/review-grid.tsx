@@ -1,8 +1,4 @@
 import {
-  getReviewById,
-  getReviewsByProductId,
-} from "@/api/request/reviewRequest";
-import {
   Box,
   Button,
   Card,
@@ -10,10 +6,6 @@ import {
   Heading,
   HStack,
   Select,
-  Skeleton,
-  SkeletonText,
-  Stack,
-  Text,
 } from "@chakra-ui/react";
 import { Review } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
@@ -31,11 +23,7 @@ import {
 } from "@/api/transformers/reviewSearchTransformer";
 import { getReviewsBySearch } from "@/api/request/reviewRequest";
 import { useRouter } from "next/navigation";
-import {
-  CaretDownOutlined,
-  CaretRightOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { ResultType } from "@/api/helpers/types";
 import { ThemeContext } from "@/contexts/theme-context";
 
@@ -46,11 +34,11 @@ export default function ReviewGrid({
   id: number;
   score: number;
 }): JSX.Element {
+  type ReviewWithUsr = ResultType<"review", { usr: true }>;
+
   const { theme } = useContext(ThemeContext);
 
-  const [reviews, setReviews] = useState<ResultType<"review", { usr: true }>[]>(
-    [],
-  );
+  const [reviews, setReviews] = useState<ReviewWithUsr[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState<boolean>(false);
 
@@ -59,7 +47,6 @@ export default function ReviewGrid({
   const getAsUrl = useReviewSearchStore((state) => state.getAsUrl);
 
   const searchParams = useSearchParams();
-
   const router = useRouter();
 
   const handleChangeFilter = (filter: number) => {
@@ -159,7 +146,7 @@ export default function ReviewGrid({
                 <ReviewCardSkeleton key={index} />
               ))
             ) : reviews?.length ? (
-              reviews.map((review: Review, index: number) => (
+              reviews.map((review: ReviewWithUsr, index: number) => (
                 <ReviewCard {...review} key={index} />
               ))
             ) : (

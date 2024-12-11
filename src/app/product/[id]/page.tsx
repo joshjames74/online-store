@@ -1,11 +1,10 @@
 "use client";
+import { ResultType } from "@/api/helpers/types";
 import { getProductById } from "@/api/request/productRequest";
 import ProductPage from "@/components/product/product-page";
 import ProductPageSkeleton from "@/components/product/product-page-skeleton";
-import ReviewCard from "@/components/review/review-card";
 import ReviewGrid from "@/components/review/review-grid";
 import { Box, Card } from "@chakra-ui/react";
-import { Product } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 export default function Page({
@@ -15,7 +14,8 @@ export default function Page({
 }): JSX.Element {
   const { id } = params;
 
-  const [product, setProduct] = useState<Product>();
+  const [product, setProduct] =
+    useState<ResultType<"product", { seller: true }>>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {

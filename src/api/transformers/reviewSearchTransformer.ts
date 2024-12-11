@@ -6,7 +6,7 @@ import {
   WhereField,
   WhereRelation,
 } from ".";
-import { TableMap } from "../helpers/types";
+import { TableMap } from "../helpers/types.js";
 
 export type ReviewQueryTransformer = (
   params: Partial<ReviewParams>,

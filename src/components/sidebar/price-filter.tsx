@@ -16,7 +16,7 @@ import {
   convertAndFormatToUserCurrency,
 } from "@/api/helpers/utils";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
-import { ModelsResponse } from "@/api/helpers/types";
+import { ModelsResponse } from "@/api/helpers/types.module";
 import { UserContext } from "@/contexts/user-context";
 
 // to do: use default currency

@@ -85,11 +85,11 @@ export default function ReviewForm({
     };
 
     postReview(review)
-      .then((review) => {
+      .then((review) =>
         review
           ? toast.update(pendingToast, successToast)
-          : toast.update(pendingToast, errorToast);
-      })
+          : toast.update(pendingToast, errorToast),
+      )
       .catch((error) => {
         console.error(error);
         toast.update(pendingToast, errorToast);

@@ -9,6 +9,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -18,6 +19,7 @@ import { useEffect, useState } from "react";
 import { getAddressesByUserId } from "@/api/request/addressRequest";
 import { ResultType } from "@/api/helpers/types";
 import { UserWithCurrencyAndCountry } from "@/api/services/userService";
+import Link from "next/link";
 
 export default function DeliveryButtonLoggedIn({
   props,
@@ -51,18 +53,22 @@ export default function DeliveryButtonLoggedIn({
 
   useEffect(() => {
     loadData();
-  }, []);
-
-  useEffect(() => {
-    loadData();
   }, [user]);
 
   if (isLoading) {
-    return <Button className={styles.text_button}>Loading...</Button>;
+    return (
+      <Button className={styles.text_button}>
+        <Spinner />
+      </Button>
+    );
   }
 
   if (!isLoading && !addresses.length) {
-    return <Button className={styles.text_button}>Create address</Button>;
+    return (
+      <Link href="/user/addresses/add">
+        <Button className={styles.text_button}>Create address</Button>
+      </Link>
+    );
   }
 
   return (

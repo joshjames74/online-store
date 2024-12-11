@@ -1,7 +1,7 @@
 import { Review } from "@prisma/client";
 import axios from "axios";
 import { ReviewParams } from "../transformers/reviewSearchTransformer";
-import { ResultType } from "../helpers/types";
+import { ResultType } from "../helpers/types.js";
 import { buildUrl } from "../helpers/utils";
 import { fetchData } from ".";
 

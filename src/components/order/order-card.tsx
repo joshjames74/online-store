@@ -1,37 +1,41 @@
-import { OrderView } from "@/api/services/orderService";
+import { OrderWithMetadata } from "@/api/services/orderService";
 import { ThemeContext } from "@/contexts/theme-context";
 import {
-  Box,
-  Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
   Divider,
-  Grid,
-  GridItem,
   Heading,
   HStack,
   Stack,
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import OrderProductCard from "./order-product-card";
-import { formatDate } from "@/api/helpers/utils";
+import {
+  convertAndFormatToUserCurrency,
+  formatDate,
+} from "@/api/helpers/utils";
 import { ResultType } from "@/api/helpers/types";
 import styles from "./order-card.module.css";
+import { UserContext } from "@/contexts/user-context";
 
 export default function OrderCard({
   params,
 }: {
-  params: { orderView: OrderView };
+  params: { orderView: OrderWithMetadata };
 }): JSX.Element {
   const { orderView } = params;
   const { theme } = useContext(ThemeContext);
+  const { user } = useContext(UserContext);
 
   type OrderItemView = ResultType<
     "orderItem",
-    { product: { include: { currency: true } } }
+    { product: { include: { seller: true } } }
   >;
+
+  if (!orderView) {
+    return <></>;
+  }
 
   return (
     <Card className={styles.container} borderRadius="1em" overflow="hidden">
@@ -42,7 +46,7 @@ export default function OrderCard({
               ORDER PLACED
             </Heading>
             <Heading className={styles.value} fontSize="md">
-              {formatDate(orderView.date.toString())}
+              {formatDate(orderView.order.date.toString())}
             </Heading>
           </Stack>
           <Stack className={styles.info_container}>
@@ -50,7 +54,10 @@ export default function OrderCard({
               TOTAL
             </Heading>
             <Heading className={styles.value} fontSize="md">
-              £400.00
+              {convertAndFormatToUserCurrency(
+                orderView.metadata.total.price,
+                user,
+              )}
             </Heading>
           </Stack>
           <Stack className={styles.info_container}>
@@ -58,7 +65,7 @@ export default function OrderCard({
               DISPATCHED TO
             </Heading>
             <Heading className={styles.value} fontSize="md">
-              {orderView.address.name}
+              {orderView.order.address.name}
             </Heading>
           </Stack>
         </HStack>
@@ -68,9 +75,11 @@ export default function OrderCard({
 
       <CardBody>
         <Stack>
-          {orderView.OrderItem.map((item: OrderItemView, index: number) => (
-            <OrderProductCard {...item.product} key={index} />
-          ))}
+          {orderView.order.orderItem.map(
+            (item: OrderItemView, index: number) => (
+              <OrderProductCard {...item.product} key={index} />
+            ),
+          )}
         </Stack>
       </CardBody>
     </Card>

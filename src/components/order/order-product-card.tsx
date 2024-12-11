@@ -1,5 +1,5 @@
 "use client";
-import { ResultType } from "@/api/helpers/types";
+import { ResultType } from "@/api/helpers/types.module";
 import { SettingsContext } from "@/contexts/settings-context";
 import { ThemeContext } from "@/contexts/theme-context";
 import {

@@ -1,8 +1,6 @@
 "use client";
 import { getAllCountries } from "@/api/request/countryRequest";
-import {
-  putUserCountryById,
-} from "@/api/request/userRequest";
+import { putUserCountryById } from "@/api/request/userRequest";
 import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
@@ -102,51 +100,49 @@ export default function Page({
 
   return (
     <RenderPageIfLoggedIn>
+      <Box w="full" justifyItems="center" marginTop="1em">
+        <Stack w="fit-content">
+          <Heading>Change country</Heading>
+          <Text>Select the country you want.</Text>
 
-    <Box w="full" justifyItems="center" marginTop="1em">
-      <Stack w="fit-content">
-        <Heading>Change country</Heading>
-        <Text>Select the country you want.</Text>
-
-        {isLoading || !countries || !countries.length ? (
-          <></>
-        ) : (
-          <Stack>
-            <Select
-              placeholder="Select country"
-              onChange={(event) =>
-                setSelectedCountry(parseInt(event.target.value || ""))
-              }
+          {isLoading || !countries || !countries.length ? (
+            <></>
+          ) : (
+            <Stack>
+              <Select
+                placeholder="Select country"
+                onChange={(event) =>
+                  setSelectedCountry(parseInt(event.target.value || ""))
+                }
               >
-              {countries.map((country: Country, index: number) => {
-                return (
-                  <option key={index} value={country.id}>
-                    {country.code} - {country.name}
-                  </option>
-                );
-              })}
-            </Select>
+                {countries.map((country: Country, index: number) => {
+                  return (
+                    <option key={index} value={country.id}>
+                      {country.code} - {country.name}
+                    </option>
+                  );
+                })}
+              </Select>
 
-            <Box display="flex" gap="1em">
-              <Button
-                bgColor={theme.colors.background.secondary}
-                onClick={handleCancel}
+              <Box display="flex" gap="1em">
+                <Button
+                  bgColor={theme.colors.background.secondary}
+                  onClick={handleCancel}
                 >
-                Cancel
-              </Button>
-              <Button
-                bgColor={theme.colors.accent.primary}
-                isDisabled={!!!selectedCountry}
-                onClick={handleSubmit}
+                  Cancel
+                </Button>
+                <Button
+                  bgColor={theme.colors.accent.primary}
+                  isDisabled={!!!selectedCountry}
+                  onClick={handleSubmit}
                 >
-                Save changes
-              </Button>
-            </Box>
-          </Stack>
-        )}
-      </Stack>
-    </Box>
-
+                  Save changes
+                </Button>
+              </Box>
+            </Stack>
+          )}
+        </Stack>
+      </Box>
     </RenderPageIfLoggedIn>
   );
 }
