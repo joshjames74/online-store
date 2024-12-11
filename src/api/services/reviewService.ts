@@ -1,9 +1,8 @@
 import { Review } from "@prisma/client";
 import {
   deleteOneEntityByField,
-  getEntitiesByField,
   getEntitiesByFields,
-  getOneEntityByField,
+  getOneEntityByFields,
   postOneEntity,
 } from "../helpers/dynamicQuery";
 import {
@@ -17,7 +16,7 @@ import prisma from "@/lib/prisma";
 // GET methods
 
 export async function getReviewById(id: number): Promise<Review | void> {
-  return await getOneEntityByField({
+  return await getOneEntityByFields({
     modelName: "review",
     whereQuery: { id: id },
   });
@@ -26,14 +25,14 @@ export async function getReviewById(id: number): Promise<Review | void> {
 export async function getReviewsByProductId(
   id: number,
 ): Promise<Review[] | void> {
-  return getEntitiesByField({
+  return getEntitiesByFields({
     modelName: "review",
     whereQuery: { productId: id },
   });
 }
 
 export async function getReviewsByUserId(id: number): Promise<Review[] | void> {
-  return getEntitiesByField({
+  return getEntitiesByFields({
     modelName: "review",
     whereQuery: { usrId: id },
   });

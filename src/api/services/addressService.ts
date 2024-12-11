@@ -1,9 +1,9 @@
 import { Address } from "@prisma/client";
 import {
   deleteOneEntityByField,
-  getAllEntity,
-  getEntitiesByField,
-  getOneEntityByField,
+  getAllEntities,
+  getEntitiesByFields,
+  getOneEntityByFields,
   postOneEntity,
 } from "../helpers/dynamicQuery";
 import { ResultType } from "../helpers/types.js";
@@ -11,7 +11,7 @@ import { ResultType } from "../helpers/types.js";
 // GET method
 
 export async function getAddressById(id: number): Promise<Address | void> {
-  return await getOneEntityByField({
+  return await getOneEntityByFields({
     modelName: "address",
     whereQuery: { id: id },
   });
@@ -20,7 +20,7 @@ export async function getAddressById(id: number): Promise<Address | void> {
 export async function getAddressesByUserId(
   id: number,
 ): Promise<ResultType<"address", { country: true }>[] | void> {
-  return await getEntitiesByField({
+  return await getEntitiesByFields({
     modelName: "address",
     whereQuery: { usrId: id },
     include: { country: true },
@@ -30,14 +30,14 @@ export async function getAddressesByUserId(
 export async function getAddressesByCountryId(
   id: number,
 ): Promise<Address[] | void> {
-  return await getEntitiesByField({
+  return await getEntitiesByFields({
     modelName: "address",
     whereQuery: { countryId: id },
   });
 }
 
 export async function getAllAddresses(): Promise<Address[] | void> {
-  return await getAllEntity("address");
+  return await getAllEntities("address");
 }
 
 // DELETE methods

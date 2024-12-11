@@ -1,7 +1,7 @@
 import { Order, OrderItem } from "@prisma/client";
 import {
   getEntitiesByFields,
-  getOneEntityByField,
+  getOneEntityByFields,
 } from "../helpers/dynamicQuery";
 import {
   OrderParams,
@@ -57,7 +57,7 @@ export type OrderWithMetadata = {
 // GET methods
 
 export async function getOrderViewById(id: number): Promise<any> {
-  return await getOneEntityByField({
+  return await getOneEntityByFields({
     modelName: "order",
     whereQuery: { id: id },
     include: { orderItem: true },

@@ -3,8 +3,7 @@ import {
   deleteEntitiesByField,
   deleteOneEntityByField,
   getCountByField,
-  getEntitiesByField,
-  getOneEntityByField,
+  getEntitiesByFields,
   getOneEntityByFields,
   postOneEntity,
   putOneEntityByField,
@@ -31,7 +30,7 @@ export type Basket = {
 export async function getBasketItemById(
   id: number,
 ): Promise<BasketItemWithProduct | void> {
-  return getOneEntityByField({
+  return getOneEntityByFields({
     modelName: "basketItem",
     whereQuery: { id: id },
     include: { product: true },
@@ -41,7 +40,7 @@ export async function getBasketItemById(
 export async function getBasketItemsByUserId(
   id: number,
 ): Promise<BasketItemWithProduct[] | void> {
-  return getEntitiesByField({
+  return getEntitiesByFields({
     modelName: "basketItem",
     whereQuery: { usrId: id },
     include: { product: true },
@@ -67,7 +66,7 @@ export async function getBasketByUserId(id: number): Promise<Basket | void> {
   // get items by user id
   let items;
   try {
-    items = await getEntitiesByField({
+    items = await getEntitiesByFields({
       modelName: "basketItem",
       whereQuery: { usrId: id },
       orderQuery: { id: OrderRelation.ASC },

@@ -1,9 +1,9 @@
 import { Usr } from "@prisma/client";
 import {
   deleteOneEntityByField,
-  getAllEntity,
-  getEntitiesByField,
-  getOneEntityByField,
+  getAllEntities,
+  getEntitiesByFields,
+  getOneEntityByFields,
   postOneEntity,
   putOneEntityByField,
   upsertOneEntityByField,
@@ -19,27 +19,27 @@ export type UserWithCurrencyAndCountry = ResultType<
 // GET methods
 
 export async function getUserById(id: number): Promise<Usr | void> {
-  return getOneEntityByField({
+  return getOneEntityByFields({
     modelName: "usr",
     whereQuery: { id: id },
   });
 }
 
 export async function getUsersByCountryId(id: number): Promise<Usr[] | void> {
-  return getEntitiesByField({
+  return getEntitiesByFields({
     modelName: "usr",
     whereQuery: { countryId: id },
   });
 }
 
 export async function getAllUsers(): Promise<Usr[] | void> {
-  return getAllEntity("usr");
+  return getAllEntities("usr");
 }
 
 export async function getUserByEmail(
   email: string,
 ): Promise<UserWithCurrencyAndCountry | void> {
-  return getOneEntityByField({
+  return getOneEntityByFields({
     modelName: "usr",
     whereQuery: { email: email },
     include: { currency: true, country: true },

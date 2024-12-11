@@ -1,10 +1,9 @@
 import { Product } from "@prisma/client";
 import {
   deleteOneEntityByField,
-  getAllEntity,
-  getEntitiesByField,
+  getAllEntities,
   getEntitiesByFields,
-  getOneEntityByField,
+  getOneEntityByFields,
   postOneEntity,
   putOneEntityByField,
 } from "../helpers/dynamicQuery";
@@ -21,7 +20,7 @@ import { ManyWithMetadata, Metadata, ResultType } from "../helpers/types.js";
 export async function getProductById(
   id: number,
 ): Promise<ResultType<"product", { seller: true }> | void> {
-  return getOneEntityByField({
+  return getOneEntityByFields({
     modelName: "product",
     whereQuery: { id: id },
     include: { seller: true },
@@ -31,7 +30,7 @@ export async function getProductById(
 export async function getProductsByUserId(
   id: number,
 ): Promise<ResultType<"product", { seller: true }>[] | void> {
-  return getEntitiesByField({
+  return getEntitiesByFields({
     modelName: "product",
     whereQuery: { sellerId: id },
     include: { seller: true },
@@ -40,7 +39,7 @@ export async function getProductsByUserId(
 
 // to do: delete
 export async function getAllProducts(): Promise<Product[] | void> {
-  return getAllEntity("product");
+  return getAllEntities("product");
 }
 
 export async function getProductBySearch(
