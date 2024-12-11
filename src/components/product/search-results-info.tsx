@@ -1,30 +1,38 @@
-import { Box, Heading, HStack, Select, Text } from "@chakra-ui/react";
+import { Heading, HStack } from "@chakra-ui/react";
 import styles from "./search-results-info.module.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { Width } from "@/redux/reducers/product";
-import { useSearchStore } from "@/zustand/store";
+import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
+import { useRouter } from "next/navigation";
+
 
 export default function SearchResultsInfo(): JSX.Element {
   const { theme } = useContext(ThemeContext);
+  const router = useRouter();
 
-  const setSearchParams = useSearchStore((state) => state.setParams);
-  const params = useSearchStore((state) => state.params);
-  const resultsCount = useSearchStore((state) => state.resultsCount);
+  const updatePerPage = useSearchParamsState((state) => state.updatePerPage);
+  const updatePageNumber = useSearchParamsState((state) => state.updatePageNumber);
 
-  const perPage = useSearchStore((state) => state.params.perPage);
+  const perPage = useSearchParamsState((state) => state.params.perPage);
+  const pageNumber = useSearchParamsState((state) => state.params.pageNumber);
+  const executeSearch = useSearchParamsState((state) => state.executeSearch);
+  const resultsCount = useSearchResultsState((state) => state.resultsCount)
 
   const handleChangeWidth = (width: Width) => {
-    setSearchParams({ perPage: width, pageNumber: 1 });
+    updatePerPage(width);
+    updatePageNumber(1);
+    executeSearch();
+    router.push("/");
   };
 
   const lowerBound: number =
-    params.perPage && params.pageNumber
-      ? (params.pageNumber - 1) * params.perPage + 1
+    perPage && pageNumber
+      ? (pageNumber - 1) * perPage + 1
       : 1;
   const upperBound: number =
-    params.perPage && params.pageNumber
-      ? Math.min(lowerBound + params.perPage - 1, resultsCount)
+    perPage && pageNumber
+      ? Math.min(lowerBound + perPage - 1, resultsCount)
       : 1;
 
   return (

@@ -1,11 +1,9 @@
 import {
-  Box,
   Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Divider,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -24,68 +22,58 @@ import styles from "./index.module.css";
 import ReviewFilter from "./review-filter";
 import PriceFilter from "./price-filter";
 import CategoryFilter from "./category-filter";
-import { useSearchStore } from "@/zustand/store";
-import { useRouter } from "next/navigation";
+import { useSearchParamsState } from "@/zustand/store";
 import { useContext, useEffect } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
-import { UserContext } from "@/contexts/user-context";
 import { ControlOutlined } from "@ant-design/icons";
 import SortFilter from "./sort-filter";
 
 export default function Sidebar(): JSX.Element {
   const { theme } = useContext(ThemeContext);
-  const { user } = useContext(UserContext);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLargerThan800px] = useMediaQuery("(min-width: 800px)");
-  const router = useRouter();
 
-  const clearFilters = useSearchStore((state) => state.clearParams);
+  const clearParams = useSearchParamsState((state) => state.clearParams);
+  const executeSearch = useSearchParamsState((state) => state.executeSearch);
 
   const handleDelete = () => {
-    clearFilters();
-    router.refresh();
+    clearParams();
+    executeSearch();
   };
 
-  const renderFilters = (): JSX.Element => {
-    return (
-      <Stack gap={2}>
-        <SortFilter />
-        <PriceFilter />
-        <ReviewFilter />
-        <CategoryFilter />
-      </Stack>
-    );
-  };
-
-  const renderFooter = (): JSX.Element => {
-    return (
-      <Text
-        textDecoration="underline"
-        _hover={{ color: theme.colors.accent.secondary }}
-        onClick={handleDelete}
-      >
-        Clear Filters
-      </Text>
-    );
-  };
-
-  const renderHeading = (): JSX.Element => {
-    return (
-      <Heading fontSize="lg" fontWeight="semibold">
-        Filters
-      </Heading>
-    );
-  };
+  // remove
+  const params = useSearchParamsState((state) => state.params);
+  useEffect(() => {
+    console.log("new params:")
+    console.log(params);
+  }, [params]);
 
   const sidebar = () => {
     return (
       <Card className={styles.container} h="fit-content" minW="2xs">
-        <CardHeader paddingBottom={2}>{renderHeading()}</CardHeader>
+        <CardHeader paddingBottom={2}>
+          <Heading fontSize="lg" fontWeight="semibold">
+            Filters
+          </Heading>
+        </CardHeader>
         <CardBody paddingTop={2} paddingBottom={0}>
-          {renderFilters()}
+          <Stack gap={2}>
+            <SortFilter />
+            <PriceFilter />
+            <ReviewFilter />
+            <CategoryFilter />
+          </Stack>
         </CardBody>
-        <CardFooter paddingTop={1}>{renderFooter()}</CardFooter>
+        <CardFooter paddingTop={1}>
+          <Text
+            textDecoration="underline"
+            _hover={{ color: theme.colors.accent.secondary }}
+            onClick={handleDelete}
+          >
+            Clear Filters
+          </Text>
+        </CardFooter>
       </Card>
     );
   };
@@ -107,9 +95,28 @@ export default function Sidebar(): JSX.Element {
           <DrawerOverlay />
           <DrawerContent>
             <DrawerCloseButton />
-            <DrawerHeader>{renderHeading()}</DrawerHeader>
-            <DrawerBody>{renderFilters()}</DrawerBody>
-            <DrawerFooter>{renderFooter()}</DrawerFooter>
+            <DrawerHeader>
+              <Heading fontSize="lg" fontWeight="semibold">
+                Filters
+              </Heading>
+            </DrawerHeader>
+            <DrawerBody>
+              <Stack gap={2}>
+                <SortFilter />
+                <PriceFilter />
+                <ReviewFilter />
+                <CategoryFilter />
+              </Stack>
+            </DrawerBody>
+            <DrawerFooter>
+              <Text
+                textDecoration="underline"
+                _hover={{ color: theme.colors.accent.secondary }}
+                onClick={handleDelete}
+              >
+                Clear Filters
+              </Text>
+            </DrawerFooter>
           </DrawerContent>
         </Drawer>
       </>

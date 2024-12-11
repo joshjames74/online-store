@@ -1,7 +1,6 @@
 "use client";
 import {
   Box,
-  SkeletonText,
   Slider,
   SliderFilledTrack,
   SliderThumb,
@@ -9,80 +8,55 @@ import {
   Text,
 } from "@chakra-ui/react";
 import styles from "./price-filter.module.css";
-import { useContext, useEffect, useState } from "react";
-import { useSearchStore } from "@/zustand/store";
+import { useContext, useEffect } from "react";
+import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
 import {
-  formatPrice,
   convertAndFormatToUserCurrency,
 } from "@/api/helpers/utils";
-import { getProductsBySearchParams } from "@/api/request/productRequest";
-import { ModelsResponse } from "@/api/helpers/types.module";
 import { UserContext } from "@/contexts/user-context";
 
-// to do: use default currency
-export default function PriceFilter(): JSX.Element {
-  const min = 0;
 
-  const [sliderValue, setSliderValue] = useState<number>();
-  const [maxPrice, setMaxPrice] = useState<number>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export default function PriceFilter(): JSX.Element {
+  // logic:
+  // slider value: on reads from the maxPrice
+  // onChange updates the max price only
+  // when we have a new max price data, update the max price
 
   const { user } = useContext(UserContext);
 
-  const setSearchParams = useSearchStore((state) => state.setParams);
+  const min: number = 0;
+  const updateMaxPrice = useSearchParamsState((state) => state.updateMaxPrice);
+  const maxPrice = useSearchParamsState((state) => state.params.max_price);
+  const maxPriceData = useSearchResultsState((state) => state.maxPrice);
 
   useEffect(() => {
-    // set the max price when no filters are applied
-    setIsLoading(true);
-    getProductsBySearchParams({})
-      .then((res: ModelsResponse<"product">) => {
-        if (res.metadata && res.metadata["price"]) {
-          setMaxPrice(res.metadata["price"]?.max);
-        }
-      })
-      .catch((error) => console.error(error))
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+    updateMaxPrice(maxPriceData);
+  }, [maxPriceData]);
 
   useEffect(() => {
-    console.log(sliderValue, maxPrice);
-  }, [maxPrice, sliderValue]);
-
-  useEffect(() => {
-    setSliderValue(maxPrice);
+    if (maxPrice === 0) {
+      updateMaxPrice(maxPriceData);
+    }
   }, [maxPrice]);
-
-  const handlePriceChange = (newPrice: number) => {
-    setSliderValue(newPrice);
-    setSearchParams({ max_price: newPrice });
-  };
 
   return (
     <Box className={styles.container}>
       <Text fontWeight="bold">Price</Text>
-      {isLoading ? (
-        <SkeletonText noOfLines={2} />
-      ) : (
-        <>
-          <Text fontWeight="semibold">
-            {convertAndFormatToUserCurrency(min, user)}-
-            {convertAndFormatToUserCurrency(sliderValue || 0, user)}
-          </Text>
-          <Slider
-            onChange={handlePriceChange}
-            min={min}
-            max={maxPrice}
-            defaultValue={maxPrice}
-          >
-            <SliderTrack>
-              <SliderFilledTrack />
-            </SliderTrack>
-            <SliderThumb />
-          </Slider>
-        </>
-      )}
+        <Text fontWeight="semibold">
+          {convertAndFormatToUserCurrency(min, user)}-
+          {convertAndFormatToUserCurrency(maxPrice || 0, user)}
+        </Text>
+        <Slider
+          onChange={(newPrice: number) => updateMaxPrice(newPrice)}
+          min={min}
+          max={maxPriceData}
+          value={maxPrice}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
     </Box>
   );
 }

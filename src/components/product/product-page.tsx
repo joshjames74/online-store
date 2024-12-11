@@ -2,41 +2,26 @@
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardBody,
-  CardFooter,
-  CardHeader,
-  CircularProgress,
   Divider,
   Heading,
   HStack,
   Image,
-  Select,
-  Skeleton,
   Stack,
   Text,
-  useMediaQuery,
 } from "@chakra-ui/react";
-import { Product } from "@prisma/client";
 import styles from "./product-page.module.css";
 import { ThemeContext } from "@/contexts/theme-context";
 import { useContext, useEffect, useState } from "react";
 import ReviewStars from "../review/review-stars";
-import { postBasketItem } from "@/api/request/basketRequest";
-import {
-  CheckCircleFilled,
-  CheckOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
 import { UserContext } from "@/contexts/user-context";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   convertAndFormatToUserCurrency,
   formatReviewScore,
 } from "@/api/helpers/utils";
-import { ResultType } from "@/api/helpers/types.module";
+import { ResultType } from "@/api/helpers/types";
 import ProductBasketCard from "./product-basket-card";
 
 export default function ProductPage(
