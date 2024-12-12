@@ -1,8 +1,8 @@
 "use client";
 import { ManyWithMetadata } from "@/api/helpers/types";
-import { getBasketByUserId } from "@/api/request/basketRequest";
+import { deleteBasketById, getBasketByUserId, putBasketItemQuantityById } from "@/api/request/basketRequest";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
-import { Basket } from "@/api/services/basketItemService";
+import { Basket, deleteBasketItemById } from "@/api/services/basketItemService";
 import { OrderParams } from "@/api/transformers/orderSearchTransformer";
 import {
   ProductFilter,
@@ -120,20 +120,6 @@ export const useSearchResultsState = create<SearchResultsState>((set, get) => ({
 
 export type BasketItemCoreProperties = { [key: number]: number };
 
-// // Search states
-
-// export interface SearchState {
-//   params: Partial<ProductParams>;
-//   setParams: (params: Partial<ProductParams>) => void;
-//   getURLSearchParams: () => string;
-//   isLoading: boolean;
-//   setIsLoading: (status: boolean) => void;
-//   clearParams: () => void;
-//   resultsCount: number;
-//   setResultsCount: (count: number) => void;
-//   getMaxPages: () => number;
-// }
-
 export interface ReviewSearchState {
   params: Partial<ReviewParams>;
   setParams: (params: Partial<ReviewParams>) => void;
@@ -152,55 +138,13 @@ export interface OrderSearchState {
 
 export interface BasketState {
   basket: Basket;
-  setBasket: (basket: Basket) => void;
-  isLoading: boolean;
-  setIsLoading: (status: boolean) => void;
-  loadData: (id: number) => Promise<void>;
+  userId: number;
+  setUserId: (userId: number) => void;
+  fetchBasket: (cache?: RequestCache) => Promise<void>;
+  deleteBasket: () => Promise<void>;
+  putBasketItem: (id: number, quantity: number) => Promise<void>;
+  deleteBasketItem: (id: number) => Promise<void>;
 }
-
-// TO DO: look at repeated code for search states
-
-
-// // Search states
-
-// export const useSearchStore = create<SearchState>((set, get) => {
-//   return {
-//     params: {
-//       query: "",
-//       min_review: 0,
-//       max_price: 0,
-//       perPage: NaN,
-//       pageNumber: NaN,
-//     },
-//     setParams: (params) => set({ params: { ...get().params, ...params } }),
-//     getURLSearchParams: () => {
-//       const searchParams = get().params;
-//       const urlSearchParams = new URLSearchParams();
-//       Object.entries(searchParams).forEach(([key, value]) => {
-//         urlSearchParams.append(key, value.toString());
-//       });
-//       return urlSearchParams.toString();
-//     },
-//     isLoading: false,
-//     setIsLoading: (status) => set({ isLoading: status }),
-//     // remove all params except pagination. to do: remove product_filter
-//     clearParams: () =>
-//       set({
-//         params: {
-//           ...get().params,
-//           query: "",
-//           min_review: 0,
-//           max_price: 0,
-//           categories: [],
-//           product_filter: NaN,
-//         },
-//       }),
-//     resultsCount: 0,
-//     setResultsCount: (count: number) => set({ resultsCount: count }),
-//     getMaxPages: () =>
-//       Math.ceil(Math.max(get().resultsCount / (get().params.perPage || -1), 0)),
-//   };
-// });
 
 export const useReviewSearchStore = create<ReviewSearchState>((set, get) => {
   return {
@@ -234,26 +178,31 @@ export const useOrderSearchStore = create<OrderSearchState>((set, get) => {
   };
 });
 
-// Storage states
-
-export const useBasketStore = create<BasketState>((set) => {
-  return {
-    basket: {},
-    setBasket: (basket: Basket) => set({ basket: basket }),
-    loadData: async (id: number) => {
-      set({ isLoading: true });
-      getBasketByUserId(id)
-        .then((res) => {
-          set({ basket: res });
-        })
-        .catch((error) => {
-          console.error(error);
-        })
-        .finally(() => {
-          set({ isLoading: false });
-        });
-    },
-    isLoading: false,
-    setIsLoading: (status: boolean) => set({ isLoading: status }),
-  };
-});
+export const useBasketState = create<BasketState>((set, get) => ({
+  basket: {} as Basket,
+  userId: -1,
+  setUserId: (userId: number) => set({ userId: userId }),
+  fetchBasket: async (cache?: RequestCache) => {
+    const userId = get().userId;
+    await getBasketByUserId(userId, cache)
+      .then(res => set({ basket: res }))
+      .catch(error => console.error(error));
+  },
+  deleteBasket: async () => {
+    const userId = get().userId;
+    await deleteBasketById(userId)
+      .then(res => get().fetchBasket())
+      .catch(error => console.error(error));
+  },
+  putBasketItem: async (id: number, quantity: number) => {
+    await putBasketItemQuantityById(id, quantity)
+      .then(() => get().fetchBasket("reload")
+      .catch(error => console.error(error))
+    )
+  },
+  deleteBasketItem: async (id: number) => {
+    await deleteBasketItemById(id)
+      .then(() => get().fetchBasket("reload"))
+      .catch(error => console.error(error))
+  }
+}));

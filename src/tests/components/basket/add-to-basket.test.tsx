@@ -89,7 +89,7 @@ describe("mock displaying a user basket", () => {
     renderWithProvider(<BasketPage />, userContext);
 
     const element = await screen.findByText((content, element) =>
-      content.includes("User not found"),
+      content.includes("Sign in required"),
     );
     expect(element).toBeInTheDocument();
   });

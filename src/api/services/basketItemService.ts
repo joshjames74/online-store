@@ -106,11 +106,11 @@ export async function getBasketByUserId(id: number): Promise<Basket | void> {
 
 // DELETE functions
 
-export async function deleteBasketItemById(id: number): Promise<void> {
+export async function deleteBasketItemById(id: number): Promise<BasketItem | void> {
   return await deleteOneEntityByField("basketItem", "id", id);
 }
 
-export async function deleteAllBasketItemByUserId(id: number): Promise<void> {
+export async function deleteAllBasketItemByUserId(id: number): Promise<BasketItem[] | void> {
   return await deleteEntitiesByField("basketItem", "usrId", id);
 }
 

@@ -53,6 +53,8 @@ export async function deleteBasketItemById(id: number): Promise<void> {
   return response.data;
 }
 
+
+// to do: rename to user id;
 export async function deleteBasketById(id: number): Promise<void> {
   const response = await fetch(`/api/user/${id}/basket`, {
     method: "DELETE",

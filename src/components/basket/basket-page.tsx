@@ -1,78 +1,48 @@
 "use client";
 import { ThemeContext } from "@/contexts/theme-context";
 import {
-  Box,
   Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  CircularProgress,
-  Divider,
   Heading,
   HStack,
   Link,
   Stack,
   Text,
-  VStack,
 } from "@chakra-ui/react";
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import BasketProductCard from "./basket-product-card";
-import { Basket } from "@/api/services/basketItemService";
 import { UserContext } from "@/contexts/user-context";
-import {
-  deleteBasketById,
-  getBasketByUserId,
-} from "@/api/request/basketRequest";
-import { convertAndFormatToUserCurrency, parseDate } from "@/api/helpers/utils";
+import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import styles from "./basket-page.module.css";
 import { ArrowRightOutlined } from "@ant-design/icons";
+import { useBasketState } from "@/zustand/store";
+
 
 export default function BasketPage(): JSX.Element {
+
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
 
-  const [basket, setBasket] = useState<Basket>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  console.log(user);
 
-  // load and set basket
-  const loadData = async (cache?: RequestCache) => {
-    if (!user || !user.id) {
-      return;
-    }
-    getBasketByUserId(user.id, cache ? cache : "force-cache")
-      .then((res) => setBasket(res))
-      .catch((error) => console.error(error));
-  };
+  const basket = useBasketState((state) => state.basket);
+  const setUserId = useBasketState((state) => state.setUserId);
+  const userId = useBasketState((state) => state.userId);
+  const deleteBasket = useBasketState((state) => state.deleteBasket);
+  const fetchBasket = useBasketState((state) => state.fetchBasket);
 
-  // load on first load and when user changes
   useEffect(() => {
-    setIsLoading(true);
-    loadData();
-    setIsLoading(false);
-  }, [user]);
+    setUserId(user.id);
+  }, [user.id]);
 
-  // manage deleting basket
-  const handleDelete = () => {
-    setIsLoading(true);
-    deleteBasketById(user.id)
-      .then((res) => {
-        // reload basket call
-        getBasketByUserId(user.id, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
-      })
-      .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false));
-  };
+  useEffect(() => {
+    fetchBasket();
+  }, [userId]);
 
-  if (isLoading) {
-    return <Box>Loading</Box>;
-  }
-
-  if (!user || !user.id) {
-    return <Box>User not found</Box>;
-  }
+  const handleDelete = async () => await deleteBasket();
 
   if (!basket || !basket?.items?.length) {
     return (
@@ -106,12 +76,7 @@ export default function BasketPage(): JSX.Element {
       >
         <CardHeader paddingBottom={0}>
           <Heading fontWeight="semibold" fontSize="3xl">
-            Shopping Basket{" "}
-            {isLoading ? (
-              <CircularProgress size="1em" isIndeterminate />
-            ) : (
-              <></>
-            )}
+            Shopping Basket
           </Heading>
           <Text
             color={theme.colors.accent.tertiary}
@@ -130,7 +95,6 @@ export default function BasketPage(): JSX.Element {
                 <BasketProductCard
                   key={index}
                   basketItem={basketItem}
-                  loadData={loadData}
                 />
               ))}
           </Stack>

@@ -1,13 +1,9 @@
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
-import {
-  deleteBasketItemById,
-  getBasketByUserId,
-  putBasketItemQuantityById,
-} from "@/api/request/basketRequest";
 import { BasketItemWithProduct } from "@/api/services/basketItemService";
 import { SettingsContext } from "@/contexts/settings-context";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
+import { useBasketState } from "@/zustand/store";
 import {
   CheckCircleFilled,
   DeleteOutlined,
@@ -18,27 +14,16 @@ import {
   Box,
   Button,
   CircularProgress,
-  Grid,
-  GridItem,
   Heading,
   HStack,
-  Image,
-  SliderFilledTrack,
   Stack,
   Text,
   useMediaQuery,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
-import ProductWide from "../product/product-wide";
-import ProductCompact from "../product/product-compact";
 
-export default function BasketProductCard({
-  basketItem,
-  loadData,
-}: {
-  basketItem: BasketItemWithProduct;
-  loadData: (cache?: RequestCache) => Promise<void>;
-}): JSX.Element {
+
+export default function BasketProductCard({ basketItem }: { basketItem: BasketItemWithProduct }): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { user } = useContext(UserContext);
   const { defaultImageUrl } = useContext(SettingsContext);
@@ -51,46 +36,29 @@ export default function BasketProductCard({
   const [showStatus, setShowStatus] = useState<boolean>(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState<boolean>(false);
 
+  const putBasketItem = useBasketState((state) => state.putBasketItem);
+  const deleteBasketItem = useBasketState((state) => state.deleteBasketItem);
+
   // increment product quantity
   const handleIncrementQuantity = () => updateQuantity(1);
   const handleDecrementQuantity = () => updateQuantity(-1);
 
   const updateQuantity = async (quantity: number) => {
     setIsLoadingQuantity(true);
-    putBasketItemQuantityById(
-      basketItem.id,
-      Math.max(basketItem.quantity + quantity, 0),
-    )
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        loadData("reload").then((res) => {
-          setIsLoadingQuantity(false);
-          handleStatus();
-        });
-      });
-  };
-
-  const handleStatus = () => {
-    setShowStatus(true);
-    setTimeout(() => setShowStatus(false), 1000);
+    const newQuantity = Math.max(basketItem.quantity + quantity, 0);
+    await putBasketItem(basketItem.id, newQuantity);
+    setIsLoadingQuantity(false);
   };
 
   const handleDelete = async () => {
     setIsLoadingDelete(true);
-    deleteBasketItemById(basketItem.id)
-      .then((res) => {
-        loadData("reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoadingDelete(false);
-      });
+    await deleteBasketItem(basketItem.id);
+    setIsLoadingDelete(false);
+  }
+
+  const handleStatus = () => {
+    setShowStatus(true);
+    setTimeout(() => setShowStatus(false), 1000);
   };
 
   // return (
