@@ -1,9 +1,7 @@
 "use client";
 import { getAllCountries } from "@/api/request/countryRequest";
-import { putUserCountryById } from "@/api/request/userRequest";
 import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 import { ThemeContext } from "@/contexts/theme-context";
-import { UserContext } from "@/contexts/user-context";
 import { useUserState } from "@/zustand/store";
 import {
   Box,
@@ -11,24 +9,22 @@ import {
   Heading,
   Select,
   Stack,
-  TabList,
   Text,
   useToast,
   UseToastOptions,
 } from "@chakra-ui/react";
-import { Country, Currency } from "@prisma/client";
+import { Country } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
 
 export default function Page({
   params,
 }: {
   params: { redirectUrl: string };
 }): JSX.Element {
-  const redirectUrl = params.redirectUrl || "/";
 
+  const redirectUrl = params.redirectUrl || "/";
   const { theme } = useContext(ThemeContext);
-  const { user, reload } = useContext(UserContext);
   const router = useRouter();
   const toast = useToast();
 
@@ -40,20 +36,10 @@ export default function Page({
 
   useEffect(() => {
     getAllCountries()
-      .then((res) => {
-        setCountries(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((res) => setCountries(res))
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
   }, []);
-
-  // if (!isAuthenticated || !user) {
-  //   return <Box>Sign in</Box>;
-  // }
 
   const handleSubmit = () => {
     const pendingToast = toast({
@@ -82,25 +68,7 @@ export default function Page({
         toast.update("toast", successToast);
         router.push(redirectUrl);
       })
-      .catch(error => toast.update("toast", errorToast));
-    // putUserCountryById(user.id, selectedCountry)
-    //   .then((res) => {
-    //     toast.update("toast", successToast);
-    //   })
-    //   .catch((error) => {
-    //     toast.update("toast", errorToast);
-    //     location.reload();
-    //   })
-    //   .finally(() => {
-    //     reload()
-    //       .then(() => {
-    //         router.push(redirectUrl);
-    //       })
-    //       .catch((error) => {
-    //         console.error(error);
-    //         router.push(redirectUrl);
-    //       });
-    //   });
+      .catch(() => toast.update("toast", errorToast));
   };
 
   const handleCancel = () => {

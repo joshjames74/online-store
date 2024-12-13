@@ -6,7 +6,6 @@ import {
   Drawer,
   DrawerOverlay,
   DrawerHeader,
-  DrawerFooter,
   Link,
   Heading,
   DrawerContent,
@@ -18,47 +17,42 @@ import { useContext } from "react";
 import { MenuOutlined } from "@ant-design/icons";
 import SearchBar from "./search-bar";
 import BasketButton from "./basket-button";
-import { UserContext } from "@/contexts/user-context";
 import Logo from "./logo";
+import { RenderComponentIfLoggedIn } from "../auth/render-conditionally";
 
 export default function NavigationCompact(): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { theme } = useContext(ThemeContext);
-  const { isAuthenticated, isLoading } = useContext(UserContext);
-
-  const header = (isLoggedIn: boolean) => {
-    return (
-      <HStack
-        paddingX="1em"
-        paddingY="0.4em"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <HStack alignItems="center">
-          <Button
-            onClick={onOpen}
-            backgroundColor={theme.colors.antCompatible.background}
-            padding={0}
-            _hover={{ border: "1px solid white" }}
-          >
-            <MenuOutlined
-              style={{
-                color: theme.colors.antCompatible.text,
-                fontSize: "20px",
-              }}
-            />
-          </Button>
-          <Logo />
-        </HStack>
-        {isLoggedIn ? <BasketButton /> : <></>}
-      </HStack>
-    );
-  };
 
   return (
     <>
       <Stack bgColor={theme.colors.background.accent}>
-        {header(!isLoading && isAuthenticated)}
+        <HStack
+          paddingX="1em"
+          paddingY="0.4em"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <HStack alignItems="center">
+            <Button
+              onClick={onOpen}
+              backgroundColor={theme.colors.antCompatible.background}
+              padding={0}
+              _hover={{ border: "1px solid white" }}
+            >
+              <MenuOutlined
+                style={{
+                  color: theme.colors.antCompatible.text,
+                  fontSize: "20px",
+                }}
+              />
+            </Button>
+            <Logo />
+          </HStack>
+          <RenderComponentIfLoggedIn>
+            <BasketButton />
+          </RenderComponentIfLoggedIn>
+        </HStack>
         <SearchBar />
       </Stack>
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>

@@ -13,17 +13,17 @@ import {
 import styles from "./product-page.module.css";
 import { useContext, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
-import { UserContext } from "@/contexts/user-context";
 import { getBasketByUserId, postBasketItem } from "@/api/request/basketRequest";
 import { useRouter } from "next/navigation";
 import { CheckCircleFilled, CloseCircleOutlined } from "@ant-design/icons";
+import { useUserState } from "@/zustand/store";
 
 export default function ProductBasketCard({
   props,
 }: {
   props: { id: number };
 }): JSX.Element {
-  const { user, isAuthenticated } = useContext(UserContext);
+  const user = useUserState((state) => state.user);
   const { theme } = useContext(ThemeContext);
 
   const router = useRouter();
@@ -94,7 +94,8 @@ export default function ProductBasketCard({
             ))}
           </Select>
           <Button
-            isDisabled={!isAuthenticated}
+          // to do: change to if authenticated
+            isDisabled={!user.id}
             rightIcon={
               isLoading ? (
                 <CircularProgress size="1em" isIndeterminate />
@@ -107,7 +108,7 @@ export default function ProductBasketCard({
             bgColor={theme.colors.accent.secondary}
             onClick={handleClick}
           >
-            {!isAuthenticated ? "Sign in to add to basket" : "Add to basket"}
+            {!user.id ? "Sign in to add to basket" : "Add to basket"}
           </Button>
           <Button bgColor={theme.colors.accent.primary}>Buy now</Button>
         </Stack>

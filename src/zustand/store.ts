@@ -7,6 +7,7 @@ import { getCurrencyById } from "@/api/request/currencyRequest";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { getUserByEmail, postUser, putUserCountryById, putUserCurrencyById, putUserDefaultAddress } from "@/api/request/userRequest";
 import { AddressWithCountry } from "@/api/services/addressService";
+// to do: why from service?
 import { Basket, deleteBasketItemById } from "@/api/services/basketItemService";
 import { OrderParams } from "@/api/transformers/orderSearchTransformer";
 import {

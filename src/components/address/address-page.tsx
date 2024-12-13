@@ -16,13 +16,12 @@ import { Address } from "@prisma/client";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import styles from "./address-page.module.css";
+import { useUserState } from "@/zustand/store";
 
-export default function AddressesPage({
-  params,
-}: {
-  params: { id: number };
-}): JSX.Element {
-  const { id } = params;
+export default function AddressesPage(): JSX.Element {
+
+  const user = useUserState((state) => state.user);
+  const id = user.id;
 
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);

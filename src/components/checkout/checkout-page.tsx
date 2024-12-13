@@ -1,19 +1,16 @@
 "use client";
 import {
   convertAndFormatToUserCurrency,
-  formatPrice,
 } from "@/api/helpers/utils";
 import { getAddressesByUserId } from "@/api/request/addressRequest";
 import { getBasketByUserId } from "@/api/request/basketRequest";
 import {
   getOrdersByUserId,
-  getOrderViewById,
   postOrder,
 } from "@/api/request/orderRequest";
 import { Basket } from "@/api/services/basketItemService";
-import { getOrderViewsBySearch } from "@/api/services/orderService";
 import { ThemeContext } from "@/contexts/theme-context";
-import { UserContext } from "@/contexts/user-context";
+import { useUserState } from "@/zustand/store";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -32,7 +29,7 @@ import {
 import { Address, Order } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, Suspense, useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function CheckoutPage({
@@ -47,7 +44,8 @@ export default function CheckoutPage({
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { user } = useContext(UserContext);
+  const user = useUserState((state) => state.user);
+  const currency = useUserState((state) => state.currency);
   const { theme } = useContext(ThemeContext);
 
   const toast = useToast();
@@ -136,7 +134,7 @@ export default function CheckoutPage({
               <Heading fontSize="lg">Currency</Heading>
               {user.currencyId ? (
                 <Text color={theme.colors.accent.tertiary} fontWeight="bold">
-                  {user.currency.code}({user.currency.symbol})
+                  {currency.code}({currency.symbol})
                 </Text>
               ) : (
                 <Link href="/user/preferences/currency">
@@ -176,7 +174,7 @@ export default function CheckoutPage({
               <Text fontWeight="bold" color={theme.colors.accent.tertiary}>
                 {convertAndFormatToUserCurrency(
                   basket.metadata.total.price,
-                  user,
+                  currency,
                 )}
               </Text>
             </HStack>

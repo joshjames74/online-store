@@ -2,8 +2,7 @@ import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import { BasketItemWithProduct } from "@/api/services/basketItemService";
 import { SettingsContext } from "@/contexts/settings-context";
 import { ThemeContext } from "@/contexts/theme-context";
-import { UserContext } from "@/contexts/user-context";
-import { useBasketState } from "@/zustand/store";
+import { useBasketState, useUserState } from "@/zustand/store";
 import {
   CheckCircleFilled,
   DeleteOutlined,
@@ -25,7 +24,8 @@ import { useContext, useState } from "react";
 
 export default function BasketProductCard({ basketItem }: { basketItem: BasketItemWithProduct }): JSX.Element {
   const { theme } = useContext(ThemeContext);
-  const { user } = useContext(UserContext);
+
+  const currency = useUserState((state) => state.currency);
   const { defaultImageUrl } = useContext(SettingsContext);
 
   const [isLessThan600px] = useMediaQuery("(max-width: 600px)");
@@ -141,7 +141,7 @@ export default function BasketProductCard({ basketItem }: { basketItem: BasketIt
         >
           {convertAndFormatToUserCurrency(
             basketItem.product.price * basketItem.quantity,
-            user,
+            currency,
           )}
         </Heading>
 

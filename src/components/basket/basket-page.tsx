@@ -14,19 +14,18 @@ import {
 } from "@chakra-ui/react";
 import { useContext, useEffect } from "react";
 import BasketProductCard from "./basket-product-card";
-import { UserContext } from "@/contexts/user-context";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import styles from "./basket-page.module.css";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { useBasketState } from "@/zustand/store";
+import { useBasketState, useUserState } from "@/zustand/store";
 
 
 export default function BasketPage(): JSX.Element {
 
   const { theme } = useContext(ThemeContext);
-  const { user } = useContext(UserContext);
 
-  console.log(user);
+  const user = useUserState((state) => state.user);
+  const currency = useUserState((state) => state.currency);
 
   const basket = useBasketState((state) => state.basket);
   const setUserId = useBasketState((state) => state.setUserId);
@@ -117,7 +116,7 @@ export default function BasketPage(): JSX.Element {
               {basket.metadata &&
                 convertAndFormatToUserCurrency(
                   basket.metadata.total.price,
-                  user,
+                  currency,
                 )}
             </Text>
           </HStack>

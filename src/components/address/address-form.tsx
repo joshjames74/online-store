@@ -7,18 +7,13 @@ import {
   BreadcrumbLink,
   Heading,
   Stack,
-  Input,
-  InputGroup,
   Select,
   Button,
   useToast,
-  HStack,
 } from "@chakra-ui/react";
-import { Address, Country } from "@prisma/client";
+import { Country } from "@prisma/client";
 import { FormEvent, useContext, useEffect, useState } from "react";
 import styles from "./address-form.module.css";
-import { UserContext } from "@/contexts/user-context";
-import SignInRequiredPage from "../auth/sign-in-required-page";
 import {
   getAddressesByUserId,
   postAddress,
@@ -26,6 +21,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { ThemeContext } from "@/contexts/theme-context";
+import { useUserState } from "@/zustand/store";
 
 export default function AddressForm(): JSX.Element {
   const {
@@ -33,28 +29,21 @@ export default function AddressForm(): JSX.Element {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { user, isAuthenticated } = useContext(UserContext);
+  
   const { theme } = useContext(ThemeContext);
+  const user = useUserState((state) => state.user);
+  
   const router = useRouter();
-
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
   const toast = useToast();
+  
+  const [countries, setCountries] = useState<Country[]>([]);
+
 
   // fetch countries
   useEffect(() => {
-    setIsLoading(true);
     getAllCountries()
-      .then((countries) => {
-        setCountries(countries);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((countries) => setCountries(countries))
+      .catch((error) => console.error(error))
   }, []);
 
   // post address or fail
@@ -101,9 +90,6 @@ export default function AddressForm(): JSX.Element {
     return <p className={styles.error_message}>{message || ""}</p>;
   };
 
-  if (!isAuthenticated || !user || !user.id) {
-    return <SignInRequiredPage props={{ message: "add address" }} />;
-  }
 
   return (
     <Box

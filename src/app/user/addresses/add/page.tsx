@@ -1,6 +1,10 @@
-import AddAddressCard from "@/components/address/add-address-card";
 import AddressForm from "@/components/address/address-form";
+import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 
 export default function Page(): JSX.Element {
-  return <AddressForm />;
+  return (
+    <RenderPageIfLoggedIn>
+      <AddressForm />
+    </RenderPageIfLoggedIn>
+  )
 }

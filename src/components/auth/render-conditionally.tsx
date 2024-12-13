@@ -1,21 +1,16 @@
 "use client";
-import { UserContext } from "@/contexts/user-context";
-import { useContext } from "react";
 import SignInRequiredPage from "./sign-in-required-page";
 import { UserWithCurrencyAndCountry } from "@/api/services/userService";
 import { Usr } from "@prisma/client";
+import { useUserState } from "@/zustand/store";
 
 export function isLoggedIn(
-  isAuthenticated: boolean,
   user: UserWithCurrencyAndCountry | Usr,
 ): boolean {
   if (!user) {
     return false;
   }
   if (!user.id) {
-    return false;
-  }
-  if (!isAuthenticated) {
     return false;
   }
   return true;
@@ -27,11 +22,8 @@ export function RenderPageIfLoggedIn({
 }: {
   children: JSX.Element;
 }): JSX.Element {
-  const { user, isAuthenticated, isLoading } = useContext(UserContext);
-  if (isLoading) {
-    return <></>;
-  }
-  if (!isLoggedIn(isAuthenticated, user)) {
+  const user = useUserState((state) => state.user);
+  if (!isLoggedIn(user)) {
     return <SignInRequiredPage props={{ message: "" }} />;
   }
   return <>{children}</>;
@@ -42,12 +34,9 @@ export function RenderComponentIfLoggedIn({
 }: {
   children: JSX.Element;
 }): JSX.Element {
-  const { user, isAuthenticated, isLoading } = useContext(UserContext);
-  if (isLoading) {
-    return <></>;
-  }
-  if (!isLoggedIn(isAuthenticated, user)) {
-    return <SignInRequiredPage props={{ message: "" }} />;
+  const user = useUserState((state) => state.user);
+  if (!isLoggedIn(user)) {
+    return <></>
   }
   return <>{children}</>;
 }
@@ -58,11 +47,8 @@ export function RenderPageIfLoggedOut({
 }: {
   children: JSX.Element;
 }): JSX.Element {
-  const { user, isAuthenticated, isLoading } = useContext(UserContext);
-  if (isLoading) {
-    return <></>;
-  }
-  if (isLoggedIn(isAuthenticated, user)) {
+  const user = useUserState((state) => state.user);
+  if (isLoggedIn(user)) {
     <></>;
   }
   return <>{children}</>;
@@ -73,11 +59,8 @@ export function RenderComponentIfLoggedOut({
 }: {
   children: JSX.Element;
 }): JSX.Element {
-  const { user, isAuthenticated, isLoading } = useContext(UserContext);
-  if (isLoading) {
-    return <></>;
-  }
-  if (isLoggedIn(isAuthenticated, user)) {
+  const user = useUserState((state) => state.user);
+  if (isLoggedIn(user)) {
     return <></>;
   }
   return <>{children}</>;

@@ -17,23 +17,19 @@ import { EnvironmentOutlined } from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
 import { getAddressesByUserId } from "@/api/request/addressRequest";
 import { ResultType } from "@/api/helpers/types";
-import { UserWithCurrencyAndCountry } from "@/api/services/userService";
 import Link from "next/link";
 import { useUserState } from "@/zustand/store";
 import { ThemeContext } from "@/contexts/theme-context";
 
-export default function DeliveryButtonLoggedIn({
-  props,
-}: {
-  props: { user: UserWithCurrencyAndCountry };
-}): JSX.Element {
+
+export default function DeliveryButtonLoggedIn(): JSX.Element {
 
   const { theme } = useContext(ThemeContext);
 
   const defaultAddress = useUserState((state) => state.defaultAddress);
   const updateDefaultAddress = useUserState((state) => state.updateDefaultAddress);
 
-  const { user } = props;
+  const user = useUserState((state) => state.user);
 
   const [addresses, setAddresses] = useState<
     ResultType<"address", { country: true }>[]
@@ -43,9 +39,6 @@ export default function DeliveryButtonLoggedIn({
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const loadData = () => {
-    if (!user || !user.id) {
-      return;
-    }
     setIsLoading(true);
     getAddressesByUserId(user.id)
       .then((addresses) => setAddresses(addresses))

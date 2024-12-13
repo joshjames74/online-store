@@ -1,4 +1,3 @@
-import { UserWithCurrencyAndCountry } from "@/api/services/userService";
 import {
   Avatar,
   Button,
@@ -11,13 +10,11 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import styles from "./index.module.css";
+import { useUserState } from "@/zustand/store";
 
-export default function AccountButtonLoggedIn({
-  props,
-}: {
-  props: { user: UserWithCurrencyAndCountry };
-}): JSX.Element {
-  const { user } = props;
+
+export default function AccountButtonLoggedIn(): JSX.Element {
+  const user = useUserState((state) => state.user);
 
   return (
     <Link href="/user/account">

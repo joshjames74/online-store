@@ -8,12 +8,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 import styles from "./price-filter.module.css";
-import { useContext, useEffect } from "react";
-import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
+import { useEffect } from "react";
+import { useSearchParamsState, useSearchResultsState, useUserState } from "@/zustand/store";
 import {
   convertAndFormatToUserCurrency,
 } from "@/api/helpers/utils";
-import { UserContext } from "@/contexts/user-context";
 
 
 export default function PriceFilter(): JSX.Element {
@@ -22,7 +21,7 @@ export default function PriceFilter(): JSX.Element {
   // onChange updates the max price only
   // when we have a new max price data, update the max price
 
-  const { user } = useContext(UserContext);
+  const currency = useUserState((state) => state.currency);
 
   const min: number = 0;
   const updateMaxPrice = useSearchParamsState((state) => state.updateMaxPrice);
@@ -43,8 +42,8 @@ export default function PriceFilter(): JSX.Element {
     <Box className={styles.container}>
       <Text fontWeight="bold">Price</Text>
         <Text fontWeight="semibold">
-          {convertAndFormatToUserCurrency(min, user)}-
-          {convertAndFormatToUserCurrency(maxPrice || 0, user)}
+          {convertAndFormatToUserCurrency(min, currency)}-
+          {convertAndFormatToUserCurrency(maxPrice || 0, currency)}
         </Text>
         <Slider
           onChange={(newPrice: number) => updateMaxPrice(newPrice)}

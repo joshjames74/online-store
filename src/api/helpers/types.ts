@@ -15,7 +15,6 @@ import {
 } from "@prisma/client";
 import {
   DefaultArgs,
-  PrismaClientOptions,
 } from "@prisma/client/runtime/library";
 
 export type ModelType =

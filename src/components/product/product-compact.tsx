@@ -2,12 +2,8 @@ import { ThemeContext } from "@/contexts/theme-context";
 import Link from "next/link";
 import {
   Avatar,
-  Box,
   Card,
   CardBody,
-  Center,
-  Grid,
-  GridItem,
   Heading,
   HStack,
   Image,
@@ -15,19 +11,17 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useContext } from "react";
-import styles from "./product-compact.module.css";
-import { Product } from "@prisma/client";
 import ReviewStars from "../review/review-stars";
-import { ResultType } from "@/api/helpers/types.module";
+import { ResultType } from "@/api/helpers/types";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
-import { UserContext } from "@/contexts/user-context";
 import { SettingsContext } from "@/contexts/settings-context";
+import { useUserState } from "@/zustand/store";
 
 export default function ProductCompact({
   ...product
 }: ResultType<"product", { seller: true }>): JSX.Element {
   const { theme } = useContext(ThemeContext);
-  const { user } = useContext(UserContext);
+  const currency = useUserState((state) => state.currency);
   const { defaultImageUrl } = useContext(SettingsContext);
 
   return (
@@ -46,7 +40,7 @@ export default function ProductCompact({
               {product.title}
             </Heading>
             <Heading fontSize="md" color={theme.colors.accent.tertiary}>
-              {convertAndFormatToUserCurrency(product.price, user)}
+              {convertAndFormatToUserCurrency(product.price, currency)}
             </Heading>
             <HStack gap={1}>
               <Avatar name={product.seller?.name} size="2xs" />

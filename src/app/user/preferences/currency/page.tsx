@@ -1,9 +1,8 @@
 "use client";
 import { getAllCurrencies } from "@/api/request/currencyRequest";
-import { putUserCurrencyById } from "@/api/request/userRequest";
 import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 import { ThemeContext } from "@/contexts/theme-context";
-import { UserContext } from "@/contexts/user-context";
+import { useUserState } from "@/zustand/store";
 import {
   Box,
   Button,
@@ -26,7 +25,6 @@ export default function Page({
   const redirectUrl = params.redirectUrl || "/";
 
   const { theme } = useContext(ThemeContext);
-  const { user, isAuthenticated, reload } = useContext(UserContext);
   const router = useRouter();
   const toast = useToast();
 
@@ -34,28 +32,21 @@ export default function Page({
   const [currencies, setCurrencies] = useState<Currency[]>();
   const [selectedCurrency, setSelectedCurrency] = useState<number>();
 
+  const updateCurrency = useUserState((state) => state.updateCurrency);
+
   useEffect(() => {
     getAllCurrencies()
-      .then((res) => {
-        setCurrencies(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((res) => setCurrencies(res))
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
   }, []);
-
-  // if (!isAuthenticated || !user) {
-  //   return <Box>Sign in</Box>;
-  // }
 
   const handleSubmit = () => {
     const pendingToast = toast({
       title: "Loading...",
       status: "loading",
       isClosable: true,
+      id: "toast"
     });
     const successToast = {
       title: "Success",
@@ -72,24 +63,12 @@ export default function Page({
       return;
     }
 
-    putUserCurrencyById(user.id, selectedCurrency)
-      .then((res) => {
-        toast.update(pendingToast, successToast);
+    updateCurrency(selectedCurrency)
+      .then(() => {
+        toast.update("toast", successToast);
+        router.push(redirectUrl);
       })
-      .catch((error) => {
-        toast.update(pendingToast, errorToast);
-        location.reload();
-      })
-      .finally(() => {
-        reload()
-          .then(() => {
-            router.push(redirectUrl);
-          })
-          .catch((error) => {
-            console.error(error);
-            router.push(redirectUrl);
-          });
-      });
+      .catch(() => toast.update("toast", errorToast));
   };
 
   const handleCancel = () => {

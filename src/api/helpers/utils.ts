@@ -1,10 +1,9 @@
-import { QueryParams } from "@/redux/reducers/product";
 import { ProductParams, Width } from "../transformers/productSearchTransformer";
 import {
   OrderFilter,
   OrderParams,
 } from "../transformers/orderSearchTransformer";
-import { UserWithCurrencyAndCountry } from "../services/userService";
+import { Currency } from "@prisma/client";
 
 export const objectToQueryParams = (params: any): string => {
   return Object.entries(params)
@@ -118,14 +117,11 @@ export function convertPrice(priceInGBP: number, exchangeRate: number): number {
 
 export function convertAndFormatToUserCurrency(
   price: number,
-  user: UserWithCurrencyAndCountry,
+  currency: Currency,
 ): string {
-  const currency =
-    user && user.currency
-      ? user.currency
-      : { symbol: "£", code: "GBP", id: "1", gbp_exchange_rate: 1 };
-  const userPrice = convertPrice(price, currency.gbp_exchange_rate);
-  return formatPrice(userPrice, currency.code);
+  const safeCurrency = currency && currency.code ? currency : { symbol: "£", code: "GBP", id: "1", gbp_exchange_rate: 1 };
+  const userPrice = convertPrice(price, safeCurrency.gbp_exchange_rate);
+  return formatPrice(userPrice, safeCurrency.code);
 }
 
 export function formatReviewScore(score: number): number {

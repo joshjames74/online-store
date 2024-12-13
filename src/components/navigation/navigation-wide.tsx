@@ -7,13 +7,13 @@ import AccountButtonLoggedIn from "./account-button/account-button-logged-in";
 import LocaleButton from "./locale-button";
 import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
-import { UserContext } from "@/contexts/user-context";
 import SignInButton from "./account-button/sign-in-button";
 import Logo from "./logo";
+import { RenderComponentIfLoggedIn, RenderComponentIfLoggedOut } from "../auth/render-conditionally";
+
 
 export default function NavigationWide(): JSX.Element {
   const { theme } = useContext(ThemeContext);
-  const { user, isAuthenticated, isLoading } = useContext(UserContext);
 
   const renderLoading = (): JSX.Element => {
     return (
@@ -53,24 +53,23 @@ export default function NavigationWide(): JSX.Element {
         w="full"
       >
         <Logo />
-        <DeliveryButtonLoggedIn props={{ user: user }} />
+        <DeliveryButtonLoggedIn />
         <SearchBar />
-        <LocaleButton props={{ user: user }} />
-        <AccountButtonLoggedIn props={{ user: user }} />
+        <LocaleButton />
+        <AccountButtonLoggedIn />
         <BasketButton />
       </HStack>
     );
   };
 
-  if (isLoading) {
-    return renderLoading();
-  }
-  if (!isAuthenticated || !user) {
-    return renderLoggedOut();
-  }
-  if (isAuthenticated && user) {
-    return renderLoggedIn();
-  }
-
-  return <></>;
+  return (
+    <>
+      <RenderComponentIfLoggedIn>
+        {renderLoggedIn()}
+      </RenderComponentIfLoggedIn>
+      <RenderComponentIfLoggedOut>
+        {renderLoggedOut()}
+      </RenderComponentIfLoggedOut>
+    </>
+  )
 }

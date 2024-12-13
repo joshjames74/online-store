@@ -24,7 +24,7 @@ import {
   getReviewsBySearch,
   postReview,
 } from "@/api/request/reviewRequest";
-import { useReviewSearchStore } from "@/zustand/store";
+import { useReviewSearchStore, useUserState } from "@/zustand/store";
 import { UserContext } from "@/contexts/user-context";
 import { useForm } from "react-hook-form";
 import { getProductById } from "@/api/request/productRequest";
@@ -39,7 +39,8 @@ export default function ReviewForm({
   onClose: () => void;
 }): JSX.Element {
   const { theme } = useContext(ThemeContext);
-  const { user, isAuthenticated } = useContext(UserContext);
+
+  const user = useUserState((state) => state.user);
 
   const toast = useToast();
   const {
@@ -113,7 +114,7 @@ export default function ReviewForm({
       });
   };
 
-  if (!isAuthenticated || !user) {
+  if (!user) {
     return (
       <Modal isOpen={isVisible} onClose={onClose}>
         <ModalOverlay />

@@ -1,4 +1,5 @@
 import { UserWithCurrencyAndCountry } from "@/api/services/userService";
+import { useUserState } from "@/zustand/store";
 import { CaretDownOutlined, DownOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -14,12 +15,11 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 
-export default function LocaleButton({
-  props,
-}: {
-  props: { user: UserWithCurrencyAndCountry };
-}): JSX.Element {
-  const { user } = props;
+
+export default function LocaleButton(): JSX.Element {
+
+  const country = useUserState((state) => state.country);
+  const currency = useUserState((state) => state.currency);
 
   return (
     <Popover>
@@ -36,8 +36,8 @@ export default function LocaleButton({
             w="auto"
             objectFit="cover"
             src={
-              user.country
-                ? user.country.image_url
+              country
+                ? country.image_url
                 : "https://flagsapi.com/GB/flat/64.png"
             }
           />
@@ -50,8 +50,8 @@ export default function LocaleButton({
             <Heading fontSize="md">Currency</Heading>
             <HStack justifyContent="space-between">
               <Text>
-                {user.currency
-                  ? `${user.currency.symbol} - ${user.currency.code}`
+                {currency
+                  ? `${currency.symbol} - ${currency.code}`
                   : "£ - GBP"}
               </Text>
               <Link
@@ -64,8 +64,8 @@ export default function LocaleButton({
             <Heading fontSize="md">Country</Heading>
             <HStack justifyContent="space-between">
               <Text>
-                {user.country
-                  ? `${user.country.code} - ${user.country.name}`
+                {country
+                  ? `${country.code} - ${country.name}`
                   : "GB - United Kingdom"}
               </Text>
               <Link

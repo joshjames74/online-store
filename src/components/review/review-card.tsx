@@ -18,11 +18,10 @@ import {
   getReviewCountsByProductId,
   getReviewsBySearch,
 } from "@/api/request/reviewRequest";
-import { useReviewSearchStore } from "@/zustand/store";
+import { useReviewSearchStore, useUserState } from "@/zustand/store";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
-import { UserContext } from "@/contexts/user-context";
 import { ResultType } from "@/api/helpers/types";
 import { formatDate } from "@/api/helpers/utils";
 import { getProductById } from "@/api/request/productRequest";
@@ -30,7 +29,8 @@ import { getProductById } from "@/api/request/productRequest";
 export default function ReviewCard(
   review: ResultType<"review", { usr: true }>,
 ): JSX.Element {
-  const { user, isAuthenticated } = useContext(UserContext);
+
+  const user = useUserState((state) => state.user);
   const clearParams = useReviewSearchStore((store) => store.clearParams);
   const { theme } = useContext(ThemeContext);
   const toast = useToast();
@@ -51,7 +51,7 @@ export default function ReviewCard(
     };
 
     // post review and update toasts accordingly
-    if (!isAuthenticated || user.id !== review.usrId) {
+    if (user.id !== review.usrId) {
       throw new Error("Permission denied");
     }
 
@@ -121,7 +121,7 @@ export default function ReviewCard(
 
       <CardFooter
         justify="right"
-        display={isAuthenticated && user.id === review.usrId ? "flex" : "none"}
+        display={user.id === review.usrId ? "flex" : "none"}
       >
         <IconButton
           _hover={{ bgColor: theme.colors.semantic.error }}

@@ -17,7 +17,7 @@ import {
 } from "@/api/helpers/utils";
 import { ResultType } from "@/api/helpers/types";
 import styles from "./order-card.module.css";
-import { UserContext } from "@/contexts/user-context";
+import { useUserState } from "@/zustand/store";
 
 export default function OrderCard({
   params,
@@ -26,7 +26,8 @@ export default function OrderCard({
 }): JSX.Element {
   const { orderView } = params;
   const { theme } = useContext(ThemeContext);
-  const { user } = useContext(UserContext);
+
+  const currency = useUserState((state) => state.currency);
 
   type OrderItemView = ResultType<
     "orderItem",
@@ -56,7 +57,7 @@ export default function OrderCard({
             <Heading className={styles.value} fontSize="md">
               {convertAndFormatToUserCurrency(
                 orderView.metadata.total.price,
-                user,
+                currency,
               )}
             </Heading>
           </Stack>

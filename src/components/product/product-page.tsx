@@ -13,9 +13,8 @@ import {
 } from "@chakra-ui/react";
 import styles from "./product-page.module.css";
 import { ThemeContext } from "@/contexts/theme-context";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import ReviewStars from "../review/review-stars";
-import { UserContext } from "@/contexts/user-context";
 import Link from "next/link";
 import {
   convertAndFormatToUserCurrency,
@@ -23,12 +22,13 @@ import {
 } from "@/api/helpers/utils";
 import { ResultType } from "@/api/helpers/types";
 import ProductBasketCard from "./product-basket-card";
+import { useUserState } from "@/zustand/store";
 
 export default function ProductPage(
   product: ResultType<"product", { seller: true }>,
 ): JSX.Element {
   const { theme } = useContext(ThemeContext);
-  const { user } = useContext(UserContext);
+  const currency = useUserState((state) => state.currency);
 
   // define success/error message params
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -108,7 +108,7 @@ export default function ProductPage(
                 fontWeight="semibold"
                 color={theme.colors.accent.tertiary}
               >
-                {convertAndFormatToUserCurrency(product.price, user)}
+                {convertAndFormatToUserCurrency(product.price, currency)}
               </Heading>
               <Text>{product.description}</Text>
             </Stack>

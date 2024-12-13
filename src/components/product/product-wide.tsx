@@ -18,15 +18,15 @@ import { ResultType } from "@/api/helpers/types";
 import {
   convertAndFormatToUserCurrency,
 } from "@/api/helpers/utils";
-import { UserContext } from "@/contexts/user-context";
 import { SettingsContext } from "@/contexts/settings-context";
+import { useUserState } from "@/zustand/store";
 
 
 export default function ProductWide({
   ...product
 }: ResultType<"product", { seller: true }>): JSX.Element {
   const { theme } = useContext(ThemeContext);
-  const { user } = useContext(UserContext);
+  const currency = useUserState((state) => state.currency);
   const { defaultImageUrl } = useContext(SettingsContext);
 
   return (
@@ -65,7 +65,7 @@ export default function ProductWide({
                   </Heading>
                 </HStack>
                 <Heading fontSize="lg" color={theme.colors.accent.tertiary}>
-                  {convertAndFormatToUserCurrency(product.price, user)}
+                  {convertAndFormatToUserCurrency(product.price, currency)}
                 </Heading>
                 <Text
                   fontSize="xs"
