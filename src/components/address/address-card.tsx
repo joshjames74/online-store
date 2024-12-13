@@ -16,15 +16,18 @@ import {
   deleteAddressById,
   getAddressesByUserId,
 } from "@/api/request/addressRequest";
-import { putUserDefaultAddress } from "@/api/request/userRequest";
+import { useUserState } from "@/zustand/store";
 
 
 export default function AddressCard(
   address: Address,
   isDefault?: boolean,
 ): JSX.Element {
+
   const { theme } = useContext(ThemeContext);
   const toast = useToast();
+
+  const updateDefaultAddress = useUserState((state) => state.updateDefaultAddress);
 
   const handleDelete = () => {
     const pendingToast = toast({
@@ -56,16 +59,21 @@ export default function AddressCard(
   };
 
   const handleDefault = () => {
-    const userId = address.usrId;
-    const addressId = address.id;
-    const params = { userId, addressId };
-    putUserDefaultAddress(userId, addressId)
-      .then((res) => {
-        getAddressesByUserId(address.usrId, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
+    const pendingToast = toast({ title: "Setting as default...", status: "loading"});
+    updateDefaultAddress(address.id)
+      .then(() => {
+        toast.update(pendingToast, { 
+          title: "Successfully set as default", 
+          status: "success", 
+          duration: 1000 })
       })
-      .catch(error => console.error(error));
+      .catch(error => {
+        toast.update(pendingToast, { 
+          title: "Error setting as default", 
+          status: "error",
+          duration: 5000
+        })
+      });
   };
 
   return (

@@ -1,7 +1,12 @@
 "use client";
 import { ManyWithMetadata } from "@/api/helpers/types";
+import { getAddressById, getAddressesByUserId } from "@/api/request/addressRequest";
 import { deleteBasketById, getBasketByUserId, putBasketItemQuantityById } from "@/api/request/basketRequest";
+import { getCountryById } from "@/api/request/countryRequest";
+import { getCurrencyById } from "@/api/request/currencyRequest";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
+import { getUserByEmail, postUser, putUserCountryById, putUserCurrencyById, putUserDefaultAddress } from "@/api/request/userRequest";
+import { AddressWithCountry } from "@/api/services/addressService";
 import { Basket, deleteBasketItemById } from "@/api/services/basketItemService";
 import { OrderParams } from "@/api/transformers/orderSearchTransformer";
 import {
@@ -9,6 +14,8 @@ import {
   ProductParams,
 } from "@/api/transformers/productSearchTransformer";
 import { ReviewParams } from "@/api/transformers/reviewSearchTransformer";
+import { Address, Country, Currency, Usr } from "@prisma/client";
+import { Session } from "next-auth";
 import { create } from "zustand";
 
 
@@ -206,3 +213,140 @@ export const useBasketState = create<BasketState>((set, get) => ({
       .catch(error => console.error(error))
   }
 }));
+
+
+
+// USER STATE
+
+export interface UserState {
+  user: Usr;
+  currency: Currency;
+  country: Country;
+  defaultAddress: AddressWithCountry;
+
+  setUser: (user: Usr) => void;
+  setCurrency: (currency: Currency) => void;
+  setCountry: (country: Country) => void;
+  setDefaultAddress: (address: Address) => void;
+
+  updateCurrency: (id: number) => Promise<void>;
+  updateCountry: (id: number) => Promise<void>;
+  updateDefaultAddress: (id: number) => Promise<void>;
+
+  findOrPostUser: (email: string, name: string, image_url: string) => Promise<void>;
+
+  getUser: () => Promise<void>;
+  getCurrency: () => Promise<void>;
+  getCountry: () => Promise<void>;
+  getDefaultAddress: () => Promise<void>;
+
+  loadUserState: (session: Session | null) => Promise<void>;
+}
+
+export const useUserState = create<UserState>((set, get) => ({
+  user: {} as Usr,
+  currency: {} as Currency,
+  country: {} as Country,
+  defaultAddress: {} as AddressWithCountry,
+  
+  setUser: (user: Usr) => set({ user: user }),
+  setCurrency: (currency: Currency) => set({ currency: currency }),
+  setCountry: (country: Country) => set({ country: country }),
+  setDefaultAddress: (address: Address) => set({ defaultAddress: address }),
+
+  updateCurrency: async (id: number) => {
+    // check user
+    const userState = get().user;
+    if (!userState || !userState.id) { return }
+
+    // update user country
+    const updatedUser = await putUserCurrencyById(userState.id, id).catch(error => console.error(error));
+    if (!updatedUser) { return };
+
+    // update user and currency
+    await get().getUser();
+    await get().getCurrency();
+  },
+
+  updateCountry: async (id: number) => {
+    // 
+    const userState = get().user;
+    if (!userState || !userState.id) { return }
+
+    const updatedUser = await putUserCountryById(userState.id, id).catch(error => console.error(error));
+    if (!updatedUser) { return };
+
+    await get().getUser();
+    await get().getCountry();
+  },
+  updateDefaultAddress: async (id: number) => {
+    const userState = get().user;
+    if (!userState || !userState.id) { return };
+    
+    const updatedUser = await putUserDefaultAddress(userState.id, id).catch(error => console.error(error));
+    if (!updatedUser) { return };
+
+    await get().getUser();
+    await get().getDefaultAddress();
+    await getAddressesByUserId(userState.id, "reload");
+  },
+
+  findOrPostUser: async (email: string, name: string, image_url: string): Promise<void> => {
+    const user = await getUserByEmail(email, "reload").catch(error => console.error(error));
+    if (user) { 
+      get().setUser(user);
+      return
+    };
+
+    const post = await postUser({ email, name, image_url }).catch(error => console.log(error));
+    if (post) { 
+      get().setUser(post);
+      return;
+    }
+    return
+  },
+  getUser: async () => {
+    const userState = get().user;
+    if (!userState || !userState.email) { return };
+
+    const user = await getUserByEmail(userState.email, "reload").catch(error => console.log(error));
+    if (!user) { return }
+    get().setUser(user);
+  },
+  getCurrency: async () => {
+    const userState = get().user;
+    if (!userState || !userState.currencyId) { return };
+
+    const currency = await getCurrencyById(userState.currencyId).catch(error => console.log(error));
+    if (!currency) { return }
+    get().setCurrency(currency);
+  },
+  getCountry: async () => {
+    const userState = get().user;
+    if (!userState || !userState.countryId) { return };
+
+    const country = await getCountryById(userState.countryId).catch(error => console.error(error));
+    if (!country) { return };
+    get().setCountry(country);
+  },
+  getDefaultAddress: async () => {
+    const userState = get().user;
+    if (!userState || !userState.defaultAddressId) { return };
+
+    const address = await getAddressById(userState.defaultAddressId);
+    if (!address) { return }
+    get().setDefaultAddress(address);
+  },
+
+  loadUserState: async (session: Session | null) => {
+    if (!session?.user || !session?.user?.email) { return };
+    const email = session.user.email;
+    const name = session.user.name || "";
+    const image_url = session.user.image || "";
+    await get().findOrPostUser(email, name, image_url);
+    await get().getCurrency();
+    await get().getCountry();
+    await get().getDefaultAddress();
+  }
+}))
+

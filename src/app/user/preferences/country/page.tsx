@@ -4,6 +4,7 @@ import { putUserCountryById } from "@/api/request/userRequest";
 import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 import { ThemeContext } from "@/contexts/theme-context";
 import { UserContext } from "@/contexts/user-context";
+import { useUserState } from "@/zustand/store";
 import {
   Box,
   Button,
@@ -34,6 +35,8 @@ export default function Page({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [countries, setCountries] = useState<Country[]>();
   const [selectedCountry, setSelectedCountry] = useState<number>();
+
+  const updateCountry = useUserState((state) => state.updateCountry);
 
   useEffect(() => {
     getAllCountries()
@@ -74,24 +77,30 @@ export default function Page({
       return;
     }
 
-    putUserCountryById(user.id, selectedCountry)
-      .then((res) => {
+    updateCountry(selectedCountry)
+      .then(() => {
         toast.update("toast", successToast);
+        router.push(redirectUrl);
       })
-      .catch((error) => {
-        toast.update("toast", errorToast);
-        location.reload();
-      })
-      .finally(() => {
-        reload()
-          .then(() => {
-            router.push(redirectUrl);
-          })
-          .catch((error) => {
-            console.error(error);
-            router.push(redirectUrl);
-          });
-      });
+      .catch(error => toast.update("toast", errorToast));
+    // putUserCountryById(user.id, selectedCountry)
+    //   .then((res) => {
+    //     toast.update("toast", successToast);
+    //   })
+    //   .catch((error) => {
+    //     toast.update("toast", errorToast);
+    //     location.reload();
+    //   })
+    //   .finally(() => {
+    //     reload()
+    //       .then(() => {
+    //         router.push(redirectUrl);
+    //       })
+    //       .catch((error) => {
+    //         console.error(error);
+    //         router.push(redirectUrl);
+    //       });
+    //   });
   };
 
   const handleCancel = () => {

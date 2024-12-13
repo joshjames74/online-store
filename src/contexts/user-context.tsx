@@ -35,21 +35,21 @@ export const findOrPostUser = async (
     return user;
   }
 
-  // if not found (or error), post user
-  const post = await postUser({ email, name, image_url }).catch((error) =>
-    console.error(error),
-  );
-  if (!post) {
-    return {} as UserWithCurrencyAndCountry;
-  }
+  // // if not found (or error), post user
+  // const post = await postUser({ email, name, image_url }).catch((error) =>
+  //   console.error(error),
+  // );
+  // if (!post) {
+  //   return {} as UserWithCurrencyAndCountry;
+  // }
 
-  // now get the new user
-  const newUser = await getUserByEmail(post.email, "force-cache").catch(
-    (error) => console.error(error),
-  );
-  if (newUser) {
-    return newUser;
-  }
+  // // now get the new user
+  // const newUser = await getUserByEmail(post.email, "force-cache").catch(
+  //   (error) => console.error(error),
+  // );
+  // if (newUser) {
+  //   return newUser;
+  // }
 
   return {} as UserWithCurrencyAndCountry;
 };
@@ -59,6 +59,7 @@ export const findOrPostUser = async (
 export const UserContext = React.createContext<IUser>(userData);
 
 export const UserProvider = (props: { children: JSX.Element }): JSX.Element => {
+
   const { children } = props;
 
   // set state

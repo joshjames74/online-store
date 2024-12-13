@@ -22,6 +22,6 @@ export async function PUT(
 
   const userId = parseInt(id);
   const putParams = { userId, addressId };
-
+  
   return await putHelper("usr", putUserDefaultAddress, { params: putParams });
 }

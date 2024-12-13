@@ -80,15 +80,18 @@ export async function putUserDefaultAddress({ params }: { params: { userId: numb
     if (!address) throw new Error ("Cannot find address");
     if (address.usrId !== userId ) throw new Error("Invalid address");
 
-    // change the current default address to a non-default address
+    // change the current (if exists) default address to a non-default address
     const user = await tx.usr.findFirst({ where: { id: userId } });
     if (!user) throw new Error("Cannot find user");
-    const prevAddressId = user.defaultAddressId;
-    const prevAddress = await tx.address.update({ 
-      where: { id: prevAddressId }, 
-      data: { isDefault: false }
-    });
-    if (!prevAddress) throw new Error("Cannot update prev address");
+
+    if (user.defaultAddressId) {
+      const prevAddressId = user.defaultAddressId;
+      const prevAddress = await tx.address.update({ 
+        where: { id: prevAddressId }, 
+        data: { isDefault: false }
+      });
+      if (!prevAddress) throw new Error("Cannot update prev address");
+    }
 
     // update user default address id
     const updatedUser = await tx.usr.update({ 

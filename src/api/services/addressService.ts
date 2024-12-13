@@ -9,12 +9,15 @@ import {
 import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
 
+export type AddressWithCountry = ResultType<"address", { country: true }>
+
 // GET method
 
-export async function getAddressById(id: number): Promise<Address | void> {
+export async function getAddressById(id: number): Promise<AddressWithCountry | void> {
   return await getOneEntityByFields({
     modelName: "address",
     whereQuery: { id: id },
+    include: { country: true }
   });
 }
 

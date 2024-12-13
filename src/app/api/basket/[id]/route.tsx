@@ -26,5 +26,5 @@ export async function PUT(
 
   const putParams = { searchField, putFields };
 
-  return putHelper("basketItem", putBasketItemByFields, putParams);
+  return putHelper("basketItem", putBasketItemByFields, { params: putParams });
 }
