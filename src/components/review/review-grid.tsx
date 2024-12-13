@@ -7,14 +7,12 @@ import {
   HStack,
   Select,
 } from "@chakra-ui/react";
-import { Review } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
 import ReviewCard from "./review-card";
 import styles from "./review-grid.module.css";
 import ReviewSummary from "./review-summary";
 import ReviewForm from "./review-form";
 import ReviewCardSkeleton from "./review-card-skeleton";
-import ReviewSummarySkeleton from "./review-summary-skeleton";
 import { useSearchParams } from "next/navigation";
 import { useReviewSearchStore } from "@/zustand/store";
 import {
@@ -77,15 +75,9 @@ export default function ReviewGrid({
 
     setIsLoading(true);
     getReviewsBySearch(reviewParams)
-      .then((res) => {
-        setReviews(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((res) => setReviews(res))
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
     delete reviewParams.productId;
     setParams(reviewParams);
   };

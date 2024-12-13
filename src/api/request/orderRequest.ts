@@ -9,7 +9,7 @@ import { OrderWithMetadata } from "../services/orderService";
 export async function getOrderViewById(id: number): Promise<any> {
   const url = `/api/order/${id}`;
   return await fetchData(url);
-};
+}
 
 // rename to order view?
 export async function getOrdersByUserId({
@@ -23,7 +23,7 @@ export async function getOrdersByUserId({
 }): Promise<OrderWithMetadata[]> {
   const url = buildUrl(`/api/user/${id}/orders`, params);
   return await fetchData(url, cache);
-};
+}
 
 // POST methods
 

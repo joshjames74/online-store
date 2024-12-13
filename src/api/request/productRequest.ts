@@ -1,8 +1,5 @@
 import { Product } from "@prisma/client";
-import {
-  ManyWithMetadata,
-  ResultType,
-} from "../helpers/types.js";
+import { ManyWithMetadata, ResultType } from "../helpers/types.js";
 import { buildUrl } from "../helpers/utils";
 import { ProductParams } from "../transformers/productSearchTransformer";
 import { fetchData } from ".";

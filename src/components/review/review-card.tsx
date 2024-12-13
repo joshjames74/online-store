@@ -30,7 +30,6 @@ import { getProductById } from "@/api/request/productRequest";
 export default function ReviewCard(
   review: ResultType<"review", { usr: true }>,
 ): JSX.Element {
-
   const user = useUserState((state) => state.user);
   const clearParams = useReviewSearchStore((store) => store.clearParams);
   const { theme } = useContext(ThemeContext);

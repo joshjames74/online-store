@@ -94,7 +94,7 @@ export default function ProductBasketCard({
             ))}
           </Select>
           <Button
-          // to do: change to if authenticated
+            // to do: change to if authenticated
             isDisabled={!user.id}
             rightIcon={
               isLoading ? (

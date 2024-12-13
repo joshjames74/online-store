@@ -1,20 +1,17 @@
-import {
-  Box,
-  Checkbox,
-  SkeletonText,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Checkbox, SkeletonText, Text } from "@chakra-ui/react";
 import styles from "./category-filter.module.css";
 import { Category } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useSearchParamsState } from "@/zustand/store";
 import { getAllCategories } from "@/api/request/categoryRequest";
 
-
 export default function CategoryFilter(): JSX.Element {
-
-  const updateCategories = useSearchParamsState((state) => state.updateCategories);
-  const selectedCategories = useSearchParamsState((state) => state.params.categories);
+  const updateCategories = useSearchParamsState(
+    (state) => state.updateCategories,
+  );
+  const selectedCategories = useSearchParamsState(
+    (state) => state.params.categories,
+  );
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -30,7 +27,7 @@ export default function CategoryFilter(): JSX.Element {
   // logic to add / remove categories from selected list
   const handleCategoryChange = (id: number): void => {
     if (!selectedCategories) {
-      updateCategories([id])
+      updateCategories([id]);
       return;
     }
     if (selectedCategories.includes(id)) {
@@ -42,14 +39,19 @@ export default function CategoryFilter(): JSX.Element {
     updateCategories([...selectedCategories, id]);
   };
 
-  const isSelected = (id: number) => selectedCategories ? selectedCategories.includes(id) : false;
+  const isSelected = (id: number) =>
+    selectedCategories ? selectedCategories.includes(id) : false;
 
   return (
     <Box className={styles.container}>
       <Text fontWeight="bold">Categories</Text>
-      {isLoading ? <SkeletonText noOfLines={10} /> : (
+      {isLoading ? (
+        <SkeletonText noOfLines={10} />
+      ) : (
         <Box className={styles.checkbox_container}>
-          {!categories.length ? <></> : (
+          {!categories.length ? (
+            <></>
+          ) : (
             categories.map((category: Category, index: number) => {
               return (
                 <Checkbox

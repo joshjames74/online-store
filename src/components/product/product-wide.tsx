@@ -15,12 +15,9 @@ import {
 import { useContext } from "react";
 import ProductReviewBox from "./product-review-box";
 import { ResultType } from "@/api/helpers/types";
-import {
-  convertAndFormatToUserCurrency,
-} from "@/api/helpers/utils";
+import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import { SettingsContext } from "@/contexts/settings-context";
 import { useUserState } from "@/zustand/store";
-
 
 export default function ProductWide({
   ...product

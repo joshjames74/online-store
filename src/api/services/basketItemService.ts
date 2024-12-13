@@ -106,20 +106,28 @@ export async function getBasketByUserId(id: number): Promise<Basket | void> {
 
 // DELETE functions
 
-export async function deleteBasketItemById(id: number): Promise<BasketItem | void> {
+export async function deleteBasketItemById(
+  id: number,
+): Promise<BasketItem | void> {
   return await deleteOneEntityByField("basketItem", "id", id);
 }
 
-export async function deleteAllBasketItemByUserId(id: number): Promise<BasketItem[] | void> {
+export async function deleteAllBasketItemByUserId(
+  id: number,
+): Promise<BasketItem[] | void> {
   return await deleteEntitiesByField("basketItem", "usrId", id);
 }
 
 // PUT functions
 
-export async function putBasketItemByFields({ params }: { params: {
-  searchField: FieldValuePair<"basketItem">,
-  putFields: FieldValuePair<"basketItem">[],
-}}): Promise<BasketItem | void> {
+export async function putBasketItemByFields({
+  params,
+}: {
+  params: {
+    searchField: FieldValuePair<"basketItem">;
+    putFields: FieldValuePair<"basketItem">[];
+  };
+}): Promise<BasketItem | void> {
   const { searchField, putFields } = params;
   return await putOneEntityByField("basketItem", searchField, putFields);
 }
@@ -140,8 +148,13 @@ export async function postBasketItem(
     return postOneEntity("basketItem", basketItem);
   }
 
-  const searchField: FieldValuePair<"basketItem"> = { field: "id", value: response.id }
-  const putFields: FieldValuePair<"basketItem">[] = [{ field: "quantity", value: basketItem.quantity + response.quantity }];
+  const searchField: FieldValuePair<"basketItem"> = {
+    field: "id",
+    value: response.id,
+  };
+  const putFields: FieldValuePair<"basketItem">[] = [
+    { field: "quantity", value: basketItem.quantity + response.quantity },
+  ];
   const params = { searchField, putFields };
   // if does exist, increment quantity
   return putBasketItemByFields({ params: params });

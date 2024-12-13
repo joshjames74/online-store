@@ -15,9 +15,7 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 
-
 export default function LocaleButton(): JSX.Element {
-
   const country = useUserState((state) => state.country);
   const currency = useUserState((state) => state.currency);
 
@@ -50,9 +48,7 @@ export default function LocaleButton(): JSX.Element {
             <Heading fontSize="md">Currency</Heading>
             <HStack justifyContent="space-between">
               <Text>
-                {currency
-                  ? `${currency.symbol} - ${currency.code}`
-                  : "£ - GBP"}
+                {currency ? `${currency.symbol} - ${currency.code}` : "£ - GBP"}
               </Text>
               <Link
                 href={`/user/preferences/currency?redirectUrl=${location.pathname}`}

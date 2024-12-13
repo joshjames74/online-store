@@ -119,7 +119,10 @@ export function convertAndFormatToUserCurrency(
   price: number,
   currency: Currency,
 ): string {
-  const safeCurrency = currency && currency.code ? currency : { symbol: "£", code: "GBP", id: "1", gbp_exchange_rate: 1 };
+  const safeCurrency =
+    currency && currency.code
+      ? currency
+      : { symbol: "£", code: "GBP", id: "1", gbp_exchange_rate: 1 };
   const userPrice = convertPrice(price, safeCurrency.gbp_exchange_rate);
   return formatPrice(userPrice, safeCurrency.code);
 }

@@ -9,16 +9,16 @@ import PageNumberGrid from "../basket/pagination/page-number-grid";
 import { useRouter } from "next/navigation";
 import { Width } from "@/api/transformers/productSearchTransformer";
 
-
 export default function ProductGrid(): JSX.Element {
-
   const router = useRouter();
 
   const results = useSearchResultsState((state) => state.results);
   const maxPages = useSearchResultsState((state) => state.maxPages);
   const params = useSearchParamsState((state) => state.params);
 
-  const updatePageNumber = useSearchParamsState((state) => state.updatePageNumber);
+  const updatePageNumber = useSearchParamsState(
+    (state) => state.updatePageNumber,
+  );
   const executeSearch = useSearchParamsState((state) => state.executeSearch);
 
   // update page number, reload products, refresh
@@ -35,16 +35,18 @@ export default function ProductGrid(): JSX.Element {
           <Heading fontSize="md">No products found</Heading>
         </CardBody>
       </Card>
-    )
-  };
+    );
+  }
 
   if (params.perPage === Width.WIDE) {
     return (
       <Box className={styles.wrapper}>
         <Box className={styles.container_wide}>
-          {results.data.map((product: ResultType<"product", { seller: true }>) => (
-            <ProductWide key={product.id} {...product} />
-          ))}
+          {results.data.map(
+            (product: ResultType<"product", { seller: true }>) => (
+              <ProductWide key={product.id} {...product} />
+            ),
+          )}
         </Box>
         <PageNumberGrid
           params={{
@@ -54,14 +56,17 @@ export default function ProductGrid(): JSX.Element {
           }}
         />
       </Box>
-  )};
+    );
+  }
 
   return (
     <Box className={styles.wrapper}>
       <Box className={styles.container_compact}>
-        {results.data.map((product: ResultType<"product", { seller: true }>) => (
-          <ProductCompact key={product.id} {...product} />
-        ))}
+        {results.data.map(
+          (product: ResultType<"product", { seller: true }>) => (
+            <ProductCompact key={product.id} {...product} />
+          ),
+        )}
       </Box>
       <PageNumberGrid
         params={{
@@ -71,4 +76,5 @@ export default function ProductGrid(): JSX.Element {
         }}
       />
     </Box>
-)}
+  );
+}

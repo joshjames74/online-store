@@ -5,7 +5,10 @@ import { AddressWithCountry } from "../services/addressService.js";
 
 // GET methods
 
-export async function getAddressById(id: number, cache?: RequestCache): Promise<AddressWithCountry> {
+export async function getAddressById(
+  id: number,
+  cache?: RequestCache,
+): Promise<AddressWithCountry> {
   return fetchData<AddressWithCountry>(`/api/address/${id}`, cache);
 }
 
@@ -21,9 +24,7 @@ export async function getAddressesByUserId(
 
 // POST methods
 
-export async function postAddress(
-  address: Partial<Address>,
-): Promise<Address> {
+export async function postAddress(address: Partial<Address>): Promise<Address> {
   const response = await fetch("/api/address", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

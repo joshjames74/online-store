@@ -63,22 +63,29 @@ export async function deleteUserById(id: number): Promise<Usr | void> {
 
 // PUT methods
 
-export async function putUserByFields({ params }: { params: {
-  searchField: FieldValuePair<"usr">,
-  putFields: FieldValuePair<"usr">[],
-}}): Promise<Usr | void> {
+export async function putUserByFields({
+  params,
+}: {
+  params: {
+    searchField: FieldValuePair<"usr">;
+    putFields: FieldValuePair<"usr">[];
+  };
+}): Promise<Usr | void> {
   const { searchField, putFields } = params;
   return await putOneEntityByField("usr", searchField, putFields);
-};
+}
 
-export async function putUserDefaultAddress({ params }: { params: { userId: number, addressId: number } }): Promise<Usr | void> {
+export async function putUserDefaultAddress({
+  params,
+}: {
+  params: { userId: number; addressId: number };
+}): Promise<Usr | void> {
   const { userId, addressId } = params;
   return prisma.$transaction(async (tx) => {
-
     // ensure that the address was created by this user
-    const address = await tx.address.findFirst({ where: { id: addressId }});
-    if (!address) throw new Error ("Cannot find address");
-    if (address.usrId !== userId ) throw new Error("Invalid address");
+    const address = await tx.address.findFirst({ where: { id: addressId } });
+    if (!address) throw new Error("Cannot find address");
+    if (address.usrId !== userId) throw new Error("Invalid address");
 
     // change the current (if exists) default address to a non-default address
     const user = await tx.usr.findFirst({ where: { id: userId } });
@@ -86,30 +93,30 @@ export async function putUserDefaultAddress({ params }: { params: { userId: numb
 
     if (user.defaultAddressId) {
       const prevAddressId = user.defaultAddressId;
-      const prevAddress = await tx.address.update({ 
-        where: { id: prevAddressId }, 
-        data: { isDefault: false }
+      const prevAddress = await tx.address.update({
+        where: { id: prevAddressId },
+        data: { isDefault: false },
       });
       if (!prevAddress) throw new Error("Cannot update prev address");
     }
 
     // update user default address id
-    const updatedUser = await tx.usr.update({ 
-      where: { id: userId }, 
-      data: { defaultAddressId: addressId }
+    const updatedUser = await tx.usr.update({
+      where: { id: userId },
+      data: { defaultAddressId: addressId },
     });
     if (!updatedUser) throw new Error("Cannot update default address id");
 
     // update is default status of address
-    const updatedAddress = await tx.address.update({ 
-      where: { id: addressId }, 
-      data: { isDefault: true }
+    const updatedAddress = await tx.address.update({
+      where: { id: addressId },
+      data: { isDefault: true },
     });
     if (!updatedAddress) throw new Error("Canoot update isdefault");
 
     return updatedUser;
-  })
-};
+  });
+}
 
 export async function upsertUserByEmail(
   user: Partial<Omit<Usr, "user_id">>,

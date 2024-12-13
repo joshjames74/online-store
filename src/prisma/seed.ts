@@ -6,7 +6,7 @@ import { readFile } from "fs/promises";
 
 // const prisma = new PrismaClient();
 
-const prisma = new PrismaClient;
+const prisma = new PrismaClient();
 
 async function main() {
   await prisma.$executeRaw`TRUNCATE TABLE Country RESTART IDENTITY CASCADE`;
@@ -26,7 +26,9 @@ async function main() {
   const currency_sql = await readFile("../src/database/currency.sql", {
     encoding: "utf8",
   });
-  const user_sql = await readFile("../src/database/user.sql", { encoding: "utf8" });
+  const user_sql = await readFile("../src/database/user.sql", {
+    encoding: "utf8",
+  });
   const category_sql = await readFile("../src/database/category.sql", {
     encoding: "utf8",
   });
@@ -66,7 +68,6 @@ async function main() {
   await prisma.$executeRawUnsafe(orderItem_sql);
   await prisma.$executeRawUnsafe(basketItem_sql);
 }
-
 
 main()
   .then(async () => {

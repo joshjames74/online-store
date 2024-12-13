@@ -46,7 +46,7 @@ export default function Page({
       title: "Loading...",
       status: "loading",
       isClosable: true,
-      id: "toast"
+      id: "toast",
     });
     const successToast = {
       title: "Success",
@@ -78,50 +78,50 @@ export default function Page({
   return (
     <RenderPageIfLoggedIn>
       <>
-      <title>Currency</title>
-      <Box w="full" justifyItems="center" marginTop="1em">
-        <Stack w="fit-content">
-          <Heading>Change currency</Heading>
-          <Text>Select the currency you want to shop with.</Text>
+        <title>Currency</title>
+        <Box w="full" justifyItems="center" marginTop="1em">
+          <Stack w="fit-content">
+            <Heading>Change currency</Heading>
+            <Text>Select the currency you want to shop with.</Text>
 
-          {isLoading || !currencies || !currencies.length ? (
-            <></>
-          ) : (
-            <Stack>
-              <Select
-                placeholder="Select currency"
-                onChange={(event) =>
-                  setSelectedCurrency(parseInt(event.target.value || ""))
-                }
+            {isLoading || !currencies || !currencies.length ? (
+              <></>
+            ) : (
+              <Stack>
+                <Select
+                  placeholder="Select currency"
+                  onChange={(event) =>
+                    setSelectedCurrency(parseInt(event.target.value || ""))
+                  }
                 >
-                {currencies.map((currency: Currency, index: number) => {
-                  return (
-                    <option key={index} value={currency.id}>
-                      {currency.code}
-                    </option>
-                  );
-                })}
-              </Select>
+                  {currencies.map((currency: Currency, index: number) => {
+                    return (
+                      <option key={index} value={currency.id}>
+                        {currency.code}
+                      </option>
+                    );
+                  })}
+                </Select>
 
-              <Box display="flex" gap="1em">
-                <Button
-                  bgColor={theme.colors.background.secondary}
-                  onClick={handleCancel}
+                <Box display="flex" gap="1em">
+                  <Button
+                    bgColor={theme.colors.background.secondary}
+                    onClick={handleCancel}
                   >
-                  Cancel
-                </Button>
-                <Button
-                  bgColor={theme.colors.accent.primary}
-                  isDisabled={!!!selectedCurrency}
-                  onClick={handleSubmit}
+                    Cancel
+                  </Button>
+                  <Button
+                    bgColor={theme.colors.accent.primary}
+                    isDisabled={!!!selectedCurrency}
+                    onClick={handleSubmit}
                   >
-                  Save changes
-                </Button>
-              </Box>
-            </Stack>
-          )}
-        </Stack>
-      </Box>
+                    Save changes
+                  </Button>
+                </Box>
+              </Stack>
+            )}
+          </Stack>
+        </Box>
       </>
     </RenderPageIfLoggedIn>
   );

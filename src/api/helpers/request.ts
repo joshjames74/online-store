@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  ModelMap,
-  ModelType,
-  TableMap,
-} from "./types.js";
+import { ModelMap, ModelType, TableMap } from "./types.js";
 import { Method } from "axios";
 
 export type FieldValuePair<T extends ModelType> = {
@@ -11,13 +7,10 @@ export type FieldValuePair<T extends ModelType> = {
   value: any;
 };
 
-
 // Define types of CRUD functions
 
 // so many return types are used that generic is better
-type GetHandler<T extends ModelType> = (
-  params: any,
-) => Promise<any>;
+type GetHandler<T extends ModelType> = (params: any) => Promise<any>;
 
 type PostHandler<T extends ModelType> = (
   model: any,
@@ -28,7 +21,7 @@ type DeleteHandler<T extends ModelType> = (
 ) => Promise<ModelMap[T] | void>;
 
 type PutHandler<T extends ModelType> = (
-  params: any
+  params: any,
 ) => Promise<ModelMap[T] | void>;
 
 // Messages
@@ -37,13 +30,13 @@ type HTTPMessage = {
   success: string;
   failure: string;
   error: string;
-}
+};
 
 const generateMessage = (request: Method): HTTPMessage => {
-  return { 
+  return {
     success: `${request} request completed successfully`,
     failure: `${request} request failed`,
-    error: `Error processing ${request} request`
+    error: `Error processing ${request} request`,
   };
 };
 
@@ -68,10 +61,7 @@ export async function getHelper<T extends ModelType>(
   try {
     const response = await func(params);
     if (!response) {
-      return NextResponse.json(
-        { message: message.failure },
-        { status: 404 },
-      );
+      return NextResponse.json({ message: message.failure }, { status: 404 });
     }
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
@@ -148,7 +138,7 @@ export async function deleteHelper<T extends ModelType>(
 export async function putHelper<T extends ModelType>(
   entity: T,
   func: PutHandler<T>,
-  params: any
+  params: any,
 ): Promise<NextResponse> {
   console.log(params);
   try {

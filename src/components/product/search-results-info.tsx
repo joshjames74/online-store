@@ -6,18 +6,19 @@ import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
 import { useRouter } from "next/navigation";
 import { Width } from "@/api/transformers/productSearchTransformer";
 
-
 export default function SearchResultsInfo(): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const router = useRouter();
 
   const updatePerPage = useSearchParamsState((state) => state.updatePerPage);
-  const updatePageNumber = useSearchParamsState((state) => state.updatePageNumber);
+  const updatePageNumber = useSearchParamsState(
+    (state) => state.updatePageNumber,
+  );
 
   const perPage = useSearchParamsState((state) => state.params.perPage);
   const pageNumber = useSearchParamsState((state) => state.params.pageNumber);
   const executeSearch = useSearchParamsState((state) => state.executeSearch);
-  const resultsCount = useSearchResultsState((state) => state.resultsCount)
+  const resultsCount = useSearchResultsState((state) => state.resultsCount);
 
   const handleChangeWidth = (width: Width) => {
     updatePerPage(width);
@@ -27,9 +28,7 @@ export default function SearchResultsInfo(): JSX.Element {
   };
 
   const lowerBound: number =
-    perPage && pageNumber
-      ? (pageNumber - 1) * perPage + 1
-      : 1;
+    perPage && pageNumber ? (pageNumber - 1) * perPage + 1 : 1;
   const upperBound: number =
     perPage && pageNumber
       ? Math.min(lowerBound + perPage - 1, resultsCount)

@@ -12,7 +12,6 @@ import Link from "next/link";
 import styles from "./index.module.css";
 import { useUserState } from "@/zustand/store";
 
-
 export default function AccountButtonLoggedIn(): JSX.Element {
   const user = useUserState((state) => state.user);
 

@@ -1,13 +1,8 @@
 "use client";
-import {
-  convertAndFormatToUserCurrency,
-} from "@/api/helpers/utils";
+import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import { getAddressesByUserId } from "@/api/request/addressRequest";
 import { getBasketByUserId } from "@/api/request/basketRequest";
-import {
-  getOrdersByUserId,
-  postOrder,
-} from "@/api/request/orderRequest";
+import { getOrdersByUserId, postOrder } from "@/api/request/orderRequest";
 import { Basket } from "@/api/services/basketItemService";
 import { ThemeContext } from "@/contexts/theme-context";
 import { useUserState } from "@/zustand/store";

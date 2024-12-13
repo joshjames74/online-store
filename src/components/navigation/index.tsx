@@ -1,8 +1,5 @@
 "use client";
-import {
-  Box,
-  useMediaQuery,
-} from "@chakra-ui/react";
+import { Box, useMediaQuery } from "@chakra-ui/react";
 import NavigationCompact from "./navigation-compact";
 import NavigationWide from "./navigation-wide";
 import { useContext, useEffect } from "react";
@@ -12,7 +9,6 @@ import { useUserState } from "@/zustand/store";
 import { useSession } from "next-auth/react";
 
 export default function NavBar(): JSX.Element {
-
   const user = useUserState((state) => state.user);
   const currency = useUserState((state) => state.currency);
   const country = useUserState((state) => state.country);
@@ -22,7 +18,7 @@ export default function NavBar(): JSX.Element {
   const { data: session } = useSession();
 
   useEffect(() => {
-    loadUserState(session)
+    loadUserState(session);
   }, [session]);
 
   useEffect(() => {
@@ -30,7 +26,7 @@ export default function NavBar(): JSX.Element {
     console.log(user);
     console.log(currency);
     console.log(defaultAddress);
-  }, [user])
+  }, [user]);
 
   const [isSmallerThan800px] = useMediaQuery("(max-width: 800px)");
   const { theme } = useContext(ThemeContext);

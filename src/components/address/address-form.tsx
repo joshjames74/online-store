@@ -23,28 +23,26 @@ import { useRouter } from "next/navigation";
 import { ThemeContext } from "@/contexts/theme-context";
 import { useUserState } from "@/zustand/store";
 
-
 export default function AddressForm(): JSX.Element {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  
+
   const { theme } = useContext(ThemeContext);
   const user = useUserState((state) => state.user);
-  
+
   const router = useRouter();
   const toast = useToast();
-  
-  const [countries, setCountries] = useState<Country[]>([]);
 
+  const [countries, setCountries] = useState<Country[]>([]);
 
   // fetch countries
   useEffect(() => {
     getAllCountries()
       .then((countries) => setCountries(countries))
-      .catch((error) => console.error(error))
+      .catch((error) => console.error(error));
   }, []);
 
   // post address or fail
@@ -90,7 +88,6 @@ export default function AddressForm(): JSX.Element {
   const errorMessage = (message: string | undefined) => {
     return <p className={styles.error_message}>{message || ""}</p>;
   };
-
 
   return (
     <Box

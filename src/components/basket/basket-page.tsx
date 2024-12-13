@@ -19,9 +19,7 @@ import styles from "./basket-page.module.css";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { useBasketState, useUserState } from "@/zustand/store";
 
-
 export default function BasketPage(): JSX.Element {
-
   const { theme } = useContext(ThemeContext);
 
   const user = useUserState((state) => state.user);
@@ -91,10 +89,7 @@ export default function BasketPage(): JSX.Element {
           <Stack>
             {basket.items &&
               basket.items.map((basketItem, index: number) => (
-                <BasketProductCard
-                  key={index}
-                  basketItem={basketItem}
-                />
+                <BasketProductCard key={index} basketItem={basketItem} />
               ))}
           </Stack>
 

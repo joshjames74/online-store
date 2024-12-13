@@ -69,7 +69,6 @@ export type GetArgs<T extends keyof TableMap, I extends IncludeMap[T]> = {
   include?: I;
 };
 
-
 // split into different file?
 function buildQuery<T extends keyof TableMap, I extends IncludeMap[T]>(
   args: GetArgs<T, I>,
@@ -96,7 +95,6 @@ function buildQuery<T extends keyof TableMap, I extends IncludeMap[T]>(
   return query;
 }
 
-
 // GET methods
 
 export async function getOneEntityByFields<
@@ -108,7 +106,7 @@ export async function getOneEntityByFields<
     const query = buildQuery<T, I>(args);
     return await (prisma[modelName] as any).findFirst(query);
   }
-};
+}
 
 export async function getEntitiesByFields<
   T extends keyof TableMap,
@@ -119,7 +117,7 @@ export async function getEntitiesByFields<
     const query = buildQuery<T, I>(args);
     return await (prisma[modelName] as any).findMany(query);
   }
-};
+}
 
 export async function getAllEntities<T extends keyof TableMap>(
   modelName: T,
@@ -133,8 +131,7 @@ export async function getAllEntities<T extends keyof TableMap>(
     return await (prisma[modelName] as any).findMany(query);
   }
   return;
-};
-
+}
 
 // Metadata methods
 

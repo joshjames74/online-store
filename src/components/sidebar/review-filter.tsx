@@ -3,11 +3,11 @@ import styles from "./review-filter.module.css";
 import ReviewStars from "../review/review-stars";
 import { useSearchParamsState } from "@/zustand/store";
 
-
 export default function ReviewFilter(): JSX.Element {
-
   const minReview = useSearchParamsState((state) => state.params.min_review);
-  const updateMinReview = useSearchParamsState((state) => state.updateMinReview);
+  const updateMinReview = useSearchParamsState(
+    (state) => state.updateMinReview,
+  );
 
   const renderReviewStars = () => {
     return [5, 4, 3, 2, 1, 0].map((val: number) => {

@@ -3,7 +3,6 @@ import { postOrder } from "@/api/services/orderService";
 import { BasketItem, Order } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-
 // POST request
 
 export async function POST(req: NextRequest): Promise<NextResponse> {

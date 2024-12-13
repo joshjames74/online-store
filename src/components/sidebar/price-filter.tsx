@@ -9,11 +9,12 @@ import {
 } from "@chakra-ui/react";
 import styles from "./price-filter.module.css";
 import { useEffect } from "react";
-import { useSearchParamsState, useSearchResultsState, useUserState } from "@/zustand/store";
 import {
-  convertAndFormatToUserCurrency,
-} from "@/api/helpers/utils";
-
+  useSearchParamsState,
+  useSearchResultsState,
+  useUserState,
+} from "@/zustand/store";
+import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 
 export default function PriceFilter(): JSX.Element {
   // logic:
@@ -41,21 +42,21 @@ export default function PriceFilter(): JSX.Element {
   return (
     <Box className={styles.container}>
       <Text fontWeight="bold">Price</Text>
-        <Text fontWeight="semibold">
-          {convertAndFormatToUserCurrency(min, currency)}-
-          {convertAndFormatToUserCurrency(maxPrice || 0, currency)}
-        </Text>
-        <Slider
-          onChange={(newPrice: number) => updateMaxPrice(newPrice)}
-          min={min}
-          max={maxPriceData}
-          value={maxPrice}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
+      <Text fontWeight="semibold">
+        {convertAndFormatToUserCurrency(min, currency)}-
+        {convertAndFormatToUserCurrency(maxPrice || 0, currency)}
+      </Text>
+      <Slider
+        onChange={(newPrice: number) => updateMaxPrice(newPrice)}
+        min={min}
+        max={maxPriceData}
+        value={maxPrice}
+      >
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+        <SliderThumb />
+      </Slider>
     </Box>
   );
 }

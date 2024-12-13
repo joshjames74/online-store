@@ -9,15 +9,17 @@ import {
 import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
 
-export type AddressWithCountry = ResultType<"address", { country: true }>
+export type AddressWithCountry = ResultType<"address", { country: true }>;
 
 // GET method
 
-export async function getAddressById(id: number): Promise<AddressWithCountry | void> {
+export async function getAddressById(
+  id: number,
+): Promise<AddressWithCountry | void> {
   return await getOneEntityByFields({
     modelName: "address",
     whereQuery: { id: id },
-    include: { country: true }
+    include: { country: true },
   });
 }
 
@@ -44,32 +46,30 @@ export async function getAllAddresses(): Promise<Address[] | void> {
   return await getAllEntities("address");
 }
 
-
 // DELETE methods
 
 export async function deleteAddressById(id: number): Promise<Address | void> {
   // if this address is the default for a user, delete that default address
   return prisma.$transaction(async (tx) => {
     // delete the default address for all useres
-    const updateUsers = await tx.usr.updateMany({ 
+    const updateUsers = await tx.usr.updateMany({
       where: { defaultAddressId: id },
-      data: { defaultAddressId: null }
+      data: { defaultAddressId: null },
     });
     if (!updateUsers) {
       throw new Error("Cannot update users");
     }
     // delete by setting isDeleted to true
-    const deleteAddress = await tx.address.update({ 
+    const deleteAddress = await tx.address.update({
       where: { id: id },
-      data: { isDeleted: true }
+      data: { isDeleted: true },
     });
     if (!deleteAddress) {
       throw new Error("Cannot delete address");
-    };
-    return deleteAddress
+    }
+    return deleteAddress;
   });
 }
-
 
 // POST methods
 

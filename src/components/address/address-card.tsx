@@ -18,16 +18,16 @@ import {
 } from "@/api/request/addressRequest";
 import { useUserState } from "@/zustand/store";
 
-
 export default function AddressCard(
   address: Address,
   isDefault?: boolean,
 ): JSX.Element {
-
   const { theme } = useContext(ThemeContext);
   const toast = useToast();
 
-  const updateDefaultAddress = useUserState((state) => state.updateDefaultAddress);
+  const updateDefaultAddress = useUserState(
+    (state) => state.updateDefaultAddress,
+  );
 
   const handleDelete = () => {
     const pendingToast = toast({
@@ -59,20 +59,24 @@ export default function AddressCard(
   };
 
   const handleDefault = () => {
-    const pendingToast = toast({ title: "Setting as default...", status: "loading"});
+    const pendingToast = toast({
+      title: "Setting as default...",
+      status: "loading",
+    });
     updateDefaultAddress(address.id)
       .then(() => {
-        toast.update(pendingToast, { 
-          title: "Successfully set as default", 
-          status: "success", 
-          duration: 1000 })
+        toast.update(pendingToast, {
+          title: "Successfully set as default",
+          status: "success",
+          duration: 1000,
+        });
       })
-      .catch(error => {
-        toast.update(pendingToast, { 
-          title: "Error setting as default", 
+      .catch((error) => {
+        toast.update(pendingToast, {
+          title: "Error setting as default",
           status: "error",
-          duration: 5000
-        })
+          duration: 5000,
+        });
       });
   };
 
@@ -81,7 +85,8 @@ export default function AddressCard(
       <CardBody paddingBottom={0}>
         <Stack gap="0.1em">
           <Heading fontSize="md" noOfLines={2}>
-            {address.name}{address.isDefault ? "[DEFAULT]" : ""}
+            {address.name}
+            {address.isDefault ? "[DEFAULT]" : ""}
           </Heading>
           <Text noOfLines={3}>{address.address_line_1}</Text>
           <Text noOfLines={2}>{address.address_line_2}</Text>
@@ -101,7 +106,13 @@ export default function AddressCard(
             Remove
           </Text>
           <span>|</span>
-          <Text className={styles.button} _hover={{ cursor: "pointer"}} onClick={handleDefault}>Set as default</Text>
+          <Text
+            className={styles.button}
+            _hover={{ cursor: "pointer" }}
+            onClick={handleDefault}
+          >
+            Set as default
+          </Text>
         </HStack>
       </CardFooter>
     </Card>

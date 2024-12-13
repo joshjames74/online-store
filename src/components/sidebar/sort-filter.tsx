@@ -3,9 +3,10 @@ import { useSearchParamsState } from "@/zustand/store";
 import { Heading, Select } from "@chakra-ui/react";
 import { ChangeEvent, ChangeEventHandler } from "react";
 
-
 export default function SortFilter(): JSX.Element {
-  const updateProductFilter = useSearchParamsState((state) => state.updateProductFilter);
+  const updateProductFilter = useSearchParamsState(
+    (state) => state.updateProductFilter,
+  );
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     updateProductFilter(parseInt(event.currentTarget.value));

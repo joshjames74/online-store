@@ -13,9 +13,7 @@ import {
   Review,
   Usr,
 } from "@prisma/client";
-import {
-  DefaultArgs,
-} from "@prisma/client/runtime/library";
+import { DefaultArgs } from "@prisma/client/runtime/library";
 
 export type ModelType =
   | "address"
@@ -162,8 +160,7 @@ export type ResultType<
     ? never
     : {
         // iterate include relations
-        [K in keyof I]: // check validity
-        K extends keyof ModelMap
+        [K in keyof I]: K extends keyof ModelMap // check validity
           ? // if we have { modelName: true } then stop and return the modelName
             I[K] extends true
             ? ModelMap[K]

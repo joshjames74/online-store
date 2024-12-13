@@ -45,7 +45,7 @@ export default function Sidebar(): JSX.Element {
   // remove
   const params = useSearchParamsState((state) => state.params);
   useEffect(() => {
-    console.log("new params:")
+    console.log("new params:");
     console.log(params);
   }, [params]);
 

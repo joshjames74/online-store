@@ -7,9 +7,7 @@ export const Provider = (props: { children: JSX.Element }): JSX.Element => {
   return (
     <ChakraProvider>
       <SettingsProvider>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </SettingsProvider>
     </ChakraProvider>
   );

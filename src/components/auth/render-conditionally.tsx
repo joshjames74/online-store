@@ -4,9 +4,7 @@ import { UserWithCurrencyAndCountry } from "@/api/services/userService";
 import { Usr } from "@prisma/client";
 import { useUserState } from "@/zustand/store";
 
-export function isLoggedIn(
-  user: UserWithCurrencyAndCountry | Usr,
-): boolean {
+export function isLoggedIn(user: UserWithCurrencyAndCountry | Usr): boolean {
   if (!user) {
     return false;
   }
@@ -36,7 +34,7 @@ export function RenderComponentIfLoggedIn({
 }): JSX.Element {
   const user = useUserState((state) => state.user);
   if (!isLoggedIn(user)) {
-    return <></>
+    return <></>;
   }
   return <>{children}</>;
 }

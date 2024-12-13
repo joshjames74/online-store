@@ -6,27 +6,25 @@ import { Box, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { useEffect } from "react";
 
-
 export default function Page(): JSX.Element {
-
   const user = useUserState((state) => state.user);
   const basket = useBasketState((state) => state.basket);
   const fetchBasket = useBasketState((state) => state.fetchBasket);
 
   useEffect(() => {
-    fetchBasket()
+    fetchBasket();
   }, [user]);
 
   if (!basket || !basket.items?.length) {
     return (
       <>
-      <title>Checkout</title>
-      <Box w="full" display="flex" justifyContent="center">
-        <Text>Basket is empty</Text>
-        <Link href="/">
-          <Text>Click here to shop for products</Text>
-        </Link>
-      </Box>
+        <title>Checkout</title>
+        <Box w="full" display="flex" justifyContent="center">
+          <Text>Basket is empty</Text>
+          <Link href="/">
+            <Text>Click here to shop for products</Text>
+          </Link>
+        </Box>
       </>
     );
   }

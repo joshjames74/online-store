@@ -118,7 +118,6 @@ export default function ReviewForm({
     return <p>{message || ""}</p>;
   };
 
-
   // to do: change to use global
   if (!user) {
     return (
@@ -200,7 +199,8 @@ export default function ReviewForm({
                   type="textarea"
                   {...register("content", { required: "Content is required" })}
                 />
-                {errors.content && errorMessage(errors.content.message?.toString())}
+                {errors.content &&
+                  errorMessage(errors.content.message?.toString())}
               </Stack>
               <input type="hidden" name="usrId" value={user.id} />
               <input type="hidden" name="productId" value={id} />

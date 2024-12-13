@@ -17,7 +17,6 @@ import Link from "next/link";
 import { useUserState } from "@/zustand/store";
 
 export default function OrderPage(): JSX.Element {
-
   const user = useUserState((state) => state.user);
   const id = user.id;
 

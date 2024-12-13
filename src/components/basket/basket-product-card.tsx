@@ -21,8 +21,11 @@ import {
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 
-
-export default function BasketProductCard({ basketItem }: { basketItem: BasketItemWithProduct }): JSX.Element {
+export default function BasketProductCard({
+  basketItem,
+}: {
+  basketItem: BasketItemWithProduct;
+}): JSX.Element {
   const { theme } = useContext(ThemeContext);
 
   const currency = useUserState((state) => state.currency);
@@ -54,7 +57,7 @@ export default function BasketProductCard({ basketItem }: { basketItem: BasketIt
     setIsLoadingDelete(true);
     await deleteBasketItem(basketItem.id);
     setIsLoadingDelete(false);
-  }
+  };
 
   const handleStatus = () => {
     setShowStatus(true);

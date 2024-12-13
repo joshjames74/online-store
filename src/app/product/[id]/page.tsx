@@ -14,7 +14,8 @@ export default function Page({
 }): JSX.Element {
   const { id } = params;
 
-  const [product, setProduct] = useState<ResultType<"product", { seller: true }>>();
+  const [product, setProduct] =
+    useState<ResultType<"product", { seller: true }>>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function Page({
   }
 
   if (isLoading || !product) {
-    return <ProductPageSkeleton />
+    return <ProductPageSkeleton />;
   }
 
   return (

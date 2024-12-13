@@ -9,5 +9,5 @@ export default function Page(): JSX.Element {
         <AddressForm />
       </>
     </RenderPageIfLoggedIn>
-  )
+  );
 }

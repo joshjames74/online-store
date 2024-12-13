@@ -16,9 +16,7 @@ import { Category } from "@prisma/client";
 import { getAllCategories } from "@/api/request/categoryRequest";
 import { useRouter } from "next/navigation";
 
-
 export default function SearchBar(): JSX.Element {
-
   const { theme } = useContext(ThemeContext);
   const router = useRouter();
 
@@ -26,8 +24,12 @@ export default function SearchBar(): JSX.Element {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const updateQuery = useSearchParamsState((state) => state.updateQuery);
-  const updateCategories = useSearchParamsState((state) => state.updateCategories);
-  const updatePageNumber = useSearchParamsState((state) => state.updatePageNumber);
+  const updateCategories = useSearchParamsState(
+    (state) => state.updateCategories,
+  );
+  const updatePageNumber = useSearchParamsState(
+    (state) => state.updatePageNumber,
+  );
 
   const query = useSearchParamsState((state) => state.params.query);
   const params = useSearchParamsState((state) => state.params);
@@ -65,10 +67,14 @@ export default function SearchBar(): JSX.Element {
             placeholder="All"
             className={styles.select_container}
             variant="unstyled"
-            value={params.categories?.length === 1 ? params.categories[0] : "All"}
+            value={
+              params.categories?.length === 1 ? params.categories[0] : "All"
+            }
             textOverflow="ellipsis"
           >
-            {isLoading || !categories.length ? <></> : (
+            {isLoading || !categories.length ? (
+              <></>
+            ) : (
               categories.map((category, index) => (
                 <option key={index} value={category.id}>
                   {category.name}

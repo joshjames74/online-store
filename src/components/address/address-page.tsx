@@ -19,7 +19,6 @@ import styles from "./address-page.module.css";
 import { useUserState } from "@/zustand/store";
 
 export default function AddressesPage(): JSX.Element {
-
   const user = useUserState((state) => state.user);
   const id = user.id;
 

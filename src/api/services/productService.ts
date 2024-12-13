@@ -96,10 +96,14 @@ export async function deleteProductById(id: number): Promise<Product | void> {
 
 // PUT methods
 
-export async function putProductByFields({ params }: { params: {
-  searchFields: FieldValuePair<"product">,
-  putFields: FieldValuePair<"product">[],
-}}): Promise<Product | void> {
+export async function putProductByFields({
+  params,
+}: {
+  params: {
+    searchFields: FieldValuePair<"product">;
+    putFields: FieldValuePair<"product">[];
+  };
+}): Promise<Product | void> {
   const { searchFields, putFields } = params;
   return await putOneEntityByField("product", searchFields, putFields);
 }
