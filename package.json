@@ -4,7 +4,7 @@
   "private": true,
   "prisma": {
     "seed": "tsx prisma/seed.ts",
-    "schema": "prisma/schema.prism"
+    "schema": "prisma/schema.prisma"
   },
   "scripts": {
     "postinstall": "prisma generate",
