@@ -1,0 +1,39 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr;
+  margin: 20px;
+  gap: 1em;
+}
+
+@media screen and (max-width: 800px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .review_text {
+    display: none !important;
+  }
+}
+
+.review_header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  width: fit-content;
+  padding-top: 1em;
+}
+
+.review_container {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid_container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding-top: 1em;
+}

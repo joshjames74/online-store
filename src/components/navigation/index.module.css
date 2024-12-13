@@ -1,0 +1,34 @@
+.container {
+  /* display: grid;
+    grid-template-columns: 1fr 1fr 5fr 1fr 1fr 1fr;
+     */
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  padding: 1em;
+  background: #131921;
+  gap: 0.5em;
+}
+
+@media screen and (max-width: 500px) {
+  .min_width_500 {
+    display: none !important;
+  }
+
+  .container {
+    grid-template-columns: auto;
+  }
+}
+
+.nav_container button {
+  color: white !important;
+  background-color: transparent !important;
+  box-sizing: border-box;
+  border-radius: 0.5em !important;
+  border: 1px solid transparent;
+}
+
+.nav_container button:hover {
+  border-color: white;
+}
