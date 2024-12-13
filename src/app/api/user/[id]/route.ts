@@ -56,11 +56,13 @@ export async function PUT(
     field: "id",
     value: parseInt(id),
   };
-  const putField = formatBodyToField<"usr">(body);
+  const putFields = formatBodyToField<"usr">(body);
 
   if (!id || isNaN(Number(id))) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await putHelper("usr", putUserByFields, searchField, putField);
+  const putParams = { searchField, putFields };
+
+  return await putHelper("usr", putUserByFields, { params: putParams });
 }

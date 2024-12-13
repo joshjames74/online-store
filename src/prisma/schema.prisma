@@ -39,6 +39,8 @@ model Usr {
   countryId  Int?
   currency   Currency? @relation(fields: [currencyId], references: [id])
   currencyId Int?
+  defaultAddress    Address? @relation("DefaultAddress", fields: [defaultAddressId], references: [id])
+  defaultAddressId  Int?
   image_url  String?
   Product    Product[]
   Address    Address[]  
@@ -98,9 +100,11 @@ model Address {
   address_line_2      String @default("")
   area_code   String         @default("")
   country     Country   @relation(fields: [countryId], references: [id])
-  countryId   Int 
+  countryId   Int
+  isDeleted   Boolean   @default(false)
+  isDefault   Boolean   @default(false)
   Order       Order[]
-
+  Usr         Usr[]   @relation("DefaultAddress")
   @@map("address")
 }
 

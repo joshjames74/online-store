@@ -16,6 +16,8 @@ import {
   deleteAddressById,
   getAddressesByUserId,
 } from "@/api/request/addressRequest";
+import { putUserDefaultAddress } from "@/api/request/userRequest";
+
 
 export default function AddressCard(
   address: Address,
@@ -53,12 +55,25 @@ export default function AddressCard(
       });
   };
 
+  const handleDefault = () => {
+    const userId = address.usrId;
+    const addressId = address.id;
+    const params = { userId, addressId };
+    putUserDefaultAddress(userId, addressId)
+      .then((res) => {
+        getAddressesByUserId(address.usrId, "reload")
+          .then(() => {})
+          .catch((error) => console.error(error));
+      })
+      .catch(error => console.error(error));
+  };
+
   return (
     <Card w="300px" h="250px" borderRadius="1em">
       <CardBody paddingBottom={0}>
         <Stack gap="0.1em">
           <Heading fontSize="md" noOfLines={2}>
-            {address.name}
+            {address.name}{address.isDefault ? "[DEFAULT]" : ""}
           </Heading>
           <Text noOfLines={3}>{address.address_line_1}</Text>
           <Text noOfLines={2}>{address.address_line_2}</Text>
@@ -78,7 +93,7 @@ export default function AddressCard(
             Remove
           </Text>
           <span>|</span>
-          <Text className={styles.button}>Set as default</Text>
+          <Text className={styles.button} _hover={{ cursor: "pointer"}} onClick={handleDefault}>Set as default</Text>
         </HStack>
       </CardFooter>
     </Card>

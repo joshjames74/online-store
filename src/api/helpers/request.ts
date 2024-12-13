@@ -28,8 +28,7 @@ type DeleteHandler<T extends ModelType> = (
 ) => Promise<ModelMap[T] | void>;
 
 type PutHandler<T extends ModelType> = (
-  searchParam: FieldValuePair<T>,
-  putParam: FieldValuePair<T>[],
+  params: any
 ) => Promise<ModelMap[T] | void>;
 
 // Messages
@@ -149,11 +148,11 @@ export async function deleteHelper<T extends ModelType>(
 export async function putHelper<T extends ModelType>(
   entity: T,
   func: PutHandler<T>,
-  searchData: FieldValuePair<T>,
-  putData: FieldValuePair<T>[],
+  params: any
 ): Promise<NextResponse> {
+  console.log(params);
   try {
-    const response = await func(searchData, putData);
+    const response = await func(params);
 
     if (!response) {
       return NextResponse.json({ message: "PUT failed" }, { status: 400 });

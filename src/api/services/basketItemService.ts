@@ -116,10 +116,11 @@ export async function deleteAllBasketItemByUserId(id: number): Promise<BasketIte
 
 // PUT functions
 
-export async function putBasketItemByFields(
+export async function putBasketItemByFields({ params }: { params: {
   searchField: FieldValuePair<"basketItem">,
   putFields: FieldValuePair<"basketItem">[],
-): Promise<BasketItem | void> {
+}}): Promise<BasketItem | void> {
+  const { searchField, putFields } = params;
   return await putOneEntityByField("basketItem", searchField, putFields);
 }
 
@@ -139,8 +140,9 @@ export async function postBasketItem(
     return postOneEntity("basketItem", basketItem);
   }
 
+  const searchField: FieldValuePair<"basketItem"> = { field: "id", value: response.id }
+  const putFields: FieldValuePair<"basketItem">[] = [{ field: "quantity", value: basketItem.quantity + response.quantity }];
+  const params = { searchField, putFields };
   // if does exist, increment quantity
-  return putBasketItemByFields({ field: "id", value: response.id }, [
-    { field: "quantity", value: basketItem.quantity + response.quantity },
-  ]);
+  return putBasketItemByFields({ params: params });
 }

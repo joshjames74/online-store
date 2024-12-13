@@ -62,5 +62,7 @@ export async function PUT(
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return await putHelper("product", putProductByFields, searchField, putField);
+  const putParams = { searchField, putField };
+
+  return await putHelper("product", putProductByFields, putParams);
 }

@@ -43,6 +43,20 @@ export async function putUserCountryById(
   return response.json();
 }
 
+export async function putUserDefaultAddress(
+  id: number,
+  addressId: number,
+): Promise<UserWithCurrencyAndCountry> {
+  const response = await fetch(`/api/user/${id}/addresses/default`, {
+    method: "PUT",
+    body: JSON.stringify({ addressId: addressId }),
+  });
+  if (!response.ok) {
+    throw new Error("Error putting user");
+  }
+  return response.json();
+}
+
 // POST methods
 
 export async function findOrPostUser(

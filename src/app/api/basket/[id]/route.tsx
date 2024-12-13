@@ -1,4 +1,3 @@
-import { putOneEntityByField } from "@/api/helpers/dynamicQuery";
 import {
   FieldValuePair,
   formatBodyToField,
@@ -25,5 +24,7 @@ export async function PUT(
   };
   const putFields = formatBodyToField<"basketItem">(body);
 
-  return putHelper("basketItem", putBasketItemByFields, searchField, putFields);
+  const putParams = { searchField, putFields };
+
+  return putHelper("basketItem", putBasketItemByFields, putParams);
 }
