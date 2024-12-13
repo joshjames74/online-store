@@ -22,7 +22,7 @@ export async function getAddressesByUserId(
 // POST methods
 
 export async function postAddress(
-  address: Omit<Address, "id">,
+  address: Partial<Address>,
 ): Promise<Address> {
   const response = await fetch("/api/address", {
     method: "POST",

@@ -72,15 +72,15 @@ export enum Relationship {
   MANY_TO_MANY = "many-to-many",
 }
 
-export type RelationshipMap = {
+export type RelationshipMapType = {
   [K in keyof ModelMap]?: {
     [P in keyof ModelMap]?: Relationship;
   };
 };
 
-export const RelationshipMap: RelationshipMap = {
+export const RelationshipMap: RelationshipMapType = {
   order: { orderItem: Relationship.ONE_TO_MANY },
-  orderItem: { order: Relationship.MANY_TO_ONE },
+  //orderItem: { order: Relationship.MANY_TO_ONE },
 };
 
 export function getRelationshipType(
@@ -96,9 +96,9 @@ export function getRelationshipType(
 export type GetRelationshipType<
   M extends keyof ModelMap,
   S extends keyof ModelMap,
-> = M extends keyof RelationshipMap
-  ? S extends keyof RelationshipMap[M]
-    ? RelationshipMap[M][S]
+> = M extends keyof RelationshipMapType
+  ? S extends keyof RelationshipMapType[M]
+    ? RelationshipMapType[M][S]
     : never
   : never;
 
@@ -171,8 +171,11 @@ export type ResultType<
               ExtractInclude<I, K> extends never
               ? never
               : // if recursive, check if many-to-one relationship exists
-                GetRelationshipType<T, K> extends RelationshipMap
-                ? ResultType<K, ExtractInclude<I, K>>[]
+                //GetRelationshipType<T, K> extends RelationshipMap
+                T extends "order"
+                ? K extends "orderItem"
+                  ? ResultType<K, ExtractInclude<I, K>>[]
+                  : ResultType<K, ExtractInclude<I, K>>
                 : ResultType<K, ExtractInclude<I, K>>
           : // check if it's an alias, for instance, seller is an alias of user
             K extends keyof AliasMap

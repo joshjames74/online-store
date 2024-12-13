@@ -120,7 +120,7 @@ export async function postHelper<T extends ModelType>(
 
 export async function deleteHelper<T extends ModelType>(
   entity: T,
-  func: DeleteHandler<T>,
+  func: any,
   params: any,
 ): Promise<NextResponse> {
   try {

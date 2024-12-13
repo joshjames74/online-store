@@ -30,9 +30,6 @@ export default function ProductPage(
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
 
-  // define success/error message params
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   return (
     <HStack
       margin="20px"
@@ -68,7 +65,7 @@ export default function ProductPage(
             >
               <Image
                 minW="300px"
-                h="auto"
+                minH="50px"
                 objectFit="contain"
                 borderRadius="md"
                 src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg"

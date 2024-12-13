@@ -4,7 +4,7 @@ import { getProductById } from "@/api/request/productRequest";
 import ProductPage from "@/components/product/product-page";
 import ProductPageSkeleton from "@/components/product/product-page-skeleton";
 import ReviewGrid from "@/components/review/review-grid";
-import { Box, Card } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 export default function Page({
@@ -14,22 +14,15 @@ export default function Page({
 }): JSX.Element {
   const { id } = params;
 
-  const [product, setProduct] =
-    useState<ResultType<"product", { seller: true }>>();
+  const [product, setProduct] = useState<ResultType<"product", { seller: true }>>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoading(true);
     getProductById(parseInt(id))
-      .then((res) => {
-        setProduct(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((res) => setProduct(res))
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
   }, []);
 
   if (!id || isNaN(parseInt(id))) {
@@ -37,13 +30,14 @@ export default function Page({
     return <Box>Page not found</Box>;
   }
 
+  if (isLoading || !product) {
+    return <ProductPageSkeleton />
+  }
+
   return (
     <Box h="5000px">
-      {isLoading || !product ? (
-        <ProductPageSkeleton />
-      ) : (
-        <ProductPage {...product} />
-      )}
+      <title>{product.title}</title>
+      <ProductPage {...product} />
       <section id="reviews">
         <ReviewGrid
           id={parseInt(id)}

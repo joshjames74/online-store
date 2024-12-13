@@ -19,20 +19,26 @@ export default function Page(): JSX.Element {
 
   if (!basket || !basket.items?.length) {
     return (
+      <>
+      <title>Checkout</title>
       <Box w="full" display="flex" justifyContent="center">
         <Text>Basket is empty</Text>
         <Link href="/">
           <Text>Click here to shop for products</Text>
         </Link>
       </Box>
+      </>
     );
   }
 
   return (
     <RenderPageIfLoggedIn>
-      <Box w="full" display="flex" justifyContent="center" marginTop="1em">
-        <CheckoutPage params={{ basket: basket }} />
-      </Box>
+      <>
+        <title>Checkout</title>
+        <Box w="full" display="flex" justifyContent="center" marginTop="1em">
+          <CheckoutPage params={{ basket: basket }} />
+        </Box>
+      </>
     </RenderPageIfLoggedIn>
   );
 }

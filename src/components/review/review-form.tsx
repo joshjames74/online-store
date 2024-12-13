@@ -15,6 +15,7 @@ import {
   Stack,
   Text,
   useToast,
+  UseToastOptions,
 } from "@chakra-ui/react";
 import { FormEvent, useContext, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
@@ -25,7 +26,6 @@ import {
   postReview,
 } from "@/api/request/reviewRequest";
 import { useReviewSearchStore, useUserState } from "@/zustand/store";
-import { UserContext } from "@/contexts/user-context";
 import { useForm } from "react-hook-form";
 import { getProductById } from "@/api/request/productRequest";
 
@@ -77,13 +77,13 @@ export default function ReviewForm({
       status: "success",
       duration: 5000,
       isClosable: true,
-    };
+    } as UseToastOptions;
     const errorToast = {
       title: "Error in saving review",
       status: "error",
       duration: 5000,
       isClosable: true,
-    };
+    } as UseToastOptions;
 
     postReview(review)
       .then((review) =>
@@ -114,6 +114,12 @@ export default function ReviewForm({
       });
   };
 
+  const errorMessage = (message: string | undefined) => {
+    return <p>{message || ""}</p>;
+  };
+
+
+  // to do: change to use global
   if (!user) {
     return (
       <Modal isOpen={isVisible} onClose={onClose}>
@@ -141,7 +147,7 @@ export default function ReviewForm({
 
         <Divider />
 
-        <form onSubmit={(event) => handleSubmit(onSubmit(event))}>
+        <form onSubmit={(event) => handleSubmit(() => onSubmit(event))}>
           <ModalBody>
             <Stack>
               <Stack fontSize="xl" fontWeight="semibold">
@@ -178,7 +184,7 @@ export default function ReviewForm({
                   value={rating}
                   {...register("score", { required: "Score is required" })}
                 />
-                {errors.score && <p>{errors.score.message}</p>}
+                {errors.score && errorMessage(errors.score.message?.toString())}
               </Stack>
               <Stack fontWeight="semibold">
                 <label>Add a title</label>
@@ -186,7 +192,7 @@ export default function ReviewForm({
                   type="text"
                   {...register("title", { required: "Title is required" })}
                 />
-                {errors.title && <p>{errors.title.message}</p>}
+                {errors.title && errorMessage(errors.title.message?.toString())}
               </Stack>
               <Stack fontWeight="semibold">
                 <label>Add a written review</label>
@@ -194,7 +200,7 @@ export default function ReviewForm({
                   type="textarea"
                   {...register("content", { required: "Content is required" })}
                 />
-                {errors.content && <p>{errors.content.message}</p>}
+                {errors.content && errorMessage(errors.content.message?.toString())}
               </Stack>
               <input type="hidden" name="usrId" value={user.id} />
               <input type="hidden" name="productId" value={id} />

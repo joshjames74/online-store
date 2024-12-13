@@ -4,10 +4,10 @@ import { Box, Card, CardBody, Heading } from "@chakra-ui/react";
 import ProductCompact from "./product-compact";
 import styles from "./product-grid.module.css";
 import { ResultType } from "@/api/helpers/types";
-import { Width } from "@/redux/reducers/product";
 import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
 import PageNumberGrid from "../basket/pagination/page-number-grid";
 import { useRouter } from "next/navigation";
+import { Width } from "@/api/transformers/productSearchTransformer";
 
 
 export default function ProductGrid(): JSX.Element {

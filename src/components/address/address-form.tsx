@@ -11,7 +11,7 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { Country } from "@prisma/client";
+import { Address, Country } from "@prisma/client";
 import { FormEvent, useContext, useEffect, useState } from "react";
 import styles from "./address-form.module.css";
 import {
@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { ThemeContext } from "@/contexts/theme-context";
 import { useUserState } from "@/zustand/store";
+
 
 export default function AddressForm(): JSX.Element {
   const {
@@ -48,7 +49,7 @@ export default function AddressForm(): JSX.Element {
 
   // post address or fail
   const onSubmit = (event: FormEvent<any>) => {
-    const formData = new FormData(event.target);
+    const formData = new FormData(event.target as HTMLFormElement);
     const address = Object.fromEntries(formData);
 
     const pendingToast = toast({

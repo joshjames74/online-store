@@ -1,7 +1,12 @@
-const { PrismaClient } = require("@prisma/client");
-const { readFile } = require("fs/promises");
+// const { PrismaClient } = require("@prisma/client");
+// const { readFile } = require("fs/promises");
 
-const prisma = new PrismaClient();
+import { PrismaClient } from "@prisma/client";
+import { readFile } from "fs/promises";
+
+// const prisma = new PrismaClient();
+
+const prisma = new PrismaClient;
 
 async function main() {
   await prisma.$executeRaw`TRUNCATE TABLE Country RESTART IDENTITY CASCADE`;
@@ -15,36 +20,36 @@ async function main() {
   //await prisma.$executeRaw`TRUNCATE TABLE OrderItem RESTART IDENTITY CASCADE`;
 
   // set up sql files
-  const country_sql = await readFile("../database/country.sql", {
+  const country_sql = await readFile("../src/database/country.sql", {
     encoding: "utf8",
   });
-  const currency_sql = await readFile("../database/currency.sql", {
+  const currency_sql = await readFile("../src/database/currency.sql", {
     encoding: "utf8",
   });
-  const user_sql = await readFile("../database/user.sql", { encoding: "utf8" });
-  const category_sql = await readFile("../database/category.sql", {
+  const user_sql = await readFile("../src/database/user.sql", { encoding: "utf8" });
+  const category_sql = await readFile("../src/database/category.sql", {
     encoding: "utf8",
   });
-  const product_sql = await readFile("../database/product.sql", {
+  const product_sql = await readFile("../src/database/product.sql", {
     encoding: "utf8",
   });
   const product_category_sql = await readFile(
-    "../database/product-category.sql",
+    "../src/database/product-category.sql",
     { encoding: "utf8" },
   );
-  const review_sql = await readFile("../database/review.sql", {
+  const review_sql = await readFile("../src/database/review.sql", {
     encoding: "utf8",
   });
-  const address_sql = await readFile("../database/address.sql", {
+  const address_sql = await readFile("../src/database/address.sql", {
     encoding: "utf8",
   });
-  const order_sql = await readFile("../database/order.sql", {
+  const order_sql = await readFile("../src/database/order.sql", {
     encoding: "utf8",
   });
-  const orderItem_sql = await readFile("../database/orderItem.sql", {
+  const orderItem_sql = await readFile("../src/database/orderItem.sql", {
     encoding: "utf8",
   });
-  const basketItem_sql = await readFile("../database/basket-item.sql", {
+  const basketItem_sql = await readFile("../src/database/basket-item.sql", {
     encoding: "utf8",
   });
 
@@ -61,6 +66,7 @@ async function main() {
   await prisma.$executeRawUnsafe(orderItem_sql);
   await prisma.$executeRawUnsafe(basketItem_sql);
 }
+
 
 main()
   .then(async () => {

@@ -6,7 +6,7 @@ import { StarFilled } from "@ant-design/icons";
 
 export default function ReviewStars(props: {
   value: number;
-  fontSize?: number;
+  fontSize?: string;
 }): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const { value, fontSize } = props;

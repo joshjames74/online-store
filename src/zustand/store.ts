@@ -228,7 +228,7 @@ export interface UserState {
   setUser: (user: Usr) => void;
   setCurrency: (currency: Currency) => void;
   setCountry: (country: Country) => void;
-  setDefaultAddress: (address: Address) => void;
+  setDefaultAddress: (address: AddressWithCountry) => void;
 
   updateCurrency: (id: number) => Promise<void>;
   updateCountry: (id: number) => Promise<void>;
@@ -253,7 +253,7 @@ export const useUserState = create<UserState>((set, get) => ({
   setUser: (user: Usr) => set({ user: user }),
   setCurrency: (currency: Currency) => set({ currency: currency }),
   setCountry: (country: Country) => set({ country: country }),
-  setDefaultAddress: (address: Address) => set({ defaultAddress: address }),
+  setDefaultAddress: (address: AddressWithCountry) => set({ defaultAddress: address }),
 
   updateCurrency: async (id: number) => {
     // check user

@@ -4,7 +4,10 @@ import { RenderPageIfLoggedIn } from "@/components/auth/render-conditionally";
 export default function Page(): JSX.Element {
   return (
     <RenderPageIfLoggedIn>
-      <AddressForm />
+      <>
+        <title>Add Address</title>
+        <AddressForm />
+      </>
     </RenderPageIfLoggedIn>
   )
 }

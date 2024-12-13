@@ -2,9 +2,9 @@ import { Heading, HStack } from "@chakra-ui/react";
 import styles from "./search-results-info.module.css";
 import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
-import { Width } from "@/redux/reducers/product";
 import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
 import { useRouter } from "next/navigation";
+import { Width } from "@/api/transformers/productSearchTransformer";
 
 
 export default function SearchResultsInfo(): JSX.Element {

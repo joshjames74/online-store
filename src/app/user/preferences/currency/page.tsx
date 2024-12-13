@@ -77,6 +77,8 @@ export default function Page({
 
   return (
     <RenderPageIfLoggedIn>
+      <>
+      <title>Currency</title>
       <Box w="full" justifyItems="center" marginTop="1em">
         <Stack w="fit-content">
           <Heading>Change currency</Heading>
@@ -91,7 +93,7 @@ export default function Page({
                 onChange={(event) =>
                   setSelectedCurrency(parseInt(event.target.value || ""))
                 }
-              >
+                >
                 {currencies.map((currency: Currency, index: number) => {
                   return (
                     <option key={index} value={currency.id}>
@@ -105,14 +107,14 @@ export default function Page({
                 <Button
                   bgColor={theme.colors.background.secondary}
                   onClick={handleCancel}
-                >
+                  >
                   Cancel
                 </Button>
                 <Button
                   bgColor={theme.colors.accent.primary}
                   isDisabled={!!!selectedCurrency}
                   onClick={handleSubmit}
-                >
+                  >
                   Save changes
                 </Button>
               </Box>
@@ -120,6 +122,7 @@ export default function Page({
           )}
         </Stack>
       </Box>
+      </>
     </RenderPageIfLoggedIn>
   );
 }

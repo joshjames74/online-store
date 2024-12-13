@@ -24,7 +24,7 @@ export function RenderPageIfLoggedIn({
 }): JSX.Element {
   const user = useUserState((state) => state.user);
   if (!isLoggedIn(user)) {
-    return <SignInRequiredPage props={{ message: "" }} />;
+    return <SignInRequiredPage />;
   }
   return <>{children}</>;
 }

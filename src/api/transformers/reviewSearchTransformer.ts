@@ -1,4 +1,3 @@
-import { QueryParams } from "@/redux/reducers/product";
 import {
   OrderField,
   OrderRelation,

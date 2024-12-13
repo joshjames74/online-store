@@ -34,6 +34,8 @@ export default function OrderCard({
     { product: { include: { seller: true } } }
   >;
 
+  const a: OrderItemView = {} as OrderItemView;
+
   if (!orderView) {
     return <></>;
   }

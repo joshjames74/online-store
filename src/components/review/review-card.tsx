@@ -10,6 +10,7 @@ import {
   HStack,
   CardFooter,
   IconButton,
+  UseToastOptions,
 } from "@chakra-ui/react";
 import styles from "./review-card.module.css";
 import ReviewStars from "./review-stars";
@@ -42,13 +43,13 @@ export default function ReviewCard(
       status: "success",
       duration: 5000,
       isClosable: true,
-    };
+    } as UseToastOptions;
     const errorToast = {
       title: "Something went wrong",
       status: "error",
       duration: 5000,
       isClosable: true,
-    };
+    } as UseToastOptions;
 
     // post review and update toasts accordingly
     if (user.id !== review.usrId) {

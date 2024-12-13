@@ -1,4 +1,4 @@
-require("dotenv").config();
+// require("dotenv").config();
 import prisma from "@/lib/prisma";
 
 const deleteAllData = async () => {

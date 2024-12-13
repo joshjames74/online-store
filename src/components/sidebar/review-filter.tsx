@@ -1,8 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import styles from "./review-filter.module.css";
-import { useEffect, useState } from "react";
 import ReviewStars from "../review/review-stars";
-import { useSearchParamsState, useSearchStore } from "@/zustand/store";
+import { useSearchParamsState } from "@/zustand/store";
 
 
 export default function ReviewFilter(): JSX.Element {

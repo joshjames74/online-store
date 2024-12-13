@@ -1,5 +1,5 @@
 "use client";
-import { ResultType } from "@/api/helpers/types.module";
+import { ResultType } from "@/api/helpers/types";
 import { SettingsContext } from "@/contexts/settings-context";
 import { ThemeContext } from "@/contexts/theme-context";
 import {
@@ -12,14 +12,14 @@ import {
   Text,
   useMediaQuery,
 } from "@chakra-ui/react";
+import { Product } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
 export default function OrderProductCard(
-  product: ResultType<"product", { currency: true }>,
+  product: ResultType<"product", { seller: true }>,
 ): JSX.Element {
   const { defaultImageUrl } = useContext(SettingsContext);
-  const { theme } = useContext(ThemeContext);
   const router = useRouter();
 
   const [isLessThan500px] = useMediaQuery("(max-width: 500px)");

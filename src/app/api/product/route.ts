@@ -1,8 +1,6 @@
 import { getHelper, postHelper } from "@/api/helpers/request";
-import { parseQueryParams } from "@/api/helpers/utils";
 import { getProductBySearch, postProduct } from "@/api/services/productService";
 import { ProductFilter } from "@/api/transformers/productSearchTransformer";
-import { QueryParams } from "@/redux/reducers/product";
 import { Product } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
