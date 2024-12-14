@@ -16,7 +16,7 @@ export async function getAddressById(
 }
 
 export async function getAddressesByUserId(
-  id: number,
+  id: string,
 ): Promise<AddressWithCountry[] | void> {
   return await prisma.address.findMany({
     where: { usrId: id, isDeleted: false },
@@ -54,6 +54,8 @@ export async function deleteAddressById(id: number): Promise<Address | void> {
 export async function postAddress(
   address: Omit<Address, "id">,
 ): Promise<Address | void> {
+  console.log("Address Service")
+  console.log(address);
   return await prisma.address.create({
     data: address,
   });

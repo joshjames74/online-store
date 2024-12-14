@@ -9,15 +9,11 @@ export async function GET(
 ): Promise<NextResponse> {
   const { id } = params;
 
-  if (!id || isNaN(parseInt(id))) {
-    return NextResponse.json({ error: "invalid id" }, { status: 400 });
-  }
-
   const { searchParams } = new URL(req.url);
   const parsedParams = parseOrderSearchParams(searchParams);
 
   return await getHelper(getOrderViewsBySearch, {
-    usrId: parseInt(id),
+    usrId: id,
     ...parsedParams,
   });
 }

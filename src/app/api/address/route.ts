@@ -8,7 +8,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const address: Omit<Address, "id"> = body;
 
   address.countryId = parseInt(address.countryId.toString());
-  address.usrId = parseInt(address.usrId.toString());
+  address.usrId = address.usrId;
 
   return postHelper("address", postAddress, address);
 }

@@ -5,6 +5,7 @@ import ProductPage from "@/components/product/product-page";
 import ProductPageSkeleton from "@/components/product/product-page-skeleton";
 import ReviewGrid from "@/components/review/review-grid";
 import { Box } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page({
@@ -17,6 +18,8 @@ export default function Page({
   const [product, setProduct] = useState<ProductWithSeller>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const router = useRouter();
+
   useEffect(() => {
     setIsLoading(true);
     getProductById(parseInt(id))
@@ -26,8 +29,7 @@ export default function Page({
   }, []);
 
   if (!id || isNaN(parseInt(id))) {
-    //redirect to 404
-    return <Box>Page not found</Box>;
+    router.push("/404");
   }
 
   if (isLoading || !product) {
@@ -35,13 +37,13 @@ export default function Page({
   }
 
   return (
-    <Box h="5000px">
+    <Box>
       <title>{product.title}</title>
       <ProductPage {...product} />
       <section id="reviews">
         <ReviewGrid
           id={parseInt(id)}
-          score={product?.review_score ? product?.review_score : 0}
+          score={product.review_score}
         />
       </section>
     </Box>

@@ -79,7 +79,7 @@ export async function getReviewsByProductId(
   });
 }
 
-export async function getReviewsByUserId(id: number): Promise<Review[] | void> {
+export async function getReviewsByUserId(id: string): Promise<Review[] | void> {
   return await prisma.review.findMany({
     where: { usrId: id },
   });
@@ -121,6 +121,8 @@ export async function postReview(
   review: Omit<Review, "review_id">,
 ): Promise<Review | void> {
   return prisma.$transaction(async (tx) => {
+
+    console.log("Running transaction....");
     // find product and compute new scores
     const product = await tx.product.findFirst({
       where: { id: review.productId },

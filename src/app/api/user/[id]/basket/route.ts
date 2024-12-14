@@ -12,14 +12,7 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   const { id } = params;
-
-  if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
-  // // return await getHelper(getBasketItemsByUserId, parseInt(id));
-  // return await getHelper(getBasketItemsByUserId, parseInt(id));
-  return await getHelper(getBasketByUserId, parseInt(id));
+  return await getHelper(getBasketByUserId, id);
 }
 
 export async function DELETE(
@@ -28,13 +21,9 @@ export async function DELETE(
 ) {
   const { id } = params;
 
-  if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
   return await deleteHelper(
     "basketItem",
     deleteAllBasketItemByUserId,
-    parseInt(id),
+    id,
   );
 }

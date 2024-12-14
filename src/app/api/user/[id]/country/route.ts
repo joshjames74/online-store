@@ -8,10 +8,6 @@ export async function PUT(
 ): Promise<NextResponse> {
   const { id } = params;
 
-  if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
   const body = await req.json();
   const { countryId } = body;
 
@@ -21,7 +17,7 @@ export async function PUT(
 
   return await putHelper("usr", putUserCountryById, {
     params: {
-      id: parseInt(id),
+      id: id,
       countryId: parseInt(countryId),
     },
   });

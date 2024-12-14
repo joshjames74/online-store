@@ -28,6 +28,7 @@ import {
 import { useReviewSearchStore, useUserState } from "@/zustand/store";
 import { useForm } from "react-hook-form";
 import { getProductById } from "@/api/request/productRequest";
+import { useRouter } from "next/navigation";
 
 export default function ReviewForm({
   id,
@@ -39,15 +40,14 @@ export default function ReviewForm({
   onClose: () => void;
 }): JSX.Element {
   const { theme } = useContext(ThemeContext);
-
   const user = useUserState((state) => state.user);
-
   const toast = useToast();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const router = useRouter();
 
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
@@ -67,8 +67,7 @@ export default function ReviewForm({
 
   // handle submit review
   const onSubmit = (event: FormEvent<any>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(event.target as HTMLFormElement);
     const review = Object.fromEntries(formData);
 
     const pendingToast = toast({ title: "Processing...", isClosable: true });
@@ -110,8 +109,15 @@ export default function ReviewForm({
           .catch((error) => console.error(error));
 
         // reload page
+        onClose();
+        clearParams();
         location.reload();
       });
+  };
+
+  const handleFormSubmit = (event: FormEvent<any>) => {
+    event.preventDefault();
+    handleSubmit(() => onSubmit(event))();
   };
 
   const errorMessage = (message: string | undefined) => {
@@ -146,7 +152,7 @@ export default function ReviewForm({
 
         <Divider />
 
-        <form onSubmit={(event) => handleSubmit(() => onSubmit(event))}>
+        <form onSubmit={(event) => handleFormSubmit(event)}>
           <ModalBody>
             <Stack>
               <Stack fontSize="xl" fontWeight="semibold">

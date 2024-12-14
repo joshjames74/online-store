@@ -110,7 +110,7 @@ export async function getProductById(
 }
 
 export async function getProductsByUserId(
-  id: number,
+  id: string,
 ): Promise<ProductWithSeller[] | void> {
   return prisma.product.findMany({
     where: { sellerId: id },

@@ -10,10 +10,5 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   const { id } = params;
-
-  if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
-  return await getHelper(getReviewsByUserId, parseInt(id));
+  return await getHelper(getReviewsByUserId, id);
 }

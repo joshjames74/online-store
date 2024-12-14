@@ -9,12 +9,7 @@ export async function GET(
   { params }: { params: { id: string } },
 ): Promise<NextResponse> {
   const { id } = params;
-
-  if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
-  return await getHelper(getUserById, parseInt(id));
+  return await getHelper(getUserById, id);
 }
 
 // DELETE method
@@ -24,10 +19,5 @@ export async function DELETE(
   { params }: { params: { id: string } },
 ): Promise<NextResponse> {
   const { id } = params;
-
-  if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
-  return await deleteHelper("usr", deleteUserById, parseInt(id));
+  return await deleteHelper("usr", deleteUserById, id);
 }

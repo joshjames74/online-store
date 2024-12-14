@@ -36,8 +36,18 @@ export async function getReviewsBySearch(
 // POST methods
 
 export async function postReview(review: Partial<Review>): Promise<Review> {
-  const response = await axios.post("/api/review", { ...review });
-  return response.data;
+  console.log("Posting review...");
+  const response = await fetch("/api/review", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(review),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to create review");
+  };
+  return response.json();
 }
 
 // DELETE methods

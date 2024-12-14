@@ -17,7 +17,7 @@ export async function getOrdersByUserId({
   params,
   cache,
 }: {
-  id: number;
+  id: string;
   params: Omit<OrderParams, "usrId">;
   cache?: RequestCache;
 }): Promise<OrderWithMetadata[]> {

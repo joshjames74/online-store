@@ -1,6 +1,7 @@
 import { Usr } from "@prisma/client";
 import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
+import { useDrawerContext } from "@chakra-ui/react";
 
 export type UserWithCurrencyAndCountry = ResultType<
   "usr",
@@ -9,7 +10,7 @@ export type UserWithCurrencyAndCountry = ResultType<
 
 // GET methods
 
-export async function getUserById(id: number): Promise<Usr | null> {
+export async function getUserById(id: string): Promise<Usr | null> {
   return await prisma.usr.findFirst({
     where: { id: id },
   });
@@ -35,6 +36,7 @@ export async function getUserByEmail(
 export async function postUser(
   user: Partial<Omit<Usr, "user_id">>,
 ): Promise<Usr | void> {
+  user.id = crypto.randomUUID();
   return await prisma.usr.create({
     data: user,
   });
@@ -42,7 +44,7 @@ export async function postUser(
 
 // DELETE methods
 
-export async function deleteUserById(id: number): Promise<Usr | void> {
+export async function deleteUserById(id: string): Promise<Usr | void> {
   return await prisma.usr.delete({
     where: { id: id },
   });
@@ -53,7 +55,7 @@ export async function deleteUserById(id: number): Promise<Usr | void> {
 export async function putUserCountryById({
   params,
 }: {
-  params: { id: number; countryId: number };
+  params: { id: string; countryId: number };
 }): Promise<Usr | void> {
   return await prisma.usr.update({
     where: { id: params.id },
@@ -64,7 +66,7 @@ export async function putUserCountryById({
 export async function putUserCurrencyById({
   params,
 }: {
-  params: { id: number; currencyId: number };
+  params: { id: string; currencyId: number };
 }): Promise<Usr | void> {
   return await prisma.usr.update({
     where: { id: params.id },
@@ -75,7 +77,7 @@ export async function putUserCurrencyById({
 export async function putUserDefaultAddress({
   params,
 }: {
-  params: { userId: number; addressId: number };
+  params: { userId: string; addressId: number };
 }): Promise<Usr | void> {
   const { userId, addressId } = params;
   return prisma.$transaction(async (tx) => {

@@ -10,20 +10,17 @@ export async function PUT(
 ): Promise<NextResponse> {
   const { id } = params;
 
-  if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
   const body = await req.json();
   const { addressId } = body;
 
-  if (!addressId || isNaN(Number(id))) {
+  if (!addressId || isNaN(Number(addressId))) {
     return NextResponse.json({ error: "Invalid Address Id" }, { status: 400 });
   }
 
   return await putHelper("usr", putUserDefaultAddress, {
     params: {
-      userId: parseInt(id),
+      userId: id,
       addressId: parseInt(addressId),
     },
   });
-}
+};

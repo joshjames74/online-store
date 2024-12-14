@@ -32,21 +32,21 @@ model Currency {
 }
 
 model Usr {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(100) @default("")
-  email      String    @db.VarChar(100) @default("") @unique
-  country    Country?  @relation(fields: [countryId], references: [id])
-  countryId  Int?
-  currency   Currency? @relation(fields: [currencyId], references: [id])
-  currencyId Int?
-  defaultAddress    Address? @relation("DefaultAddress", fields: [defaultAddressId], references: [id])
+  id                String       @id @default(uuid())
+  name              String       @db.VarChar(100) @default("")
+  email             String       @db.VarChar(100) @default("") @unique
+  country           Country?     @relation(fields: [countryId], references: [id])
+  countryId         Int?
+  currency          Currency?    @relation(fields: [currencyId], references: [id])
+  currencyId        Int?
+  defaultAddress    Address?     @relation("DefaultAddress", fields: [defaultAddressId], references: [id])
   defaultAddressId  Int?
-  image_url  String?
-  Product    Product[]
-  Address    Address[]  
-  Order      Order[]
-  Review     Review[]
-  BasketItem BasketItem[]
+  image_url         String?
+  Product           Product[]
+  Address           Address[]  
+  Order             Order[]
+  Review            Review[]
+  BasketItem        BasketItem[]
 
   @@map("usr")
 }
@@ -63,7 +63,7 @@ model Category {
 model Product {
   id            Int        @id @default(autoincrement())
   seller        Usr        @relation(fields: [sellerId], references: [id])
-  sellerId      Int 
+  sellerId      String 
   title         String     @db.VarChar(100)
   url           String?
   description   String     @db.Text
@@ -92,26 +92,26 @@ model ProductCategory {
 }
 
 model Address {
-  id          Int      @id @default(autoincrement())
-  usr         Usr     @relation(fields: [usrId], references: [id])
-  usrId       Int 
-  name        String         @default("")
-  address_line_1      String @default("")
-  address_line_2      String @default("")
-  area_code   String         @default("")
-  country     Country   @relation(fields: [countryId], references: [id])
-  countryId   Int
-  isDeleted   Boolean   @default(false)
-  isDefault   Boolean   @default(false)
-  Order       Order[]
-  Usr         Usr[]   @relation("DefaultAddress")
+  id                  Int        @id @default(autoincrement())
+  usr                 Usr        @relation(fields: [usrId], references: [id])
+  usrId               String
+  name                String     @default("")
+  address_line_1      String     @default("")
+  address_line_2      String     @default("")
+  area_code           String     @default("")
+  country             Country    @relation(fields: [countryId], references: [id])
+  countryId           Int
+  isDeleted           Boolean    @default(false)
+  isDefault           Boolean    @default(false)
+  Order               Order[]
+  Usr                 Usr[]      @relation("DefaultAddress")
   @@map("address")
 }
 
 model Order {
   id         Int         @id @default(autoincrement())
   usr        Usr         @relation(fields: [usrId], references: [id])
-  usrId      Int 
+  usrId      String 
   date       DateTime    @default(now())
   currency   Currency    @relation(fields: [currencyId], references: [id])
   currencyId Int 
@@ -138,8 +138,8 @@ model Review {
   id         Int      @id @default(autoincrement())
   product    Product  @relation(fields: [productId], references: [id])
   productId  Int 
-  usr        Usr     @relation(fields: [usrId], references: [id])
-  usrId      Int 
+  usr        Usr      @relation(fields: [usrId], references: [id])
+  usrId      String 
   score      Int
   title      String
   content    String
@@ -152,7 +152,7 @@ model Review {
 model BasketItem {
   id         Int      @id @default(autoincrement())
   usr        Usr      @relation(fields: [usrId], references: [id])
-  usrId      Int
+  usrId      String
   product    Product  @relation(fields: [productId], references: [id])
   productId  Int
   date_added DateTime @default(now())
