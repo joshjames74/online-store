@@ -16,10 +16,10 @@ import styles from "./index.module.css";
 import { EnvironmentOutlined } from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
 import { getAddressesByUserId } from "@/api/request/addressRequest";
-import { ResultType } from "@/api/helpers/types";
 import Link from "next/link";
 import { useUserState } from "@/zustand/store";
 import { ThemeContext } from "@/contexts/theme-context";
+import { AddressWithCountry } from "@/api/services/addressService";
 
 export default function DeliveryButtonLoggedIn(): JSX.Element {
   const { theme } = useContext(ThemeContext);
@@ -31,9 +31,7 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
 
   const user = useUserState((state) => state.user);
 
-  const [addresses, setAddresses] = useState<
-    ResultType<"address", { country: true }>[]
-  >([]);
+  const [addresses, setAddresses] = useState<AddressWithCountry[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<number>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);

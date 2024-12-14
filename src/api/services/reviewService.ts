@@ -1,54 +1,99 @@
 import { Review } from "@prisma/client";
 import {
-  deleteOneEntityByField,
-  getEntitiesByFields,
-  getOneEntityByFields,
-  postOneEntity,
-} from "../helpers/dynamicQuery";
-import {
+  ReviewFilter,
   ReviewParams,
-  reviewQueryTransformer,
 } from "../transformers/reviewSearchTransformer";
-import { queryParamsToPrismaQuery } from "../transformers";
 import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
 
+export type ReviewWithUser = ResultType<"review", { usr: true }>;
+
+// review filter
+
+export function getReviewFilterOrder(
+  review_filter: ReviewFilter,
+): "asc" | "desc" {
+  if (
+    review_filter === ReviewFilter.DATE_NEW_TO_OLD ||
+    review_filter === ReviewFilter.SCORE_HIGH_TO_LOW
+  ) {
+    return "desc";
+  }
+  return "asc";
+}
+
+export function getReviewFilterColumn(
+  review_filter: ReviewFilter,
+): "score" | "date" {
+  if (
+    review_filter === ReviewFilter.SCORE_HIGH_TO_LOW ||
+    review_filter === ReviewFilter.SCORE_LOW_TO_HIGH
+  ) {
+    return "score";
+  }
+  return "date";
+}
+
+// Create query from search
+
+export function createWhereQueryFromParams(params: Partial<ReviewParams>) {
+  const { productId, score } = params;
+
+  const whereQuery = {};
+  if (productId) {
+    Object.assign(whereQuery, { productId: productId });
+  }
+  if (score) {
+    Object.assign(whereQuery, { score: { equals: score } });
+  }
+
+  return whereQuery;
+}
+
+export function createOrderByQueryFromParams(params: Partial<ReviewParams>) {
+  const { review_filter } = params;
+
+  const orderByQuery = {};
+  if (review_filter) {
+    const order = getReviewFilterOrder(review_filter);
+    const column = getReviewFilterColumn(review_filter);
+    Object.assign(orderByQuery, { [column]: order });
+  }
+
+  return orderByQuery;
+}
+
 // GET methods
 
-export async function getReviewById(id: number): Promise<Review | void> {
-  return await getOneEntityByFields({
-    modelName: "review",
-    whereQuery: { id: id },
+export async function getReviewById(id: number): Promise<Review | null> {
+  return await prisma.review.findFirst({
+    where: { id: id },
   });
 }
 
 export async function getReviewsByProductId(
   id: number,
 ): Promise<Review[] | void> {
-  return getEntitiesByFields({
-    modelName: "review",
-    whereQuery: { productId: id },
+  return await prisma.review.findMany({
+    where: { productId: id },
   });
 }
 
 export async function getReviewsByUserId(id: number): Promise<Review[] | void> {
-  return getEntitiesByFields({
-    modelName: "review",
-    whereQuery: { usrId: id },
+  return await prisma.review.findMany({
+    where: { usrId: id },
   });
 }
 
 export async function getReviewsBySearch(
   params: Partial<ReviewParams>,
-): Promise<ResultType<"review", { usr: true }>[] | void> {
-  const { whereQuery, orderQuery } = queryParamsToPrismaQuery(
-    params,
-    reviewQueryTransformer,
-  );
-  return await getEntitiesByFields({
-    modelName: "review",
-    whereQuery: whereQuery,
-    orderQuery: orderQuery,
+): Promise<ReviewWithUser[] | void> {
+  const whereQuery = createWhereQueryFromParams(params);
+  const orderQuery = createOrderByQueryFromParams(params);
+
+  return await prisma.review.findMany({
+    where: whereQuery,
+    orderBy: orderQuery,
     include: { usr: true },
   });
 }
@@ -56,16 +101,18 @@ export async function getReviewsBySearch(
 export async function getReviewCountsByProductId(
   id: number,
 ): Promise<number[] | void> {
-  const arr: number[] = Array.from({ length: 6 });
-  return await Promise.all(
-    arr.map(async (_, index) => {
-      const reviews = await getEntitiesByFields({
-        modelName: "review",
-        whereQuery: { score: index, productId: id },
-      });
-      return reviews ? reviews.length : 0;
-    }),
-  );
+  const response = await prisma.review.groupBy({
+    by: ["score"],
+    where: { productId: id },
+    _count: { score: true },
+  });
+
+  const counts: number[] = Array.from({ length: 6 }, () => 0);
+  response.forEach((item) => {
+    counts[item.score] = item._count.score;
+  });
+
+  return counts;
 }
 
 // POST methods

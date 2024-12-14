@@ -1,5 +1,4 @@
 import { Address } from "@prisma/client";
-import { ResultType } from "../helpers/types.js";
 import { fetchData } from ".";
 import { AddressWithCountry } from "../services/addressService.js";
 
@@ -15,11 +14,8 @@ export async function getAddressById(
 export async function getAddressesByUserId(
   id: number,
   cache?: RequestCache,
-): Promise<ResultType<"address", { country: true }>[]> {
-  return fetchData<ResultType<"address", { country: true }>[]>(
-    `/api/user/${id}/addresses`,
-    cache,
-  );
+): Promise<AddressWithCountry[]> {
+  return fetchData<AddressWithCountry[]>(`/api/user/${id}/addresses`, cache);
 }
 
 // POST methods

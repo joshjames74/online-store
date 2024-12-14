@@ -3,11 +3,11 @@ import ProductWide from "@/components/product/product-wide";
 import { Box, Card, CardBody, Heading } from "@chakra-ui/react";
 import ProductCompact from "./product-compact";
 import styles from "./product-grid.module.css";
-import { ResultType } from "@/api/helpers/types";
 import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
 import PageNumberGrid from "../basket/pagination/page-number-grid";
 import { useRouter } from "next/navigation";
 import { Width } from "@/api/transformers/productSearchTransformer";
+import { ProductWithSeller } from "@/api/services/productService";
 
 export default function ProductGrid(): JSX.Element {
   const router = useRouter();
@@ -42,11 +42,9 @@ export default function ProductGrid(): JSX.Element {
     return (
       <Box className={styles.wrapper}>
         <Box className={styles.container_wide}>
-          {results.data.map(
-            (product: ResultType<"product", { seller: true }>) => (
-              <ProductWide key={product.id} {...product} />
-            ),
-          )}
+          {results.data.map((product: ProductWithSeller) => (
+            <ProductWide key={product.id} {...product} />
+          ))}
         </Box>
         <PageNumberGrid
           params={{
@@ -62,11 +60,9 @@ export default function ProductGrid(): JSX.Element {
   return (
     <Box className={styles.wrapper}>
       <Box className={styles.container_compact}>
-        {results.data.map(
-          (product: ResultType<"product", { seller: true }>) => (
-            <ProductCompact key={product.id} {...product} />
-          ),
-        )}
+        {results.data.map((product: ProductWithSeller) => (
+          <ProductCompact key={product.id} {...product} />
+        ))}
       </Box>
       <PageNumberGrid
         params={{

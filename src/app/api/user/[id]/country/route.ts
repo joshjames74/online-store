@@ -1,8 +1,6 @@
 import { putHelper } from "@/api/helpers/request";
-import { putUserDefaultAddress } from "@/api/services/userService";
+import { putUserCountryById } from "@/api/services/userService";
 import { NextRequest, NextResponse } from "next/server";
-
-// PUT method
 
 export async function PUT(
   req: NextRequest,
@@ -13,17 +11,18 @@ export async function PUT(
   if (!id || isNaN(Number(id))) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
-  const body = await req.json();
-  const { addressId } = body;
 
-  if (!addressId || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid Address Id" }, { status: 400 });
+  const body = await req.json();
+  const { countryId } = body;
+
+  if (!countryId || isNaN(parseInt(countryId))) {
+    return NextResponse.json({ error: "Invalid countryId" }, { status: 400 });
   }
 
-  return await putHelper("usr", putUserDefaultAddress, {
+  return await putHelper("usr", putUserCountryById, {
     params: {
-      userId: parseInt(id),
-      addressId: parseInt(addressId),
+      id: parseInt(id),
+      countryId: parseInt(countryId),
     },
   });
 }

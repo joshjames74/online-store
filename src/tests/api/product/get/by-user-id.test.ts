@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { ResultType } from "@/api/helpers/types";
+import { ProductWithSeller } from "@/api/services/productService";
 import { GET } from "@/app/api/user/[id]/products/route";
 import prisma from "@/lib/prisma";
 import {
@@ -17,7 +17,7 @@ export const normaliseReviewDate = (review: Review) => {
 };
 
 describe("GET /api/user/[id]/products", () => {
-  let testProducts: ResultType<"product", { seller: true }>[];
+  let testProducts: ProductWithSeller[];
   let testUsers: Usr[];
   let activeUser: Usr;
 

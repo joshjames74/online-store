@@ -23,6 +23,8 @@ export type OrderParams = {
   min_date: Date;
   max_date: Date;
   order_filter: OrderFilter;
+  perPage: number;
+  pageNumber: number;
   skip?: number;
   take?: number;
 };

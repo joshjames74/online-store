@@ -1,9 +1,9 @@
 import { Review } from "@prisma/client";
 import axios from "axios";
 import { ReviewParams } from "../transformers/reviewSearchTransformer";
-import { ResultType } from "../helpers/types.js";
 import { buildUrl } from "../helpers/utils";
 import { fetchData } from ".";
+import { ReviewWithUser } from "../services/reviewService";
 
 // GET methods
 
@@ -28,9 +28,9 @@ export async function getReviewCountsByProductId(
 export async function getReviewsBySearch(
   params: Partial<ReviewParams>,
   cache?: RequestCache,
-): Promise<ResultType<"review", { usr: true }>[]> {
+): Promise<ReviewWithUser[]> {
   const url = buildUrl("/api/review", params);
-  return fetchData<ResultType<"review", { usr: true }>[]>(url, cache);
+  return fetchData<ReviewWithUser[]>(url, cache);
 }
 
 // POST methods

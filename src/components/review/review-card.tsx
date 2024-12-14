@@ -23,13 +23,11 @@ import { useReviewSearchStore, useUserState } from "@/zustand/store";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
-import { ResultType } from "@/api/helpers/types";
 import { formatDate } from "@/api/helpers/utils";
 import { getProductById } from "@/api/request/productRequest";
+import { ReviewWithUser } from "@/api/services/reviewService";
 
-export default function ReviewCard(
-  review: ResultType<"review", { usr: true }>,
-): JSX.Element {
+export default function ReviewCard(review: ReviewWithUser): JSX.Element {
   const user = useUserState((state) => state.user);
   const clearParams = useReviewSearchStore((store) => store.clearParams);
   const { theme } = useContext(ThemeContext);

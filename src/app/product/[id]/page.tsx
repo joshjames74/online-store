@@ -1,6 +1,6 @@
 "use client";
-import { ResultType } from "@/api/helpers/types";
 import { getProductById } from "@/api/request/productRequest";
+import { ProductWithSeller } from "@/api/services/productService";
 import ProductPage from "@/components/product/product-page";
 import ProductPageSkeleton from "@/components/product/product-page-skeleton";
 import ReviewGrid from "@/components/review/review-grid";
@@ -14,8 +14,7 @@ export default function Page({
 }): JSX.Element {
   const { id } = params;
 
-  const [product, setProduct] =
-    useState<ResultType<"product", { seller: true }>>();
+  const [product, setProduct] = useState<ProductWithSeller>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {

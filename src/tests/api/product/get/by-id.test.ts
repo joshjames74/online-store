@@ -12,10 +12,10 @@ import {
 } from "../../../generate";
 import { Product, Usr } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { ResultType } from "@/api/helpers/types";
+import { ProductWithSeller } from "@/api/services/productService";
 
 describe("GET /api/product/[id]", () => {
-  let testProducts: ResultType<"product", { seller: true }>[];
+  let testProducts: ProductWithSeller[];
   let testUsers: Usr[];
 
   beforeAll(async () => {

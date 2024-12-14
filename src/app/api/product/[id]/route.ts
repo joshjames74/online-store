@@ -1,14 +1,7 @@
-import {
-  deleteHelper,
-  FieldValuePair,
-  formatBodyToField,
-  getHelper,
-  putHelper,
-} from "@/api/helpers/request";
+import { deleteHelper, getHelper } from "@/api/helpers/request";
 import {
   deleteProductById,
   getProductById,
-  putProductByFields,
 } from "@/api/services/productService";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -42,27 +35,27 @@ export async function DELETE(
   return await deleteHelper("product", deleteProductById, parseInt(id));
 }
 
-// PUT method
+// // PUT method
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-): Promise<NextResponse> {
-  const { id } = params;
+// export async function PUT(
+//   req: NextRequest,
+//   { params }: { params: { id: string } },
+// ): Promise<NextResponse> {
+//   const { id } = params;
 
-  const body = await req.json();
+//   const body = await req.json();
 
-  const searchField: FieldValuePair<"product"> = {
-    field: "id",
-    value: parseInt(id),
-  };
-  const putField = formatBodyToField<"product">(body);
+//   const searchField: FieldValuePair<"product"> = {
+//     field: "id",
+//     value: parseInt(id),
+//   };
+//   const putField = formatBodyToField<"product">(body);
 
-  if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
+//   if (!id || isNaN(Number(id))) {
+//     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+//   }
 
-  const putParams = { searchField, putField };
+//   const putParams = { searchField, putField };
 
-  return await putHelper("product", putProductByFields, putParams);
-}
+//   return await putHelper("product", putProductByFields, putParams);
+// }

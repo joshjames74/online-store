@@ -22,8 +22,8 @@ import {
 import { getReviewsBySearch } from "@/api/request/reviewRequest";
 import { useRouter } from "next/navigation";
 import { PlusOutlined } from "@ant-design/icons";
-import { ResultType } from "@/api/helpers/types";
 import { ThemeContext } from "@/contexts/theme-context";
+import { ReviewWithUser } from "@/api/services/reviewService";
 
 export default function ReviewGrid({
   id,
@@ -32,11 +32,9 @@ export default function ReviewGrid({
   id: number;
   score: number;
 }): JSX.Element {
-  type ReviewWithUsr = ResultType<"review", { usr: true }>;
-
   const { theme } = useContext(ThemeContext);
 
-  const [reviews, setReviews] = useState<ReviewWithUsr[]>([]);
+  const [reviews, setReviews] = useState<ReviewWithUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState<boolean>(false);
 
@@ -138,7 +136,7 @@ export default function ReviewGrid({
                 <ReviewCardSkeleton key={index} />
               ))
             ) : reviews?.length ? (
-              reviews.map((review: ReviewWithUsr, index: number) => (
+              reviews.map((review: ReviewWithUser, index: number) => (
                 <ReviewCard {...review} key={index} />
               ))
             ) : (

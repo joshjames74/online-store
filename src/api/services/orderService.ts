@@ -1,15 +1,78 @@
 import { Order, OrderItem } from "@prisma/client";
 import {
-  getEntitiesByFields,
-  getOneEntityByFields,
-} from "../helpers/dynamicQuery";
-import {
+  OrderFilter,
   OrderParams,
-  orderQueryTransformer,
 } from "../transformers/orderSearchTransformer";
-import { queryParamsToPrismaQuery } from "../transformers";
+import { getSkipTakeFromPage } from "../transformers";
 import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
+
+///
+
+export function createWhereQuery(params: Partial<OrderParams>) {
+  const whereQuery: any = {};
+
+  if (params.min_date) {
+    whereQuery.date = {
+      gte: params.min_date,
+    };
+  }
+
+  if (params.max_date) {
+    whereQuery.date = {
+      lte: params.max_date,
+    };
+  }
+
+  if (params.usrId) {
+    whereQuery.usrId = params.usrId;
+  }
+
+  return whereQuery;
+}
+
+export function getOrderFilterOrder(order_filter: OrderFilter): "asc" | "desc" {
+  switch (order_filter) {
+    case OrderFilter.DATE_NEW_OLD:
+      return "desc";
+    case OrderFilter.DATE_OLD_NEW:
+      return "asc";
+    case OrderFilter.TOTAL_HIGH_LOW:
+      return "desc";
+    case OrderFilter.TOTAL_LOW_HIGH:
+      return "asc";
+    default:
+      return "asc";
+  }
+}
+
+export function getOrderFilterColumn(
+  order_filter: OrderFilter,
+): "date" | "total" {
+  switch (order_filter) {
+    case OrderFilter.DATE_NEW_OLD:
+      return "date";
+    case OrderFilter.DATE_OLD_NEW:
+      return "date";
+    case OrderFilter.TOTAL_HIGH_LOW:
+      return "total";
+    case OrderFilter.TOTAL_LOW_HIGH:
+      return "total";
+    default:
+      return "date";
+  }
+}
+
+export function createOrderByQuery(params: Partial<OrderParams>): any {
+  if (!params.order_filter) {
+    return {};
+  }
+  const order = getOrderFilterOrder(params.order_filter);
+  const column = getOrderFilterColumn(params.order_filter);
+  return { [column]: order };
+}
+
+///
 
 type IncludeType = {
   orderItem: {
@@ -54,12 +117,16 @@ export type OrderWithMetadata = {
   };
 };
 
+export type OrderItemView = ResultType<
+  "orderItem",
+  { product: { include: { seller: true } } }
+>;
+
 // GET methods
 
 export async function getOrderViewById(id: number): Promise<any> {
-  return await getOneEntityByFields({
-    modelName: "order",
-    whereQuery: { id: id },
+  return await prisma.order.findFirst({
+    where: { id: id },
     include: { orderItem: true },
   });
 }
@@ -67,26 +134,31 @@ export async function getOrderViewById(id: number): Promise<any> {
 export async function getOrderViewsBySearch(
   params: OrderParams,
 ): Promise<OrderWithMetadata[] | void> {
-  // transform params to prisma query
-  const { whereQuery, orderQuery, skip, take } = queryParamsToPrismaQuery(
-    params,
-    orderQueryTransformer,
-  );
-  // fetch orders
-  const orders = await getEntitiesByFields({
-    modelName: "order",
-    whereQuery: whereQuery,
-    orderQuery: orderQuery,
-    skip: skip,
-    take: take,
+  const whereQuery = createWhereQuery(params);
+  const orderQuery = createOrderByQuery(params);
+  const { skip, take } = getSkipTakeFromPage(params.perPage, params.pageNumber);
+
+  const query = {
+    where: whereQuery,
+    orderBy: orderQuery,
     include: IncludeRelation,
-  });
+  };
+
+  if (skip) {
+    Object.assign(query, { skip: skip });
+  }
+
+  if (take) {
+    Object.assign(query, { take: take });
+  }
+
+  const orders = await prisma.order.findMany(query);
 
   if (!orders) {
     throw new Error("Cannot get orders");
   }
 
-  // compute metadata
+  // to do: store order metadata in database making this unnecessary
   const ordersWithMetadata: OrderWithMetadata[] = orders.map(
     (order: OrderView) => {
       const totalPrice = order.orderItem.reduce(

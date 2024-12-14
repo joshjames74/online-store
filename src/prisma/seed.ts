@@ -20,38 +20,38 @@ async function main() {
   //await prisma.$executeRaw`TRUNCATE TABLE OrderItem RESTART IDENTITY CASCADE`;
 
   // set up sql files
-  const country_sql = await readFile("../src/database/country.sql", {
+  const country_sql = await readFile("../database/country.sql", {
     encoding: "utf8",
   });
-  const currency_sql = await readFile("../src/database/currency.sql", {
+  const currency_sql = await readFile("../database/currency.sql", {
     encoding: "utf8",
   });
-  const user_sql = await readFile("../src/database/user.sql", {
+  const user_sql = await readFile("../database/user.sql", {
     encoding: "utf8",
   });
-  const category_sql = await readFile("../src/database/category.sql", {
+  const category_sql = await readFile("../database/category.sql", {
     encoding: "utf8",
   });
-  const product_sql = await readFile("../src/database/product.sql", {
+  const product_sql = await readFile("../database/product.sql", {
     encoding: "utf8",
   });
   const product_category_sql = await readFile(
-    "../src/database/product-category.sql",
+    "../database/product-category.sql",
     { encoding: "utf8" },
   );
-  const review_sql = await readFile("../src/database/review.sql", {
+  const review_sql = await readFile("../database/review.sql", {
     encoding: "utf8",
   });
-  const address_sql = await readFile("../src/database/address.sql", {
+  const address_sql = await readFile("../database/address.sql", {
     encoding: "utf8",
   });
-  const order_sql = await readFile("../src/database/order.sql", {
+  const order_sql = await readFile("../database/order.sql", {
     encoding: "utf8",
   });
-  const orderItem_sql = await readFile("../src/database/orderItem.sql", {
+  const orderItem_sql = await readFile("../database/orderItem.sql", {
     encoding: "utf8",
   });
-  const basketItem_sql = await readFile("../src/database/basket-item.sql", {
+  const basketItem_sql = await readFile("../database/basket-item.sql", {
     encoding: "utf8",
   });
 

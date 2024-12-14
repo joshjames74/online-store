@@ -12,14 +12,14 @@ import {
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import ReviewStars from "../review/review-stars";
-import { ResultType } from "@/api/helpers/types";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import { SettingsContext } from "@/contexts/settings-context";
 import { useUserState } from "@/zustand/store";
+import { ProductWithSeller } from "@/api/services/productService";
 
 export default function ProductCompact({
   ...product
-}: ResultType<"product", { seller: true }>): JSX.Element {
+}: ProductWithSeller): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
   const { defaultImageUrl } = useContext(SettingsContext);

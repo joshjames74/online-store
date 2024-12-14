@@ -1,17 +1,6 @@
-import { BasketItem, Currency } from "@prisma/client";
-import {
-  deleteEntitiesByField,
-  deleteOneEntityByField,
-  getCountByField,
-  getEntitiesByFields,
-  getOneEntityByFields,
-  postOneEntity,
-  putOneEntityByField,
-} from "../helpers/dynamicQuery";
-import { Metadata, ResultType } from "../helpers/types.js";
-import { OrderRelation, SearchFieldType } from "../transformers";
-import { FieldValuePair } from "../helpers/request";
-import { convertPrice } from "../helpers/utils";
+import { BasketItem } from "@prisma/client";
+import { ResultType } from "../helpers/types.js";
+import prisma from "@/lib/prisma";
 
 export type BasketItemWithProduct = ResultType<"basketItem", { product: true }>;
 export type Basket = {
@@ -29,10 +18,9 @@ export type Basket = {
 
 export async function getBasketItemById(
   id: number,
-): Promise<BasketItemWithProduct | void> {
-  return getOneEntityByFields({
-    modelName: "basketItem",
-    whereQuery: { id: id },
+): Promise<BasketItemWithProduct | null> {
+  return await prisma.basketItem.findFirst({
+    where: { id: id },
     include: { product: true },
   });
 }
@@ -40,9 +28,8 @@ export async function getBasketItemById(
 export async function getBasketItemsByUserId(
   id: number,
 ): Promise<BasketItemWithProduct[] | void> {
-  return getEntitiesByFields({
-    modelName: "basketItem",
-    whereQuery: { usrId: id },
+  return await prisma.basketItem.findMany({
+    where: { usrId: id },
     include: { product: true },
   });
 }
@@ -50,58 +37,37 @@ export async function getBasketItemsByUserId(
 export async function getBasketItemByUserIdAndProductId(
   userId: number,
   productId: number,
-): Promise<BasketItem | void> {
-  return await getOneEntityByFields({
-    modelName: "basketItem",
-    whereQuery: { productId: productId, usrId: userId },
+): Promise<BasketItem | null> {
+  return await prisma.basketItem.findFirst({
+    where: { productId: productId, usrId: userId },
   });
 }
 
 export async function getBasketByUserId(id: number): Promise<Basket | void> {
-  const basket: Basket = {
-    items: [],
-    metadata: { count: NaN, total: { quantity: NaN, price: NaN } },
-  };
-
-  // get items by user id
-  let items;
-  try {
-    items = await getEntitiesByFields({
-      modelName: "basketItem",
-      whereQuery: { usrId: id },
-      orderQuery: { id: OrderRelation.ASC },
-      include: { product: true },
-    });
-
-    if (!items) {
-      return;
-    }
-    basket.items = items;
-  } catch (error) {
-    console.error(error);
-    return;
-  }
-
-  // count items
-  try {
-    const count = await getCountByField("basketItem", "usrId", id);
-    basket.metadata.count = count ? count : NaN;
-  } catch (error) {
-    console.error(error);
-  }
-
-  // count quantities
-  const total_items = items.reduce((prev, curr) => prev + curr.quantity, 0);
-  basket.metadata.total.quantity = total_items;
-
-  // sum price (in gbp)
-  const total_price = items.reduce(
-    (prev, curr) => prev + convertPrice(curr.product.price * curr.quantity, 1),
+  const items = await prisma.basketItem.findMany({
+    where: { usrId: id },
+    include: { product: true },
+    orderBy: { id: "asc" },
+  });
+  const metadata = await prisma.basketItem.aggregate({
+    where: { usrId: id },
+    _count: { usrId: true },
+    _sum: { quantity: true },
+  });
+  const totalPrice = items.reduce(
+    (prev, curr) => prev + curr.quantity * curr.product.price,
     0,
   );
-  basket.metadata.total.price = Math.round(total_price * 100) / 100;
-
-  return basket;
+  return {
+    items: items,
+    metadata: {
+      count: metadata._count.usrId || 0,
+      total: {
+        quantity: metadata._sum.quantity || 0,
+        price: totalPrice,
+      },
+    },
+  };
 }
 
 // DELETE functions
@@ -109,31 +75,35 @@ export async function getBasketByUserId(id: number): Promise<Basket | void> {
 export async function deleteBasketItemById(
   id: number,
 ): Promise<BasketItem | void> {
-  return await deleteOneEntityByField("basketItem", "id", id);
+  return await prisma.basketItem.delete({
+    where: { id: id },
+  });
 }
 
 export async function deleteAllBasketItemByUserId(
   id: number,
-): Promise<BasketItem[] | void> {
-  return await deleteEntitiesByField("basketItem", "usrId", id);
+): Promise<any | void> {
+  return await prisma.basketItem.deleteMany({
+    where: { usrId: id },
+  });
 }
 
 // PUT functions
 
-export async function putBasketItemByFields({
+export async function putBasketItemByQuantity({
   params,
 }: {
-  params: {
-    searchField: FieldValuePair<"basketItem">;
-    putFields: FieldValuePair<"basketItem">[];
-  };
+  params: { id: number; quantity: number };
 }): Promise<BasketItem | void> {
-  const { searchField, putFields } = params;
-  return await putOneEntityByField("basketItem", searchField, putFields);
+  return await prisma.basketItem.update({
+    where: { id: params.id },
+    data: { quantity: params.quantity },
+  });
 }
 
 // POST functions
 
+// to do: use a transaction
 export async function postBasketItem(
   basketItem: Omit<BasketItem, "id" | "date_added">,
 ): Promise<BasketItem | void> {
@@ -145,17 +115,24 @@ export async function postBasketItem(
 
   // if does not exist, post item
   if (!response) {
-    return postOneEntity("basketItem", basketItem);
+    return await prisma.basketItem.create({
+      data: basketItem,
+    });
   }
 
-  const searchField: FieldValuePair<"basketItem"> = {
-    field: "id",
-    value: response.id,
-  };
-  const putFields: FieldValuePair<"basketItem">[] = [
-    { field: "quantity", value: basketItem.quantity + response.quantity },
-  ];
-  const params = { searchField, putFields };
+  // const searchField: FieldValuePair<"basketItem"> = {
+  //   field: "id",
+  //   value: response.id,
+  // };
+  // const putFields: FieldValuePair<"basketItem">[] = [
+  //   { field: "quantity", value: basketItem.quantity + response.quantity },
+  // ];
+  // const params = { searchField, putFields };
   // if does exist, increment quantity
-  return putBasketItemByFields({ params: params });
+  return putBasketItemByQuantity({
+    params: {
+      id: response.id,
+      quantity: basketItem.quantity + response.quantity,
+    },
+  });
 }

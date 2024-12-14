@@ -4,14 +4,14 @@ import {
   generateMockProduct,
   generateMockUser,
 } from "@/tests/generate";
-import { Product, Usr } from "@prisma/client";
+import { Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 import { faker } from "@faker-js/faker";
 import { GET } from "@/app/api/product/route";
-import { ResultType } from "@/api/helpers/types";
+import { ProductWithSeller } from "@/api/services/productService";
 
 describe("GET /api/product", () => {
-  let testProducts: ResultType<"product", { seller: true }>[];
+  let testProducts: ProductWithSeller[];
   let testUsers: Usr[];
 
   beforeAll(async () => {

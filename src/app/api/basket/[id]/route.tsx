@@ -3,7 +3,7 @@ import {
   formatBodyToField,
   putHelper,
 } from "@/api/helpers/request";
-import { putBasketItemByFields } from "@/api/services/basketItemService";
+import { putBasketItemByQuantity } from "@/api/services/basketItemService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
@@ -17,14 +17,16 @@ export async function PUT(
   }
 
   const body = await req.json();
+  const { quantity } = body;
 
-  const searchField: FieldValuePair<"basketItem"> = {
-    field: "id",
-    value: parseInt(id),
-  };
-  const putFields = formatBodyToField<"basketItem">(body);
+  if (!quantity || isNaN(parseInt(quantity))) {
+    return NextResponse.json({ error: "Invalid quantity" }, { status: 400 });
+  }
 
-  const putParams = { searchField, putFields };
-
-  return putHelper("basketItem", putBasketItemByFields, { params: putParams });
+  return putHelper("basketItem", putBasketItemByQuantity, {
+    params: {
+      id: parseInt(id),
+      quantity: parseInt(quantity),
+    },
+  });
 }

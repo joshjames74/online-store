@@ -1,4 +1,4 @@
-import { OrderWithMetadata } from "@/api/services/orderService";
+import { OrderItemView, OrderWithMetadata } from "@/api/services/orderService";
 import { ThemeContext } from "@/contexts/theme-context";
 import {
   Card,
@@ -15,7 +15,6 @@ import {
   convertAndFormatToUserCurrency,
   formatDate,
 } from "@/api/helpers/utils";
-import { ResultType } from "@/api/helpers/types";
 import styles from "./order-card.module.css";
 import { useUserState } from "@/zustand/store";
 
@@ -28,13 +27,6 @@ export default function OrderCard({
   const { theme } = useContext(ThemeContext);
 
   const currency = useUserState((state) => state.currency);
-
-  type OrderItemView = ResultType<
-    "orderItem",
-    { product: { include: { seller: true } } }
-  >;
-
-  const a: OrderItemView = {} as OrderItemView;
 
   if (!orderView) {
     return <></>;

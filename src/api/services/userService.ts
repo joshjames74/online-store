@@ -1,14 +1,4 @@
 import { Usr } from "@prisma/client";
-import {
-  deleteOneEntityByField,
-  getAllEntities,
-  getEntitiesByFields,
-  getOneEntityByFields,
-  postOneEntity,
-  putOneEntityByField,
-  upsertOneEntityByField,
-} from "../helpers/dynamicQuery";
-import { FieldValuePair } from "../helpers/request";
 import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
 
@@ -19,32 +9,25 @@ export type UserWithCurrencyAndCountry = ResultType<
 
 // GET methods
 
-export async function getUserById(id: number): Promise<Usr | void> {
-  return getOneEntityByFields({
-    modelName: "usr",
-    whereQuery: { id: id },
+export async function getUserById(id: number): Promise<Usr | null> {
+  return await prisma.usr.findFirst({
+    where: { id: id },
   });
 }
 
 export async function getUsersByCountryId(id: number): Promise<Usr[] | void> {
-  return getEntitiesByFields({
-    modelName: "usr",
-    whereQuery: { countryId: id },
+  return await prisma.usr.findMany({
+    where: { countryId: id },
   });
-}
-
-export async function getAllUsers(): Promise<Usr[] | void> {
-  return getAllEntities("usr");
 }
 
 export async function getUserByEmail(
   email: string,
-): Promise<UserWithCurrencyAndCountry | void> {
-  return getOneEntityByFields({
-    modelName: "usr",
-    whereQuery: { email: email },
+): Promise<UserWithCurrencyAndCountry | null> {
+  return (await prisma.usr.findFirst({
+    where: { email: email },
     include: { currency: true, country: true },
-  });
+  })) as UserWithCurrencyAndCountry;
 }
 
 // POST methods
@@ -52,27 +35,41 @@ export async function getUserByEmail(
 export async function postUser(
   user: Partial<Omit<Usr, "user_id">>,
 ): Promise<Usr | void> {
-  return postOneEntity("usr", user);
+  return await prisma.usr.create({
+    data: user,
+  });
 }
 
 // DELETE methods
 
 export async function deleteUserById(id: number): Promise<Usr | void> {
-  return deleteOneEntityByField("usr", "id", id);
+  return await prisma.usr.delete({
+    where: { id: id },
+  });
 }
 
 // PUT methods
 
-export async function putUserByFields({
+export async function putUserCountryById({
   params,
 }: {
-  params: {
-    searchField: FieldValuePair<"usr">;
-    putFields: FieldValuePair<"usr">[];
-  };
+  params: { id: number; countryId: number };
 }): Promise<Usr | void> {
-  const { searchField, putFields } = params;
-  return await putOneEntityByField("usr", searchField, putFields);
+  return await prisma.usr.update({
+    where: { id: params.id },
+    data: { countryId: params.countryId },
+  });
+}
+
+export async function putUserCurrencyById({
+  params,
+}: {
+  params: { id: number; currencyId: number };
+}): Promise<Usr | void> {
+  return await prisma.usr.update({
+    where: { id: params.id },
+    data: { currencyId: params.currencyId },
+  });
 }
 
 export async function putUserDefaultAddress({
@@ -116,21 +113,4 @@ export async function putUserDefaultAddress({
 
     return updatedUser;
   });
-}
-
-export async function upsertUserByEmail(
-  user: Partial<Omit<Usr, "user_id">>,
-): Promise<Usr | void> {
-  const updateQuery = { name: user.name, image_url: user.image_url };
-  const createQuery = {
-    name: user.name,
-    image_url: user.image_url,
-    email: user.email,
-  };
-  return upsertOneEntityByField(
-    "usr",
-    { email: user.email },
-    updateQuery,
-    createQuery,
-  );
 }

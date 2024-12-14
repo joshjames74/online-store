@@ -1,6 +1,4 @@
 import { Usr } from "@prisma/client";
-import axios from "axios";
-import { ResultType } from "../helpers/types.js";
 import { UserWithCurrencyAndCountry } from "../services/userService";
 import { fetchData } from ".";
 
@@ -19,7 +17,7 @@ export async function putUserCurrencyById(
   id: number,
   currencyId: number,
 ): Promise<UserWithCurrencyAndCountry> {
-  const response = await fetch(`/api/user/${id}`, {
+  const response = await fetch(`/api/user/${id}/currency`, {
     method: "PUT",
     body: JSON.stringify({ currencyId: currencyId }),
   });
@@ -33,7 +31,7 @@ export async function putUserCountryById(
   id: number,
   countryId: number,
 ): Promise<UserWithCurrencyAndCountry> {
-  const response = await fetch(`/api/user/${id}`, {
+  const response = await fetch(`/api/user/${id}/country`, {
     method: "PUT",
     body: JSON.stringify({ countryId: countryId }),
   });

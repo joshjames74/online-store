@@ -14,7 +14,7 @@ import {
   Basket,
   BasketItemWithProduct,
 } from "@/api/services/basketItemService";
-import { ResultType } from "@/api/helpers/types";
+import { ProductWithSeller } from "@/api/services/productService";
 
 function getRandomElement<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -57,8 +57,7 @@ export const generateMockProduct = (ids?: number[]): Product => {
 
 export const generateMockProductWithSeller = (
   sellers: Usr[],
-): ResultType<"product", { seller: true }> => {
-  type ProductWithSeller = ResultType<"product", { seller: true }>;
+): ProductWithSeller => {
   const product: ProductWithSeller = {} as ProductWithSeller;
   const seller = getRandomElement(sellers);
   product.seller = seller;
@@ -94,6 +93,7 @@ export const generateMockUser = (): Usr => {
   user.image_url = faker.image.avatar();
   user.currencyId = null;
   user.countryId = null;
+  user.defaultAddressId = null;
   return user;
 };
 

@@ -20,13 +20,11 @@ import {
   convertAndFormatToUserCurrency,
   formatReviewScore,
 } from "@/api/helpers/utils";
-import { ResultType } from "@/api/helpers/types";
 import ProductBasketCard from "./product-basket-card";
 import { useUserState } from "@/zustand/store";
+import { ProductWithSeller } from "@/api/services/productService";
 
-export default function ProductPage(
-  product: ResultType<"product", { seller: true }>,
-): JSX.Element {
+export default function ProductPage(product: ProductWithSeller): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
 
