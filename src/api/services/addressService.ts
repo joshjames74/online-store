@@ -7,7 +7,7 @@ export type AddressWithCountry = ResultType<"address", { country: true }>;
 // GET method
 
 export async function getAddressById(
-  id: number,
+  id: string,
 ): Promise<AddressWithCountry | null> {
   return await prisma.address.findFirst({
     where: { id: id },
@@ -26,7 +26,7 @@ export async function getAddressesByUserId(
 
 // DELETE methods
 
-export async function deleteAddressById(id: number): Promise<Address | void> {
+export async function deleteAddressById(id: string): Promise<Address | void> {
   // if this address is the default for a user, delete that default address
   return prisma.$transaction(async (tx) => {
     // delete the default address for all useres
@@ -54,7 +54,7 @@ export async function deleteAddressById(id: number): Promise<Address | void> {
 export async function postAddress(
   address: Omit<Address, "id">,
 ): Promise<Address | void> {
-  console.log("Address Service")
+  console.log("Address Service");
   console.log(address);
   return await prisma.address.create({
     data: address,

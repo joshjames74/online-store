@@ -13,14 +13,10 @@ export async function PUT(
   const body = await req.json();
   const { addressId } = body;
 
-  if (!addressId || isNaN(Number(addressId))) {
-    return NextResponse.json({ error: "Invalid Address Id" }, { status: 400 });
-  }
-
   return await putHelper("usr", putUserDefaultAddress, {
     params: {
       userId: id,
-      addressId: parseInt(addressId),
+      addressId: addressId,
     },
   });
-};
+}

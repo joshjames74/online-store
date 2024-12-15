@@ -21,9 +21,5 @@ export async function DELETE(
 ) {
   const { id } = params;
 
-  return await deleteHelper(
-    "basketItem",
-    deleteAllBasketItemByUserId,
-    id,
-  );
+  return await deleteHelper("basketItem", deleteAllBasketItemByUserId, id);
 }

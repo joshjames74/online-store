@@ -22,6 +22,7 @@ import {
 import { AddressWithCountry } from "@/api/services/addressService";
 // to do: why from service?
 import { Basket, deleteBasketItemById } from "@/api/services/basketItemService";
+import { ProductsWithMetadata } from "@/api/services/productService";
 import { OrderParams } from "@/api/transformers/orderSearchTransformer";
 import {
   ProductFilter,
@@ -89,7 +90,7 @@ export const useSearchParamsState = create<SearchParamsState>((set, get) => ({
 }));
 
 export interface SearchResultsState {
-  results: ManyWithMetadata<"product", { seller: true }>;
+  results: ProductsWithMetadata;
   resultsCount: number;
   maxPrice: number;
   maxPages: number;
@@ -184,12 +185,12 @@ export interface OrderSearchState {
 
 export interface BasketState {
   basket: Basket;
-  userId: number;
-  setUserId: (userId: number) => void;
+  userId: string;
+  setUserId: (userId: string) => void;
   fetchBasket: (cache?: RequestCache) => Promise<void>;
   deleteBasket: () => Promise<void>;
-  putBasketItem: (id: number, quantity: number) => Promise<void>;
-  deleteBasketItem: (id: number) => Promise<void>;
+  putBasketItem: (id: string, quantity: number) => Promise<void>;
+  deleteBasketItem: (id: string) => Promise<void>;
 }
 
 export const useReviewSearchStore = create<ReviewSearchState>((set, get) => {
@@ -226,8 +227,8 @@ export const useOrderSearchStore = create<OrderSearchState>((set, get) => {
 
 export const useBasketState = create<BasketState>((set, get) => ({
   basket: {} as Basket,
-  userId: -1,
-  setUserId: (userId: number) => set({ userId: userId }),
+  userId: "",
+  setUserId: (userId: string) => set({ userId: userId }),
   fetchBasket: async (cache?: RequestCache) => {
     const userId = get().userId;
     await getBasketByUserId(userId, cache)
@@ -240,14 +241,14 @@ export const useBasketState = create<BasketState>((set, get) => ({
       .then((res) => get().fetchBasket())
       .catch((error) => console.error(error));
   },
-  putBasketItem: async (id: number, quantity: number) => {
+  putBasketItem: async (id: string, quantity: number) => {
     await putBasketItemQuantityById(id, quantity).then(() =>
       get()
         .fetchBasket("reload")
         .catch((error) => console.error(error)),
     );
   },
-  deleteBasketItem: async (id: number) => {
+  deleteBasketItem: async (id: string) => {
     await deleteBasketItemById(id)
       .then(() => get().fetchBasket("reload"))
       .catch((error) => console.error(error));
@@ -269,7 +270,7 @@ export interface UserState {
 
   updateCurrency: (id: number) => Promise<void>;
   updateCountry: (id: number) => Promise<void>;
-  updateDefaultAddress: (id: number) => Promise<void>;
+  updateDefaultAddress: (id: string) => Promise<void>;
 
   findOrPostUser: (
     email: string,
@@ -334,7 +335,7 @@ export const useUserState = create<UserState>((set, get) => ({
     await get().getUser();
     await get().getCountry();
   },
-  updateDefaultAddress: async (id: number) => {
+  updateDefaultAddress: async (id: string) => {
     const userState = get().user;
     if (!userState || !userState.id) {
       return;

@@ -12,10 +12,6 @@ export async function PUT(
 ): Promise<NextResponse> {
   const { id } = params;
 
-  if (!id || isNaN(parseInt(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-  }
-
   const body = await req.json();
   const { quantity } = body;
 
@@ -25,7 +21,7 @@ export async function PUT(
 
   return putHelper("basketItem", putBasketItemByQuantity, {
     params: {
-      id: parseInt(id),
+      id: id,
       quantity: parseInt(quantity),
     },
   });

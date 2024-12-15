@@ -6,14 +6,14 @@ import { fetchData } from ".";
 // GET methods
 
 export async function getBasketItemsByUserId(
-  id: number,
+  id: string,
   cache?: RequestCache,
 ): Promise<BasketItemWithProduct[]> {
   return fetchData<BasketItemWithProduct[]>(`/api/user/${id}/basket`, cache);
 }
 
 export async function getBasketByUserId(
-  id: number,
+  id: string,
   cache?: RequestCache,
 ): Promise<Basket> {
   return fetchData<Basket>(`/api/user/${id}/basket`, cache);
@@ -22,7 +22,7 @@ export async function getBasketByUserId(
 // PUT methods
 
 export async function putBasketItemQuantityById(
-  id: number,
+  id: string,
   quantity: number,
 ): Promise<BasketItem> {
   const response = await axios(`/api/basket/${id}`, {
@@ -48,13 +48,13 @@ export async function postBasketItem(
 
 // DELETE methods
 
-export async function deleteBasketItemById(id: number): Promise<void> {
+export async function deleteBasketItemById(id: string): Promise<void> {
   const response = await axios(`/api/basketItem/${id}`, { method: "DELETE" });
   return response.data;
 }
 
 // to do: rename to user id;
-export async function deleteBasketById(id: number): Promise<void> {
+export async function deleteBasketById(id: string): Promise<void> {
   const response = await fetch(`/api/user/${id}/basket`, {
     method: "DELETE",
   });

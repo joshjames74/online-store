@@ -5,7 +5,7 @@ import { AddressWithCountry } from "../services/addressService.js";
 // GET methods
 
 export async function getAddressById(
-  id: number,
+  id: string,
   cache?: RequestCache,
 ): Promise<AddressWithCountry> {
   return fetchData<AddressWithCountry>(`/api/address/${id}`, cache);
@@ -34,7 +34,7 @@ export async function postAddress(address: Partial<Address>): Promise<Address> {
 
 // DELETE methods
 
-export async function deleteAddressById(id: number): Promise<Address> {
+export async function deleteAddressById(id: string): Promise<Address> {
   const response = await fetch(`/api/address/${id}`, {
     method: "DELETE",
   });

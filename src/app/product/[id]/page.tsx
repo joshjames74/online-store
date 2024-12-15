@@ -41,10 +41,7 @@ export default function Page({
       <title>{product.title}</title>
       <ProductPage {...product} />
       <section id="reviews">
-        <ReviewGrid
-          id={parseInt(id)}
-          score={product.review_score}
-        />
+        <ReviewGrid id={parseInt(id)} score={product.review_score} />
       </section>
     </Box>
   );

@@ -57,7 +57,7 @@ describe("GET /api/user/[id]/products", () => {
   });
 
   it("should return no products if the user does not exist", async () => {
-    const userId = Math.max(...testUsers.map((user) => user.id)) + 1;
+    const userId = "1";
     const req = new NextRequest(
       `http://localhost/api/user/${userId}/products`,
       { method: "GET" },

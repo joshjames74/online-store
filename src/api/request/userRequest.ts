@@ -14,7 +14,7 @@ export async function getUserByEmail(
 // PUT methods
 
 export async function putUserCurrencyById(
-  id: number,
+  id: string,
   currencyId: number,
 ): Promise<UserWithCurrencyAndCountry> {
   const response = await fetch(`/api/user/${id}/currency`, {
@@ -28,7 +28,7 @@ export async function putUserCurrencyById(
 }
 
 export async function putUserCountryById(
-  id: number,
+  id: string,
   countryId: number,
 ): Promise<UserWithCurrencyAndCountry> {
   const response = await fetch(`/api/user/${id}/country`, {
@@ -42,8 +42,8 @@ export async function putUserCountryById(
 }
 
 export async function putUserDefaultAddress(
-  id: number,
-  addressId: number,
+  id: string,
+  addressId: string,
 ): Promise<UserWithCurrencyAndCountry> {
   const response = await fetch(`/api/user/${id}/addresses/default`, {
     method: "PUT",

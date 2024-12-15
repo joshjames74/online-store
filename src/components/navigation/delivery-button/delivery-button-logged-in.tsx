@@ -32,7 +32,7 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
   const user = useUserState((state) => state.user);
 
   const [addresses, setAddresses] = useState<AddressWithCountry[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<number>();
+  const [selectedAddress, setSelectedAddress] = useState<string>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -109,7 +109,7 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
           <ModalBody>
             <RadioGroup
               defaultValue={defaultAddress?.id?.toString()}
-              onChange={(value) => setSelectedAddress(parseInt(value))}
+              onChange={(value) => setSelectedAddress(value)}
             >
               <Stack>
                 {addresses.map((address, index: number) => {

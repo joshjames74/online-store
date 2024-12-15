@@ -17,7 +17,7 @@ export type Basket = {
 // GET functions
 
 export async function getBasketItemById(
-  id: number,
+  id: string,
 ): Promise<BasketItemWithProduct | null> {
   return await prisma.basketItem.findFirst({
     where: { id: id },
@@ -73,7 +73,7 @@ export async function getBasketByUserId(id: string): Promise<Basket | void> {
 // DELETE functions
 
 export async function deleteBasketItemById(
-  id: number,
+  id: string,
 ): Promise<BasketItem | void> {
   return await prisma.basketItem.delete({
     where: { id: id },
@@ -93,7 +93,7 @@ export async function deleteAllBasketItemByUserId(
 export async function putBasketItemByQuantity({
   params,
 }: {
-  params: { id: number; quantity: number };
+  params: { id: string; quantity: number };
 }): Promise<BasketItem | void> {
   return await prisma.basketItem.update({
     where: { id: params.id },

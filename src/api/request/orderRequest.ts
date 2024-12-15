@@ -6,7 +6,7 @@ import { OrderWithMetadata } from "../services/orderService";
 
 // GET methods
 
-export async function getOrderViewById(id: number): Promise<any> {
+export async function getOrderViewById(id: string): Promise<any> {
   const url = `/api/order/${id}`;
   return await fetchData(url);
 }

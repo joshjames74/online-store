@@ -1,6 +1,6 @@
 import { postHelper } from "@/api/helpers/request";
 import { postOrder } from "@/api/services/orderService";
-import { BasketItem, Order } from "@prisma/client";
+import { Order } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 // POST request

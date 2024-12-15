@@ -124,7 +124,7 @@ export type OrderItemView = ResultType<
 
 // GET methods
 
-export async function getOrderViewById(id: number): Promise<any> {
+export async function getOrderViewById(id: string): Promise<any> {
   return await prisma.order.findFirst({
     where: { id: id },
     include: { orderItem: true },

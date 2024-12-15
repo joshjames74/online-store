@@ -58,14 +58,20 @@ export const generateMockProduct = (ids?: string[]): Product => {
   return product;
 };
 
-export const generateMockProductCategory = (productId: number, categoryIds: number[]): ProductCategory => {
+export const generateMockProductCategory = (
+  productId: number,
+  categoryIds: number[],
+): ProductCategory => {
   const productCategory: ProductCategory = {} as ProductCategory;
   productCategory.productId = productId;
   productCategory.categoryId = getRandomElement(categoryIds);
   return productCategory;
 };
 
-export const generateMockProductCategories = (productIds: number[], categoriesIds: number[]): ProductCategory[] => {
+export const generateMockProductCategories = (
+  productIds: number[],
+  categoriesIds: number[],
+): ProductCategory[] => {
   return productIds.map((productId) => {
     return generateMockProductCategory(productId, categoriesIds);
   });
@@ -119,6 +125,7 @@ export const generateMockReview = (
   usrIds: string[],
 ): Review => {
   const review: Review = {} as Review;
+  review.id = randomUUID();
   review.productId = getRandomElement(productIds);
   review.usrId = getRandomElement(usrIds);
   review.score = faker.number.int({ min: 0, max: 5 });
@@ -134,6 +141,7 @@ export const generateMockAddress = (
   countryIds: number[],
 ): Address => {
   const address: Address = {} as Address;
+  address.id = randomUUID();
   address.usrId = getRandomElement(usrIds);
   address.name = faker.lorem.sentence();
   address.address_line_1 = faker.location.streetAddress();
@@ -184,7 +192,6 @@ export const generateMockBasketItemWithProduct = (
 
   const product: Product = generateMockProduct(usrIds);
   product.id = getRandomElement(productIds);
-
   basketItem.productId = product.id;
   basketItem.product = product;
   basketItem.quantity = faker.number.int({ min: 0, max: 100 });
@@ -199,7 +206,7 @@ export const generateMockBasketItem = (
   usrIds: string[],
 ): BasketItem => {
   const basketItem: BasketItem = {} as BasketItem;
-
+  basketItem.id = randomUUID();
   basketItem.date_added = faker.date.recent();
   basketItem.productId = getRandomElement(productIds);
   basketItem.quantity = faker.number.int({ min: 1, max: 100 });
@@ -252,7 +259,7 @@ export const generateMockBasket = (
 
 export const generateMockOrder = (
   usrIds: string[],
-  addressIds: number[],
+  addressIds: string[],
   currencyIds: number[],
 ): Order => {
   const order: Order = {} as Order;
@@ -264,7 +271,7 @@ export const generateMockOrder = (
 };
 
 export const generateMockOrderItem = (
-  orderIds: number[],
+  orderIds: string[],
   productIds: number[],
 ): OrderItem => {
   const orderItem = {} as OrderItem;

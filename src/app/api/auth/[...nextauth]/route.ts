@@ -12,32 +12,32 @@ const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  // callbacks: {
-  //   async signIn({ user, account, profile }) {
-  //     // what if existing user doesn't work but there is a user?
-  //     // Check if the user already exists
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      // what if existing user doesn't work but there is a user?
+      // Check if the user already exists
 
-  //     console.log(user, account, profile);
-  //     const existingUser = await prisma.usr.findUnique({
-  //       where: { email: profile.email },
-  //     });
-  //     console.log(existingUser);
+      console.log(user, account, profile);
+      const existingUser = await prisma.usr.findFirst({
+        where: { sub: profile.sub },
+      });
+      console.log(existingUser);
 
-  //     // If the user does not exist, create a new user
-  //     if (!existingUser) {
-  //       await prisma.usr.create({
-  //         data: {
-  //           name: profile.name,
-  //           email: profile.email,
-  //           image_url: profile.picture,
-  //         },
-  //       });
-  //     }
-  //     return true;
-  //   },
-  // },
-
-  //session: { strategy: 'jwt' },
+      // If the user does not exist, create a new user
+      if (!existingUser) {
+        await prisma.usr.create({
+          data: {
+            name: profile.name,
+            sub: profile.sub,
+            email: profile.email,
+            image_url: profile.picture,
+          },
+        });
+      }
+      return true;
+    },
+  },
+  session: { strategy: "jwt" },
 };
 
 const handler = NextAuth(authOptions);

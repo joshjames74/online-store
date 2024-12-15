@@ -7,12 +7,12 @@ import { ReviewWithUser } from "../services/reviewService";
 
 // GET methods
 
-export async function getReviewById(id: number): Promise<Review> {
+export async function getReviewById(id: string): Promise<Review> {
   return fetchData<Review>(`/api/review/${id}`);
 }
 
 export async function getReviewsByProductId(
-  id: number,
+  id: string,
   cache?: RequestCache,
 ): Promise<Review[]> {
   return fetchData<Review[]>(`/api/product/${id}/reviews`, cache);
@@ -36,7 +36,6 @@ export async function getReviewsBySearch(
 // POST methods
 
 export async function postReview(review: Partial<Review>): Promise<Review> {
-  console.log("Posting review...");
   const response = await fetch("/api/review", {
     method: "POST",
     headers: {
@@ -46,13 +45,13 @@ export async function postReview(review: Partial<Review>): Promise<Review> {
   });
   if (!response.ok) {
     throw new Error("Failed to create review");
-  };
+  }
   return response.json();
 }
 
 // DELETE methods
 
-export async function deleteReviewById(id: number): Promise<void> {
+export async function deleteReviewById(id: string): Promise<void> {
   const response = await axios.delete(`/api/review/${id}`);
   return;
 }

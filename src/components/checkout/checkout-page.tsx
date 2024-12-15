@@ -61,9 +61,9 @@ export default function CheckoutPage({
     const formObject: Order = Object.fromEntries(data) as unknown as Order;
     // parse the data
     const order: Omit<Order, "id"> = {} as Order;
-    order.addressId = parseInt(formObject.addressId.toString() || "");
+    order.addressId = formObject.addressId;
     order.currencyId = parseInt(formObject.currencyId.toString() || "");
-    order.usrId = parseInt(formObject.usrId.toString() || "");
+    order.usrId = formObject.usrId;
     order.date = new Date(
       parseInt(formObject.date.toString() || ""),
     ).toISOString() as unknown as Date;

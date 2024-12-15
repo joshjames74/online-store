@@ -35,12 +35,13 @@ model Usr {
   id                String       @id @default(uuid())
   name              String       @db.VarChar(100) @default("")
   email             String       @db.VarChar(100) @default("") @unique
+  sub               String?       
   country           Country?     @relation(fields: [countryId], references: [id])
   countryId         Int?
   currency          Currency?    @relation(fields: [currencyId], references: [id])
   currencyId        Int?
   defaultAddress    Address?     @relation("DefaultAddress", fields: [defaultAddressId], references: [id])
-  defaultAddressId  Int?
+  defaultAddressId  String?
   image_url         String?
   Product           Product[]
   Address           Address[]  
@@ -92,7 +93,7 @@ model ProductCategory {
 }
 
 model Address {
-  id                  Int        @id @default(autoincrement())
+  id                  String        @id @default(uuid())
   usr                 Usr        @relation(fields: [usrId], references: [id])
   usrId               String
   name                String     @default("")
@@ -109,22 +110,22 @@ model Address {
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
+  id         String         @id @default(uuid())
   usr        Usr         @relation(fields: [usrId], references: [id])
   usrId      String 
   date       DateTime    @default(now())
   currency   Currency    @relation(fields: [currencyId], references: [id])
   currencyId Int 
   address    Address    @relation(fields: [addressId], references: [id])
-  addressId  Int 
+  addressId  String 
   orderItem  OrderItem[]
 
   @@map("order")
 }
 
 model OrderItem {
-  id        Int      @id @default(autoincrement())
-  orderId   Int 
+  id        String      @id @default(uuid())
+  orderId   String 
   product   Product  @relation(fields: [productId], references: [id])
   productId Int
   price     Float
@@ -135,10 +136,10 @@ model OrderItem {
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  product    Product  @relation(fields: [productId], references: [id])
+  id         String      @id @default(uuid())
+  product    Product     @relation(fields: [productId], references: [id])
   productId  Int 
-  usr        Usr      @relation(fields: [usrId], references: [id])
+  usr        Usr         @relation(fields: [usrId], references: [id])
   usrId      String 
   score      Int
   title      String
@@ -150,7 +151,7 @@ model Review {
 }
 
 model BasketItem {
-  id         Int      @id @default(autoincrement())
+  id         String      @id @default(uuid())
   usr        Usr      @relation(fields: [usrId], references: [id])
   usrId      String
   product    Product  @relation(fields: [productId], references: [id])

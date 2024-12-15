@@ -65,7 +65,7 @@ export function createOrderByQueryFromParams(params: Partial<ReviewParams>) {
 
 // GET methods
 
-export async function getReviewById(id: number): Promise<Review | null> {
+export async function getReviewById(id: string): Promise<Review | null> {
   return await prisma.review.findFirst({
     where: { id: id },
   });
@@ -121,7 +121,6 @@ export async function postReview(
   review: Omit<Review, "review_id">,
 ): Promise<Review | void> {
   return prisma.$transaction(async (tx) => {
-
     console.log("Running transaction....");
     // find product and compute new scores
     const product = await tx.product.findFirst({
@@ -158,7 +157,7 @@ export async function postReview(
 
 // DELETE methods
 
-export async function deleteReviewById(id: number): Promise<Review | void> {
+export async function deleteReviewById(id: string): Promise<Review | void> {
   return prisma.$transaction(async (tx) => {
     // find review
     const review = await tx.review.findFirst({ where: { id: id } });

@@ -77,7 +77,7 @@ export async function putUserCurrencyById({
 export async function putUserDefaultAddress({
   params,
 }: {
-  params: { userId: string; addressId: number };
+  params: { userId: string; addressId: string };
 }): Promise<Usr | void> {
   const { userId, addressId } = params;
   return prisma.$transaction(async (tx) => {

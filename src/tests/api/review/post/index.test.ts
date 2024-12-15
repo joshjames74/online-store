@@ -92,7 +92,7 @@ describe("POST /api/review/", () => {
 
     expect(postedReview).not.toBeNull();
     expect(
-      normaliseReviewDate({ ...review, id: postedReview?.id || 0 }),
+      normaliseReviewDate({ ...review, id: postedReview?.id || "" }),
     ).toEqual(normaliseReviewDate(postedReview || ({} as Review)));
   });
 });

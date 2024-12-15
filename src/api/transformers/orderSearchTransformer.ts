@@ -19,7 +19,7 @@ export enum OrderFilter {
 }
 
 export type OrderParams = {
-  usrId: number;
+  usrId: string;
   min_date: Date;
   max_date: Date;
   order_filter: OrderFilter;
