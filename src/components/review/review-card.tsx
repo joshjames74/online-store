@@ -67,7 +67,7 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
         getReviewsBySearch({ productId: review.productId }, "reload")
           .then(() => {})
           .catch((error) => console.error(error));
-        getReviewCountsByProductId(review.productId, "reload")
+        getReviewCountsByProductId(review.productId)
           .then(() => {})
           .catch((error) => console.error(error));
         getProductById(review.productId, "reload")

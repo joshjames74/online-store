@@ -15,6 +15,10 @@ export async function getUserBySub(sub: string): Promise<Usr> {
   return fetchData(`/api/user/by-sub/${sub}`, "no-cache");
 };
 
+export async function getUserById(id: string): Promise<Usr> {
+  return fetchData(`/api/user/${id}`, "no-cache");
+}
+
 // PUT methods
 
 export async function putUserCurrencyById(

@@ -16,7 +16,7 @@ import { getCurrencyById } from "@/api/request/currencyRequest";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { getReviewsBySearch } from "@/api/request/reviewRequest";
 import {
-  getUserBySub,
+  getUserById,
   putUserCountryById,
   putUserCurrencyById,
   putUserDefaultAddress,
@@ -380,7 +380,7 @@ export const useUserState = create<UserState>((set, get) => ({
   updateCurrency: async (id: number) => {
     // check user
     const userState = get().user;
-    if (!userState || !userState.sub) {
+    if (!userState || !userState.id) {
       return;
     }
     
@@ -393,14 +393,14 @@ export const useUserState = create<UserState>((set, get) => ({
     }
     
     // update user and currency
-    await get().getUser(userState.sub);
+    await get().getUser(userState.id);
     await get().getCurrency();
   },
   
   updateCountry: async (id: number) => {
     //
     const userState = get().user;
-    if (!userState || !userState.sub) {
+    if (!userState || !userState.id) {
       return;
     }
 
@@ -411,12 +411,12 @@ export const useUserState = create<UserState>((set, get) => ({
       return;
     }
     
-    await get().getUser(userState.sub);
+    await get().getUser(userState.id);
     await get().getCountry();
   },
   updateDefaultAddress: async (id: string) => {
     const userState = get().user;
-    if (!userState || !userState.sub) {
+    if (!userState || !userState.id) {
       return;
     }
     
@@ -427,14 +427,15 @@ export const useUserState = create<UserState>((set, get) => ({
       return;
     }
     
-    await get().getUser(userState.sub);
+    await get().getUser(userState.id);
     await get().getDefaultAddress();
     await getAddressesByUserId(userState.id);
   },
   getUser: async (sub: string) => {
-    const user = await getUserBySub(sub).catch(
-      (error) => console.log(error),
-    );
+    // const user = await getUserBySub(sub).catch(
+    //   (error) => console.log(error),
+    // );
+    const user = await getUserById(sub).catch((error) => console.log(error));
     if (!user) {
       return;
     }
@@ -482,10 +483,10 @@ getDefaultAddress: async () => {
 },
 
 loadUserState: async (session: any | null) => {
-  if (!session?.user || !session?.user?.sub) {
+  if (!session?.user || !session?.user?.id) {
     return;
     }
-    await get().getUser(session.user.sub || "");
+    await get().getUser(session.user.id || "");
     await get().getCurrency();
     await get().getCountry();
     await get().getDefaultAddress();

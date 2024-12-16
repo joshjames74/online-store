@@ -39,7 +39,7 @@ const authOptions = {
               name: name,
             },
           });
-        }
+        };
         
         return true; // Allow sign-in
       } catch (error) {
@@ -49,14 +49,17 @@ const authOptions = {
     },
     async jwt({ token, profile }: any) {
       if (profile) {
-        token.sub = profile.sub as string;
+        const user = await prisma.usr.findFirst({ where: { sub: profile.sub }});
+        token.sub = profile.sub;
+        token.id = user?.id;
       };
       return token;
     },
     async session({ session, token }: any) {
       if (session.user) {
         session.user.sub = token.sub as string;
-      }
+        session.user.id = token.id as string;
+      };
       return session;
     }
   },

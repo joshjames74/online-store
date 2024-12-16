@@ -41,6 +41,9 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
 
   const loadData = () => {
     setIsLoading(true);
+    if (!user.id) {
+      return;
+    }
     getAddressesByUserId(user.id)
       .then((addresses) => setAddresses(addresses))
       .catch((error) => console.error(error))

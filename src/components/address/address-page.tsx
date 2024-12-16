@@ -26,11 +26,12 @@ export default function AddressesPage(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!id) return;
     getAddressesByUserId(id)
       .then((res) => setAddresses(res))
       .catch((error) => console.error(error))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [id]);
 
   if (isLoading) {
     return <></>;
