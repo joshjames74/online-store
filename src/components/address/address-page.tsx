@@ -27,15 +27,9 @@ export default function AddressesPage(): JSX.Element {
 
   useEffect(() => {
     getAddressesByUserId(id)
-      .then((res) => {
-        setAddresses(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((res) => setAddresses(res))
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
   }, []);
 
   if (isLoading) {

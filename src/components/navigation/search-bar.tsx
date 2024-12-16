@@ -37,7 +37,6 @@ export default function SearchBar(): JSX.Element {
 
   // fetch categories
   useEffect(() => {
-    setIsLoading(true);
     getAllCategories()
       .then((res) => setCategories(res))
       .catch((error) => console.error(error))

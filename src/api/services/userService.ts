@@ -16,6 +16,12 @@ export async function getUserById(id: string): Promise<Usr | null> {
   });
 }
 
+export async function getUserBySub(id: string): Promise<Usr | null> {
+  return await prisma.usr.findFirst({
+    where: { sub: id },
+  });
+};
+
 export async function getUsersByCountryId(id: number): Promise<Usr[] | void> {
   return await prisma.usr.findMany({
     where: { countryId: id },

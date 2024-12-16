@@ -39,6 +39,7 @@ export default function CheckoutPage({
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const user = useUserState((state) => state.user);
   const currency = useUserState((state) => state.currency);
   const { theme } = useContext(ThemeContext);
@@ -47,7 +48,7 @@ export default function CheckoutPage({
   const router = useRouter();
 
   const [addresses, setAddresses] = useState<Address[]>();
-  const [addressId, setAddressId] = useState<number>();
+  const [addressId, setAddressId] = useState<string>();
 
   const onSubmit = (event: FormEvent<any>) => {
     const pendingToast = toast({
@@ -77,10 +78,6 @@ export default function CheckoutPage({
           duration: 1000,
         });
         router.push("/user/orders");
-        // reload required things
-        getBasketByUserId(user.id, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
         getOrdersByUserId({ id: user.id, params: {} as any, cache: "reload" })
           .then(() => {})
           .catch((error) => console.error(error));
@@ -145,7 +142,7 @@ export default function CheckoutPage({
                   <Select
                     placeholder="Select Address"
                     onChange={(event) =>
-                      setAddressId(parseInt(event.target.value))
+                      setAddressId(event.target.value)
                     }
                   >
                     {addresses.map((address) => (

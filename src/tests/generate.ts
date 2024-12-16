@@ -47,7 +47,7 @@ export const generateMockProduct = (ids?: string[]): Product => {
     product.sellerId = getRandomElement(ids);
   }
   product.title = faker.commerce.productName();
-  product.description = faker.commerce.productDescription();
+  product.description = faker.lorem.paragraphs({ min: 1, max: 10 });
   product.price = faker.number.float({ fractionDigits: 2, max: 10000 });
   product.review_count = faker.number.int({ min: 0, max: 10000 });
   product.review_score = faker.number.float({ min: 0, max: 5 });
@@ -129,9 +129,9 @@ export const generateMockReview = (
   review.productId = getRandomElement(productIds);
   review.usrId = getRandomElement(usrIds);
   review.score = faker.number.int({ min: 0, max: 5 });
-  review.title = faker.lorem.sentence();
+  review.title = faker.lorem.sentence({ min: 1, max: 100 });
   review.image_urls = "";
-  review.date = faker.date.recent();
+  review.date = faker.date.anytime();
   review.content = faker.lorem.paragraph({ min: 0, max: 10 });
   return review;
 };
@@ -143,7 +143,7 @@ export const generateMockAddress = (
   const address: Address = {} as Address;
   address.id = randomUUID();
   address.usrId = getRandomElement(usrIds);
-  address.name = faker.lorem.sentence();
+  address.name = faker.lorem.sentence({ min: 1, max: 100 });
   address.address_line_1 = faker.location.streetAddress();
   address.address_line_2 = `${faker.location.county()}, ${faker.location.state()}`;
   address.area_code = faker.location.zipCode();

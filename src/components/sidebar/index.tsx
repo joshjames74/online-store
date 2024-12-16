@@ -41,14 +41,7 @@ export default function Sidebar(): JSX.Element {
     clearParams();
     executeSearch();
   };
-
-  // remove
-  const params = useSearchParamsState((state) => state.params);
-  useEffect(() => {
-    console.log("new params:");
-    console.log(params);
-  }, [params]);
-
+  
   const sidebar = () => {
     return (
       <Card className={styles.container} h="fit-content" minW="2xs">

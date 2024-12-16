@@ -16,7 +16,6 @@ import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import ReviewStars from "./review-stars";
 import { getReviewCountsByProductId } from "@/api/request/reviewRequest";
-import ReviewCardSkeleton from "./review-card-skeleton";
 import { useReviewSearchStore } from "@/zustand/store";
 import { useRouter } from "next/navigation";
 import { formatReviewScore } from "@/api/helpers/utils";
@@ -112,42 +111,42 @@ export default function ReviewSummary({
   id: number;
   score: number;
 }): JSX.Element {
-  const [counts, setCounts] = useState<number[]>([]);
+  
   const [percentages, setPercentages] = useState<number[]>([]);
   const [total, setTotal] = useState<number>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    setIsLoading(true);
-    getReviewCountsByProductId(id)
+  const loadData = async () => {
+    await getReviewCountsByProductId(id)
       .then((res: number[]) => {
         // compute total and percentages
         const total = res.reduce((partialSum, curr) => partialSum + curr, 0);
         const percentages = res.map((count: number) =>
           total && total > 0 ? count / total : 0,
         );
-
-        setCounts(res);
         setTotal(total);
         setPercentages(percentages);
       })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+      .catch((error) => console.log(error))
+      .finally(() => setIsLoading(false));
+  }
 
+  
   const { theme } = useContext(ThemeContext);
-
+  
   const params = useReviewSearchStore((state) => state.params);
+  const updateScore = useReviewSearchStore((state) => state.updateScore);
   const clearParams = useReviewSearchStore((state) => state.clearParams);
-  const setParams = useReviewSearchStore((state) => state.setParams);
   const getAsUrl = useReviewSearchStore((state) => state.getAsUrl);
 
+
+  // to do: reload when create review
+  useEffect(() => {
+    loadData();
+  }, []);
+
   const handleClickReviewScore = (score: number) => {
-    setParams({ score: score });
+    updateScore(score);
   };
 
   const handleClearFilters = () => {

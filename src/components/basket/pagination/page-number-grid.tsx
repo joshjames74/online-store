@@ -16,9 +16,6 @@ export default function PageNumberGrid({
   const { pageNumber, onClickPageNumber, maxPages } = params;
   const { theme } = useContext(ThemeContext);
 
-  console.log("max pages");
-  console.log(maxPages);
-
   const PageBox = (value: number, isSelected: boolean, key: number) => {
     return (
       <Button

@@ -11,6 +11,10 @@ export async function getUserByEmail(
   return fetchData(`/api/user/by-email/${email}`, cache);
 }
 
+export async function getUserBySub(sub: string): Promise<Usr> {
+  return fetchData(`/api/user/by-sub/${sub}`, "no-cache");
+};
+
 // PUT methods
 
 export async function putUserCurrencyById(

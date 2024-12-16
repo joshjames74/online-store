@@ -10,11 +10,13 @@ import { ThemeContext } from "@/contexts/theme-context";
 import SignInButton from "./account-button/sign-in-button";
 import Logo from "./logo";
 import {
+  RenderComponentIfLoading,
   RenderComponentIfLoggedIn,
   RenderComponentIfLoggedOut,
 } from "../auth/render-conditionally";
 
 export default function NavigationWide(): JSX.Element {
+
   const { theme } = useContext(ThemeContext);
 
   const renderLoading = (): JSX.Element => {
@@ -66,7 +68,12 @@ export default function NavigationWide(): JSX.Element {
 
   return (
     <>
-      <RenderComponentIfLoggedIn>{renderLoggedIn()}</RenderComponentIfLoggedIn>
+      <RenderComponentIfLoading>
+        {renderLoading()}
+      </RenderComponentIfLoading>
+      <RenderComponentIfLoggedIn>
+        {renderLoggedIn()}
+      </RenderComponentIfLoggedIn>
       <RenderComponentIfLoggedOut>
         {renderLoggedOut()}
       </RenderComponentIfLoggedOut>

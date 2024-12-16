@@ -14,13 +14,11 @@ import { useContext } from "react";
 import styles from "./address-card.module.css";
 import {
   deleteAddressById,
-  getAddressesByUserId,
 } from "@/api/request/addressRequest";
 import { useUserState } from "@/zustand/store";
 
 export default function AddressCard(
   address: Address,
-  isDefault?: boolean,
 ): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const toast = useToast();
@@ -36,10 +34,6 @@ export default function AddressCard(
     });
     deleteAddressById(address.id)
       .then((res) => {
-        // reload cached addresses
-        getAddressesByUserId(address.usrId, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
         // display success
         toast.update(pendingToast, {
           title: "Deleted address successfully",

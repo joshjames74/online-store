@@ -6,30 +6,32 @@ import {
 } from "@/api/request/addressRequest";
 import {
   deleteBasketById,
+  deleteBasketItemById,
   getBasketByUserId,
+  postBasketItem,
   putBasketItemQuantityById,
 } from "@/api/request/basketRequest";
 import { getCountryById } from "@/api/request/countryRequest";
 import { getCurrencyById } from "@/api/request/currencyRequest";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
+import { getReviewsBySearch } from "@/api/request/reviewRequest";
 import {
-  getUserByEmail,
-  postUser,
+  getUserBySub,
   putUserCountryById,
   putUserCurrencyById,
   putUserDefaultAddress,
 } from "@/api/request/userRequest";
 import { AddressWithCountry } from "@/api/services/addressService";
-// to do: why from service?
-import { Basket, deleteBasketItemById } from "@/api/services/basketItemService";
+import { Basket } from "@/api/services/basketItemService";
 import { ProductsWithMetadata } from "@/api/services/productService";
+import { ReviewWithUser } from "@/api/services/reviewService";
 import { OrderParams } from "@/api/transformers/orderSearchTransformer";
 import {
   ProductFilter,
   ProductParams,
 } from "@/api/transformers/productSearchTransformer";
-import { ReviewParams } from "@/api/transformers/reviewSearchTransformer";
-import { Address, Country, Currency, Usr } from "@prisma/client";
+import { ReviewFilter, ReviewParams } from "@/api/transformers/reviewSearchTransformer";
+import { Country, Currency, Usr } from "@prisma/client";
 import { Session } from "next-auth";
 import { create } from "zustand";
 
@@ -167,13 +169,77 @@ export const useSearchResultsState = create<SearchResultsState>((set, get) => ({
 
 export type BasketItemCoreProperties = { [key: number]: number };
 
+
+// Review search state
+
+export type PageReviewParam = Partial<Omit<ReviewParams, "productId">>;
+
 export interface ReviewSearchState {
-  params: Partial<ReviewParams>;
-  setParams: (params: Partial<ReviewParams>) => void;
+  productId: number;
+  params: PageReviewParam;
+  reviews: ReviewWithUser[];
+
+  setParams: (params: PageReviewParam) => void;
+  setReviews: (reviews: ReviewWithUser[]) => void;
+  setProductId: (productId: number) => void;
+
+  updateParams: (params: PageReviewParam) => void;
+  updateReviewFilter: (review_filter: ReviewFilter) => void;
+  updateScore: (score: number) => void;
+  updateProductId: (productId: number) => void;
+
+
+
+  getReviews: () => Promise<void>;
   getAsUrl: () => string;
   clearParams: () => void;
 }
 
+export const useReviewSearchStore = create<ReviewSearchState>((set, get) => ({
+  productId: -1,
+  params: {},
+  reviews: [],
+
+  setParams: (params) => set({ params: { ...get().params, ...params } }),
+  setReviews: (reviews) => set({ reviews: reviews }),
+  setProductId: (productId) => set({ productId: productId }),
+
+  updateParams: (params) => {
+    get().setParams(params);
+    get().getReviews();
+  },
+  updateReviewFilter: (review_filter) => {
+    get().setParams({ review_filter: review_filter });
+    get().getReviews();
+  },
+  updateScore: (score) => {
+    get().setParams({ score: score });
+    get().getReviews();
+  },
+  updateProductId: (productId) => {
+    get().setProductId(productId);
+    get().getReviews();
+  },
+
+  getReviews: async () => {
+    const params: Partial<ReviewParams> = { ...get().params, productId: get().productId } ;
+    await getReviewsBySearch(params)
+      .then((res) => set({ reviews: res }))
+      .catch((error) => console.error(error));
+  },
+
+  getAsUrl: () => {
+    const params = get().params;
+    const urlParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => urlParams.append(key, value.toString()));
+    return urlParams.toString();
+  },
+  clearParams: () => {
+    set({ params: {} });
+  },
+}));
+
+// Order search state
 export interface OrderSearchState {
   params: Partial<OrderParams>;
   setParams: (params: Partial<OrderParams>) => void;
@@ -183,31 +249,6 @@ export interface OrderSearchState {
 
 // Storage states
 
-export interface BasketState {
-  basket: Basket;
-  userId: string;
-  setUserId: (userId: string) => void;
-  fetchBasket: (cache?: RequestCache) => Promise<void>;
-  deleteBasket: () => Promise<void>;
-  putBasketItem: (id: string, quantity: number) => Promise<void>;
-  deleteBasketItem: (id: string) => Promise<void>;
-}
-
-export const useReviewSearchStore = create<ReviewSearchState>((set, get) => {
-  return {
-    params: {},
-    setParams: (params) => set({ params: { ...get().params, ...params } }),
-    getAsUrl: () => {
-      const params = get().params;
-      const urlParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        urlParams.append(key, value.toString());
-      });
-      return urlParams.toString();
-    },
-    clearParams: () => set({ params: {} }),
-  };
-});
 
 export const useOrderSearchStore = create<OrderSearchState>((set, get) => {
   return {
@@ -225,32 +266,75 @@ export const useOrderSearchStore = create<OrderSearchState>((set, get) => {
   };
 });
 
+// Basket state
+
+export interface BasketState {
+  basket: Basket;
+  userId: string;
+
+  setBasket: (basket: Basket) => void;
+  setUserId: (userId: string) => void;
+
+  updateUserId: (userId: string) => void;
+
+  fetchBasket: () => Promise<void>;
+  deleteBasket: () => Promise<void>;
+  putBasketItem: (id: string, quantity: number) => Promise<void>;
+  deleteBasketItem: (id: string) => Promise<void>;
+  postBasketItem: (productId: number, quantity: number) => Promise<void>;
+}
+
 export const useBasketState = create<BasketState>((set, get) => ({
   basket: {} as Basket,
   userId: "",
+
+  setBasket: (basket: Basket) => set({ basket: basket }),
   setUserId: (userId: string) => set({ userId: userId }),
-  fetchBasket: async (cache?: RequestCache) => {
+
+  updateUserId: (userId: string) => {
+    get().setUserId(userId);
+    get().fetchBasket();
+  },
+
+  fetchBasket: async () => {
     const userId = get().userId;
-    await getBasketByUserId(userId, cache)
-      .then((res) => set({ basket: res }))
+    if (!userId) {
+      return;
+    }
+    await getBasketByUserId(userId)
+      .then((res) => get().setBasket(res))
       .catch((error) => console.error(error));
   },
+
   deleteBasket: async () => {
     const userId = get().userId;
     await deleteBasketById(userId)
       .then((res) => get().fetchBasket())
       .catch((error) => console.error(error));
   },
-  putBasketItem: async (id: string, quantity: number) => {
-    await putBasketItemQuantityById(id, quantity).then(() =>
-      get()
-        .fetchBasket("reload")
-        .catch((error) => console.error(error)),
-    );
-  },
   deleteBasketItem: async (id: string) => {
     await deleteBasketItemById(id)
-      .then(() => get().fetchBasket("reload"))
+      .then(() => get().fetchBasket())
+      .catch((error) => console.error(error));
+  },
+
+  putBasketItem: async (id: string, quantity: number) => {
+    await putBasketItemQuantityById(id, quantity)
+      .then(() => get().fetchBasket()
+      .catch((error) => console.error(error)),
+  );
+  },
+  postBasketItem: async (productId: number, quantity: number) => {
+    const userId = get().userId;
+    if (!userId) {
+      return;
+    };
+    await postBasketItem({
+      usrId: userId,
+      productId: productId,
+      quantity: quantity,
+    })
+      .then(() => get().fetchBasket())
       .catch((error) => console.error(error));
   },
 }));
@@ -262,28 +346,23 @@ export interface UserState {
   currency: Currency;
   country: Country;
   defaultAddress: AddressWithCountry;
-
+  
   setUser: (user: Usr) => void;
   setCurrency: (currency: Currency) => void;
   setCountry: (country: Country) => void;
   setDefaultAddress: (address: AddressWithCountry) => void;
-
+  
   updateCurrency: (id: number) => Promise<void>;
   updateCountry: (id: number) => Promise<void>;
   updateDefaultAddress: (id: string) => Promise<void>;
-
-  findOrPostUser: (
-    email: string,
-    name: string,
-    image_url: string,
-  ) => Promise<void>;
-
-  getUser: () => Promise<void>;
+  
+  getUser: (sub: string) => Promise<void>;
   getCurrency: () => Promise<void>;
   getCountry: () => Promise<void>;
   getDefaultAddress: () => Promise<void>;
-
+  
   loadUserState: (session: Session | null) => Promise<void>;
+  reload: () => Promise<void>;
 }
 
 export const useUserState = create<UserState>((set, get) => ({
@@ -291,20 +370,20 @@ export const useUserState = create<UserState>((set, get) => ({
   currency: {} as Currency,
   country: {} as Country,
   defaultAddress: {} as AddressWithCountry,
-
+  
   setUser: (user: Usr) => set({ user: user }),
   setCurrency: (currency: Currency) => set({ currency: currency }),
   setCountry: (country: Country) => set({ country: country }),
   setDefaultAddress: (address: AddressWithCountry) =>
     set({ defaultAddress: address }),
-
+  
   updateCurrency: async (id: number) => {
     // check user
     const userState = get().user;
-    if (!userState || !userState.id) {
+    if (!userState || !userState.sub) {
       return;
     }
-
+    
     // update user country
     const updatedUser = await putUserCurrencyById(userState.id, id).catch(
       (error) => console.error(error),
@@ -312,16 +391,16 @@ export const useUserState = create<UserState>((set, get) => ({
     if (!updatedUser) {
       return;
     }
-
+    
     // update user and currency
-    await get().getUser();
+    await get().getUser(userState.sub);
     await get().getCurrency();
   },
-
+  
   updateCountry: async (id: number) => {
     //
     const userState = get().user;
-    if (!userState || !userState.id) {
+    if (!userState || !userState.sub) {
       return;
     }
 
@@ -331,57 +410,29 @@ export const useUserState = create<UserState>((set, get) => ({
     if (!updatedUser) {
       return;
     }
-
-    await get().getUser();
+    
+    await get().getUser(userState.sub);
     await get().getCountry();
   },
   updateDefaultAddress: async (id: string) => {
     const userState = get().user;
-    if (!userState || !userState.id) {
+    if (!userState || !userState.sub) {
       return;
     }
-
+    
     const updatedUser = await putUserDefaultAddress(userState.id, id).catch(
       (error) => console.error(error),
     );
     if (!updatedUser) {
       return;
     }
-
-    await get().getUser();
+    
+    await get().getUser(userState.sub);
     await get().getDefaultAddress();
-    await getAddressesByUserId(userState.id, "reload");
+    await getAddressesByUserId(userState.id);
   },
-
-  findOrPostUser: async (
-    email: string,
-    name: string,
-    image_url: string,
-  ): Promise<void> => {
-    const user = await getUserByEmail(email, "reload").catch((error) =>
-      console.error(error),
-    );
-    if (user) {
-      get().setUser(user);
-      return;
-    }
-
-    const post = await postUser({ email, name, image_url }).catch((error) =>
-      console.log(error),
-    );
-    if (post) {
-      get().setUser(post);
-      return;
-    }
-    return;
-  },
-  getUser: async () => {
-    const userState = get().user;
-    if (!userState || !userState.email) {
-      return;
-    }
-
-    const user = await getUserByEmail(userState.email, "reload").catch(
+  getUser: async (sub: string) => {
+    const user = await getUserBySub(sub).catch(
       (error) => console.log(error),
     );
     if (!user) {
@@ -394,7 +445,7 @@ export const useUserState = create<UserState>((set, get) => ({
     if (!userState || !userState.currencyId) {
       return;
     }
-
+    
     const currency = await getCurrencyById(userState.currencyId).catch(
       (error) => console.log(error),
     );
@@ -408,36 +459,43 @@ export const useUserState = create<UserState>((set, get) => ({
     if (!userState || !userState.countryId) {
       return;
     }
-
+    
     const country = await getCountryById(userState.countryId).catch((error) =>
       console.error(error),
-    );
-    if (!country) {
-      return;
+  );
+  if (!country) {
+    return;
+  }
+  get().setCountry(country);
+},
+getDefaultAddress: async () => {
+  const userState = get().user;
+  if (!userState || !userState.defaultAddressId) {
+    return;
+  }
+  
+  const address = await getAddressById(userState.defaultAddressId);
+  if (!address) {
+    return;
+  }
+  get().setDefaultAddress(address);
+},
+
+loadUserState: async (session: any | null) => {
+  if (!session?.user || !session?.user?.sub) {
+    return;
     }
-    get().setCountry(country);
+    await get().getUser(session.user.sub || "");
+    await get().getCurrency();
+    await get().getCountry();
+    await get().getDefaultAddress();
   },
-  getDefaultAddress: async () => {
+  reload: async () => {
     const userState = get().user;
-    if (!userState || !userState.defaultAddressId) {
+    if (!userState || !userState.sub) {
       return;
     }
-
-    const address = await getAddressById(userState.defaultAddressId);
-    if (!address) {
-      return;
-    }
-    get().setDefaultAddress(address);
-  },
-
-  loadUserState: async (session: Session | null) => {
-    if (!session?.user || !session?.user?.email) {
-      return;
-    }
-    const email = session.user.email;
-    const name = session.user.name || "";
-    const image_url = session.user.image || "";
-    await get().findOrPostUser(email, name, image_url);
+    await get().getUser(userState.sub);
     await get().getCurrency();
     await get().getCountry();
     await get().getDefaultAddress();

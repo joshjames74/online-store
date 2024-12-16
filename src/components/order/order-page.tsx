@@ -29,15 +29,9 @@ export default function OrderPage(): JSX.Element {
     setIsLoading(true);
 
     getOrdersByUserId({ id: id, params: searchData })
-      .then((res: OrderWithMetadata[]) => {
-        setOrders(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((res: OrderWithMetadata[]) => setOrders(res))
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {

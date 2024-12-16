@@ -12,32 +12,21 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import BasketProductCard from "./basket-product-card";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import styles from "./basket-page.module.css";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { useBasketState, useUserState } from "@/zustand/store";
 
+
 export default function BasketPage(): JSX.Element {
   const { theme } = useContext(ThemeContext);
 
-  const user = useUserState((state) => state.user);
   const currency = useUserState((state) => state.currency);
 
-  const basket = useBasketState((state) => state.basket);
-  const setUserId = useBasketState((state) => state.setUserId);
-  const userId = useBasketState((state) => state.userId);
+  const basket = useBasketState((state) => state.basket);  
   const deleteBasket = useBasketState((state) => state.deleteBasket);
-  const fetchBasket = useBasketState((state) => state.fetchBasket);
-
-  useEffect(() => {
-    setUserId(user.id);
-  }, [user.id]);
-
-  useEffect(() => {
-    fetchBasket();
-  }, [userId]);
 
   const handleDelete = async () => await deleteBasket();
 

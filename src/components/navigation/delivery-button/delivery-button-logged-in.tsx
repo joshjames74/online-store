@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useUserState } from "@/zustand/store";
 import { ThemeContext } from "@/contexts/theme-context";
 import { AddressWithCountry } from "@/api/services/addressService";
+import { useDebounce } from "use-debounce";
 
 export default function DeliveryButtonLoggedIn(): JSX.Element {
   const { theme } = useContext(ThemeContext);
@@ -35,6 +36,8 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [debouncedId] = useDebounce(user.id, 500);
 
   const loadData = () => {
     setIsLoading(true);
@@ -55,7 +58,7 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
 
   useEffect(() => {
     loadData();
-  }, [user]);
+  }, [debouncedId]);
 
   if (isLoading) {
     return (
@@ -65,7 +68,7 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
     );
   }
 
-  if (!isLoading && !addresses.length) {
+  if (!addresses.length) {
     return (
       <Link href="/user/addresses/add">
         <Button className={styles.text_button}>Create address</Button>

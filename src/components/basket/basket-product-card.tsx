@@ -46,17 +46,19 @@ export default function BasketProductCard({
   const handleIncrementQuantity = () => updateQuantity(1);
   const handleDecrementQuantity = () => updateQuantity(-1);
 
-  const updateQuantity = async (quantity: number) => {
+  const updateQuantity = (quantity: number) => {
     setIsLoadingQuantity(true);
     const newQuantity = Math.max(basketItem.quantity + quantity, 0);
-    await putBasketItem(basketItem.id, newQuantity);
-    setIsLoadingQuantity(false);
+    putBasketItem(basketItem.id, newQuantity)
+      .catch(error => console.error(error))
+      .finally(() => setIsLoadingQuantity(false));
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     setIsLoadingDelete(true);
-    await deleteBasketItem(basketItem.id);
-    setIsLoadingDelete(false);
+    deleteBasketItem(basketItem.id)
+      .catch(error => console.error(error))
+      .finally(() => setIsLoadingDelete(false));
   };
 
   const handleStatus = () => {

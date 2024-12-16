@@ -7,23 +7,20 @@ import {
   HStack,
   Select,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import ReviewCard from "./review-card";
 import styles from "./review-grid.module.css";
 import ReviewSummary from "./review-summary";
 import ReviewForm from "./review-form";
-import ReviewCardSkeleton from "./review-card-skeleton";
-import { useSearchParams } from "next/navigation";
 import { useReviewSearchStore } from "@/zustand/store";
 import {
   ReviewFilter,
-  ReviewParams,
 } from "@/api/transformers/reviewSearchTransformer";
-import { getReviewsBySearch } from "@/api/request/reviewRequest";
 import { useRouter } from "next/navigation";
 import { PlusOutlined } from "@ant-design/icons";
 import { ThemeContext } from "@/contexts/theme-context";
 import { ReviewWithUser } from "@/api/services/reviewService";
+import { RenderComponentIfLoggedIn } from "../auth/render-conditionally";
 
 export default function ReviewGrid({
   id,
@@ -32,21 +29,22 @@ export default function ReviewGrid({
   id: number;
   score: number;
 }): JSX.Element {
+
   const { theme } = useContext(ThemeContext);
 
-  const [reviews, setReviews] = useState<ReviewWithUser[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState<boolean>(false);
 
-  const setParams = useReviewSearchStore((state) => state.setParams);
   const params = useReviewSearchStore((state) => state.params);
+  const clearParams = useReviewSearchStore((state) => state.clearParams);
+  const updateReviewFilter = useReviewSearchStore((state) => state.updateReviewFilter);
+  const updateProductId = useReviewSearchStore((state) => state.updateProductId);
   const getAsUrl = useReviewSearchStore((state) => state.getAsUrl);
+  const reviews = useReviewSearchStore((state) => state.reviews);
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const handleChangeFilter = (filter: number) => {
-    setParams({ review_filter: filter });
+    updateReviewFilter(filter);
     router.push(`?${getAsUrl()}`);
   };
 
@@ -54,39 +52,11 @@ export default function ReviewGrid({
     setShowForm(!showForm);
   };
 
-  const fetchData = () => {
-    const reviewParams: Partial<ReviewParams> = {};
-    reviewParams.productId = id;
+  const loadProductId = useMemo(() => {
+    clearParams();
+    updateProductId(id);
+  }, [id])
 
-    const score = searchParams.get("score");
-    if (score && !isNaN(parseInt(score))) {
-      reviewParams.score = parseInt(score);
-    }
-
-    const filter = parseInt(searchParams.get("review_filter") || "");
-    if (
-      filter &&
-      Object.values(ReviewFilter).includes(filter as ReviewFilter)
-    ) {
-      reviewParams.review_filter = filter;
-    }
-
-    setIsLoading(true);
-    getReviewsBySearch(reviewParams)
-      .then((res) => setReviews(res))
-      .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false));
-    delete reviewParams.productId;
-    setParams(reviewParams);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [searchParams]);
 
   return (
     <>
@@ -121,21 +91,19 @@ export default function ReviewGrid({
                 <option value={ReviewFilter.DATE_OLD_TO_NEW}>Oldest</option>
               </Select>
             </HStack>
-            <Button
-              onClick={handleClickButton}
-              minW="fit-content"
-              gap={2}
-              bgColor={theme.colors.accent.primary}
-            >
-              <PlusOutlined /> <p className={styles.review_text}>Add Review</p>
-            </Button>
+            <RenderComponentIfLoggedIn>
+              <Button
+                onClick={handleClickButton}
+                minW="fit-content"
+                gap={2}
+                bgColor={theme.colors.accent.primary}
+              >
+                <PlusOutlined /> <p className={styles.review_text}>Add Review</p>
+              </Button>
+            </RenderComponentIfLoggedIn>
           </HStack>
           <Box className={styles.grid_container}>
-            {isLoading ? (
-              Array.from({ length: 3 }).map((_, index: number) => (
-                <ReviewCardSkeleton key={index} />
-              ))
-            ) : reviews?.length ? (
+            {reviews?.length ? (
               reviews.map((review: ReviewWithUser, index: number) => (
                 <ReviewCard {...review} key={index} />
               ))

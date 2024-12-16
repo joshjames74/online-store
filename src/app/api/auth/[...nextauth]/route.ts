@@ -1,43 +1,65 @@
-import NextAuth from "next-auth";
+import NextAuth, { SessionStrategy } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../../lib/prisma";
-import { headers } from "next/headers";
+import { randomUUID } from "crypto";
+
 
 const authOptions = {
-  //adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
+  session: { strategy: "jwt" as SessionStrategy },
   callbacks: {
-    async signIn({ user, account, profile }) {
-      // what if existing user doesn't work but there is a user?
-      // Check if the user already exists
-
-      console.log(user, account, profile);
-      const existingUser = await prisma.usr.findFirst({
-        where: { sub: profile.sub },
-      });
-      console.log(existingUser);
-
-      // If the user does not exist, create a new user
-      if (!existingUser) {
-        await prisma.usr.create({
-          data: {
-            name: profile.name,
-            sub: profile.sub,
-            email: profile.email,
-            image_url: profile.picture,
-          },
+    async signIn({ user, profile }: any) {
+      
+      const { email, name } = user;
+      const sub = profile?.sub;
+      
+      if (!email || !sub) {
+        return false;
+      };
+      
+      try {
+        // Check if the user already exists
+        const existingUser = await prisma.usr.findFirst({
+          where: { sub: sub },
         });
+        
+        if (!existingUser) {
+          // Create a new user in the database
+          await prisma.usr.create({
+            data: {
+              id: randomUUID(),
+              sub: sub,
+              email: email,
+              name: name,
+            },
+          });
+        }
+        
+        return true; // Allow sign-in
+      } catch (error) {
+        console.error('Error during user creation:', error);
+        return false; // Reject sign-in if there's an error
       }
-      return true;
     },
+    async jwt({ token, profile }: any) {
+      if (profile) {
+        token.sub = profile.sub as string;
+      };
+      return token;
+    },
+    async session({ session, token }: any) {
+      if (session.user) {
+        session.user.sub = token.sub as string;
+      }
+      return session;
+    }
   },
-  session: { strategy: "jwt" },
 };
 
 const handler = NextAuth(authOptions);

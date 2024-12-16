@@ -14,9 +14,8 @@ export async function getBasketItemsByUserId(
 
 export async function getBasketByUserId(
   id: string,
-  cache?: RequestCache,
 ): Promise<Basket> {
-  return fetchData<Basket>(`/api/user/${id}/basket`, cache);
+  return fetchData<Basket>(`/api/user/${id}/basket`, "no-cache");
 }
 
 // PUT methods
@@ -49,8 +48,11 @@ export async function postBasketItem(
 // DELETE methods
 
 export async function deleteBasketItemById(id: string): Promise<void> {
-  const response = await axios(`/api/basketItem/${id}`, { method: "DELETE" });
-  return response.data;
+  const response = await fetch(`/api/basketItem/${id}`, { method: "DELETE" });
+  if (!response) {
+    throw new Error("Error deleting basket item");
+  };
+  return response.json();
 }
 
 // to do: rename to user id;

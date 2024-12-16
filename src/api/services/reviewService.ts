@@ -43,7 +43,7 @@ export function createWhereQueryFromParams(params: Partial<ReviewParams>) {
   if (productId) {
     Object.assign(whereQuery, { productId: productId });
   }
-  if (score) {
+  if (score || score === 0) {
     Object.assign(whereQuery, { score: { equals: score } });
   }
 

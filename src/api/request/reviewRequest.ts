@@ -20,9 +20,8 @@ export async function getReviewsByProductId(
 
 export async function getReviewCountsByProductId(
   id: number,
-  cache?: RequestCache,
 ): Promise<number[]> {
-  return fetchData<number[]>(`/api/product/${id}/reviews/summary`, cache);
+  return fetchData<number[]>(`/api/product/${id}/reviews/summary`, "no-cache");
 }
 
 export async function getReviewsBySearch(

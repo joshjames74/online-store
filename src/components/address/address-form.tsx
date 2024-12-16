@@ -11,11 +11,10 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { Address, Country } from "@prisma/client";
+import { Country } from "@prisma/client";
 import { FormEvent, useContext, useEffect, useState } from "react";
 import styles from "./address-form.module.css";
 import {
-  getAddressesByUserId,
   postAddress,
 } from "@/api/request/addressRequest";
 import { useForm } from "react-hook-form";
@@ -57,10 +56,6 @@ export default function AddressForm(): JSX.Element {
 
     postAddress(address)
       .then((res) => {
-        // reload cached addresses
-        getAddressesByUserId(user.id, "reload")
-          .then(() => {})
-          .catch((error) => console.log(error));
         // display success
         toast.update(pendingToast, {
           title: "Address saved successfully",

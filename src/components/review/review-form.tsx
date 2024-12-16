@@ -21,13 +21,10 @@ import { FormEvent, useContext, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
 import { ThemeContext } from "@/contexts/theme-context";
 import {
-  getReviewCountsByProductId,
-  getReviewsBySearch,
   postReview,
 } from "@/api/request/reviewRequest";
 import { useReviewSearchStore, useUserState } from "@/zustand/store";
 import { useForm } from "react-hook-form";
-import { getProductById } from "@/api/request/productRequest";
 import { useRouter } from "next/navigation";
 
 export default function ReviewForm({
@@ -39,6 +36,7 @@ export default function ReviewForm({
   isVisible: boolean;
   onClose: () => void;
 }): JSX.Element {
+
   const { theme } = useContext(ThemeContext);
   const user = useUserState((state) => state.user);
   const toast = useToast();
@@ -54,6 +52,7 @@ export default function ReviewForm({
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
   const clearParams = useReviewSearchStore((state) => state.clearParams);
+  const getReviews = useReviewSearchStore((state) => state.getReviews);
 
   // handle hover actions
   const handleMouseEnter = (score: number) => {
@@ -95,23 +94,10 @@ export default function ReviewForm({
         toast.update(pendingToast, errorToast);
       })
       .finally(() => {
+        // reload reviews
         clearParams();
-
-        // reset the cache status of the reviews
-        getReviewsBySearch({ productId: id }, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
-        getReviewCountsByProductId(id, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
-        getProductById(id, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
-
-        // reload page
+        getReviews();
         onClose();
-        clearParams();
-        location.reload();
       });
   };
 

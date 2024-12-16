@@ -13,10 +13,10 @@ import {
 import styles from "./product-page.module.css";
 import { useContext, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
-import { getBasketByUserId, postBasketItem } from "@/api/request/basketRequest";
 import { useRouter } from "next/navigation";
 import { CheckCircleFilled, CloseCircleOutlined } from "@ant-design/icons";
-import { useUserState } from "@/zustand/store";
+import { useBasketState, useUserState } from "@/zustand/store";
+
 
 export default function ProductBasketCard({
   props,
@@ -36,6 +36,8 @@ export default function ProductBasketCard({
   const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
 
+  const postBasketItem = useBasketState((state) => state.postBasketItem);
+
   const renderStatus = (successful: boolean): JSX.Element => {
     return (
       <Box
@@ -49,27 +51,21 @@ export default function ProductBasketCard({
       </Box>
     );
   };
-
-  const handleClick = async () => {
+  
+  const handleClick = () => {
     setIsLoading(true);
-    try {
-      await postBasketItem({
-        usrId: user.id,
-        productId: id,
-        quantity: quantity,
-      });
-    } catch (error) {
-      setIsSuccessful(false);
-      console.error(error);
-    } finally {
-      await getBasketByUserId(user.id, "reload");
-      setIsLoading(false);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 1000);
-      if (isSuccessful) {
-        router.push("/user/basket");
-      }
-    }
+    postBasketItem(id, quantity)
+      .catch((error) => {
+        setIsSuccessful(false);
+        console.error(error);
+      })
+      .finally(() => {
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 1000);
+        if (isSuccessful) {
+          router.push("/user/basket");
+        }
+      })
   };
 
   return (

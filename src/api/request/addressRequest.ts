@@ -12,10 +12,9 @@ export async function getAddressById(
 }
 
 export async function getAddressesByUserId(
-  id: string,
-  cache?: RequestCache,
+  id: string
 ): Promise<AddressWithCountry[]> {
-  return fetchData<AddressWithCountry[]>(`/api/user/${id}/addresses`, cache);
+  return fetchData<AddressWithCountry[]>(`/api/user/${id}/addresses`, "no-cache");
 }
 
 // POST methods
