@@ -67,6 +67,7 @@ export default function BasketPage(): JSX.Element {
           <Text
             color={theme.colors.accent.tertiary}
             cursor="pointer"
+            fontWeight="semibold"
             _hover={{ textDecoration: "underline" }}
             onClick={handleDelete}
           >
@@ -84,7 +85,7 @@ export default function BasketPage(): JSX.Element {
 
           <HStack justifyContent="right" marginTop="1em">
             <Heading
-              fontWeight="semibold"
+              fontWeight="bold"
               fontSize="xl"
               display="flex"
               flexDirection="row"
@@ -95,7 +96,7 @@ export default function BasketPage(): JSX.Element {
             <Text
               fontWeight="bold"
               fontSize="xl"
-              color={theme.colors.semantic.success}
+              color={theme.colors.accent.tertiary}
             >
               {basket.metadata &&
                 convertAndFormatToUserCurrency(

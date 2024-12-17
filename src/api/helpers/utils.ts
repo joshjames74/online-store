@@ -65,6 +65,8 @@ export const parseOrderSearchParams = (
   const max_date = parseDate(searchParams, "max_date");
   const skip = parseInt(searchParams.get("skip") || "");
   const take = parseInt(searchParams.get("take") || "");
+  const perPage = parseInt(searchParams.get("perPage") || "");
+  const pageNumber = parseInt(searchParams.get("pageNumber") || "");
 
   const params = {};
   if (min_date) {
@@ -78,6 +80,12 @@ export const parseOrderSearchParams = (
   }
   if (take) {
     Object.assign(params, { take });
+  }
+  if (pageNumber) {
+    Object.assign(params, { pageNumber });
+  }
+  if (perPage) {
+    Object.assign(params, { perPage });
   }
 
   const order_filter_raw = parseInt(searchParams.get("order_filter") || "");

@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  Input,
+  InputGroup,
   Modal,
   ModalBody,
   ModalContent,
@@ -21,6 +23,7 @@ import { useUserState } from "@/zustand/store";
 import { ThemeContext } from "@/contexts/theme-context";
 import { AddressWithCountry } from "@/api/services/addressService";
 import { useDebounce } from "use-debounce";
+import AddressCard from "./address-card";
 
 export default function DeliveryButtonLoggedIn(): JSX.Element {
   const { theme } = useContext(ThemeContext);
@@ -62,6 +65,16 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
   useEffect(() => {
     loadData();
   }, [debouncedId]);
+
+  const isSelected = (addressId: string): boolean => {
+    if (!selectedAddress && addressId === defaultAddress.id) {
+      return true
+    }
+    if (addressId === selectedAddress) {
+      return true
+    }
+    return false;
+  }
 
   if (isLoading) {
     return (
@@ -112,24 +125,19 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalContent>
           <ModalHeader>Addresses</ModalHeader>
-          <ModalBody>
-            <RadioGroup
-              defaultValue={defaultAddress?.id?.toString()}
-              onChange={(value) => setSelectedAddress(value)}
-            >
-              <Stack>
-                {addresses.map((address, index: number) => {
-                  return (
-                    <Radio key={index} value={address.id.toString()}>
-                      <Text noOfLines={1} textOverflow="ellipsis">
-                        {address.name}, {address.address_line_1},{" "}
-                        {address.area_code}, {address.country.name}
-                      </Text>
-                    </Radio>
-                  );
-                })}
-              </Stack>
-            </RadioGroup>
+          <ModalBody maxH="70vh" overflowY="scroll">
+            <Stack>
+              {addresses.map((address, index: number) => {
+                return (
+                  <Box
+                  onClick={() => setSelectedAddress(address.id)}>
+                  <AddressCard 
+                  params={{ address: address, isSelected: isSelected(address.id)} } />
+                  <Input key={index} type="hidden" value={address.id.toString()} />
+                  </Box>
+                );
+              })}
+            </Stack>
           </ModalBody>
           <ModalFooter justifyContent="space-between">
             <Button onClick={() => setIsOpen(false)}>Close</Button>

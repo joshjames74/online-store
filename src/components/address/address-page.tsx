@@ -12,17 +12,17 @@ import {
   Heading,
   Stack,
 } from "@chakra-ui/react";
-import { Address } from "@prisma/client";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import styles from "./address-page.module.css";
 import { useUserState } from "@/zustand/store";
+import { AddressWithCountry } from "@/api/services/addressService";
 
 export default function AddressesPage(): JSX.Element {
   const user = useUserState((state) => state.user);
   const id = user.id;
 
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addresses, setAddresses] = useState<AddressWithCountry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

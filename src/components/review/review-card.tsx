@@ -27,6 +27,7 @@ import { formatDate } from "@/api/helpers/utils";
 import { getProductById } from "@/api/request/productRequest";
 import { ReviewWithUser } from "@/api/services/reviewService";
 
+
 export default function ReviewCard(review: ReviewWithUser): JSX.Element {
   const user = useUserState((state) => state.user);
   const clearParams = useReviewSearchStore((store) => store.clearParams);
@@ -80,7 +81,7 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
 
   return (
     <Card className={styles.container} maxW="2xl">
-      <CardHeader paddingY="0.6em" w="full">
+      <CardHeader w="full" paddingBottom="0">
         <HStack justifyContent="space-around" w="full">
           <HStack flex={1} overflow="hidden" w="full">
             <Avatar
@@ -97,8 +98,6 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
           </Text>
         </HStack>
       </CardHeader>
-
-      <Divider />
 
       <CardBody>
         <HStack paddingBottom="0.4em">

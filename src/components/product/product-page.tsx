@@ -42,6 +42,7 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
         maxW="5xl"
         w="full"
         className={styles.product_container}
+        shadow={"none"}
       >
         <CardBody>
           <HStack
@@ -60,13 +61,15 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
               display="flex"
               padding="1em"
               borderRadius="0.4em"
+              height="fit-content"
+              marginRight="0.4em"
             >
               <Image
-                minW="300px"
-                minH="50px"
+                height="400px"
+                width="600px"
                 objectFit="contain"
                 borderRadius="md"
-                src="https://4.img-dpreview.com/files/p/E~TS590x0~articles/3925134721/0266554465.jpeg"
+                src={product.image_url}
               />
             </Box>
             <Stack w="full">
@@ -93,11 +96,6 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
                   <Text fontSize="md">{product.seller?.name}</Text>
                 </Link>
               </HStack>
-              <Divider
-                w="100%"
-                className={styles.divider}
-                bgColor={theme.colors.border.background}
-              />
               <Heading
                 fontSize="3xl"
                 fontWeight="semibold"

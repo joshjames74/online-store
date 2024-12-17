@@ -21,6 +21,7 @@ export async function getAddressesByUserId(
   return await prisma.address.findMany({
     where: { usrId: id, isDeleted: false },
     include: { country: true },
+    orderBy: { id: "desc" },
   });
 }
 

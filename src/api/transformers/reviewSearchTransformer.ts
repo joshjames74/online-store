@@ -23,6 +23,8 @@ export type ReviewParams = {
   productId: number;
   score: number;
   review_filter: ReviewFilter;
+  perPage: number;
+  pageNumber: number;
 };
 
 export const reviewQueryTransformer: ReviewQueryTransformer = (

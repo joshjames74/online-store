@@ -1,61 +1,130 @@
 "use client";
-import { parseOrderSearchParams } from "@/api/helpers/utils";
-import { getOrdersByUserId } from "@/api/request/orderRequest";
-import { OrderWithMetadata } from "@/api/services/orderService";
 import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Heading,
+  HStack,
+  Input,
+  Select,
+  Spinner,
   Stack,
   Text,
+  useMediaQuery,
 } from "@chakra-ui/react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChangeEvent, useEffect, useState } from "react";
 import OrderCard from "./order-card";
 import Link from "next/link";
-import { useUserState } from "@/zustand/store";
+import { useOrderSearchStore, useUserState } from "@/zustand/store";
+import PageNumberGrid from "../basket/pagination/page-number-grid";
+
 
 export default function OrderPage(): JSX.Element {
+
+  const [isLessThan900px] = useMediaQuery("(max-width: 800px)");
+  const router = useRouter();
+
   const user = useUserState((state) => state.user);
   const id = user.id;
 
-  const searchParams = useSearchParams();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [orders, setOrders] = useState<OrderWithMetadata[]>([]);
+  const orders = useOrderSearchStore((state) => state.orders);
+  const params = useOrderSearchStore((state) => state.params);
+  const isLoading = useOrderSearchStore((state) => state.isLoading);
+  const maxPages = useOrderSearchStore((state) => state.maxPages);
+  const pageNumber = params.pageNumber || 1;
 
-  const loadData = () => {
-    const searchData = parseOrderSearchParams(searchParams);
-    setIsLoading(true);
+  const updateUserId = useOrderSearchStore((state) => state.updateUserId);
+  const updateOrderFilter = useOrderSearchStore((state) => state.updateOrderFilter);
+  const updateMinDate = useOrderSearchStore((state) => state.updateMinDate);
+  const updateMaxDate = useOrderSearchStore((state) => state.updateMaxDate);
+  const updatePageNumber = useOrderSearchStore((state) => state.updatePageNumber);
 
-    getOrdersByUserId({ id: id, params: searchData })
-      .then((res: OrderWithMetadata[]) => setOrders(res))
-      .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false));
+  const resetDate = useOrderSearchStore((state) => state.resetDate);
+
+  const getAsUrl = useOrderSearchStore((state) => state.getAsUrl);
+
+  const [showCustom, setShowCustom] = useState<boolean>(false);
+
+  const getDateMinusDays = (days: number): Date => {
+    const currentDate = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(currentDate.getDate() - days);
+    return pastDate;
   };
 
+  const getDateFromEvent = (event: ChangeEvent<HTMLInputElement>): Date | void => {
+    const value = event.target.value;
+    if (!value) return;
+    const date = new Date(value);
+    return date;
+  };
+
+  const handleChangeFilter = (event: ChangeEvent<HTMLSelectElement>): void => {
+    const value = parseInt(event.target.value);
+    updateOrderFilter(value);
+    const url = getAsUrl();
+    router.push(url);
+  };
+
+  const handleDateChange = (event: ChangeEvent<HTMLSelectElement>): void => {
+    const value = parseInt(event.target.value);
+    if (!value || isNaN(value)) {
+      return;
+    }
+
+    if (value === -1) {
+      resetDate();
+      setShowCustom(true);
+      return;
+    }
+    // if not using custom date, make sure date is reset
+    setShowCustom(false);
+    resetDate();
+    
+    const date = getDateMinusDays(value);
+    updateMinDate(date);
+    const url = getAsUrl();
+    router.push(url);
+  }
+
+  const handleChangeMinDate = (event: ChangeEvent<HTMLInputElement>): void => {
+    const date = getDateFromEvent(event);
+    if (!date) return;
+    updateMinDate(date);
+    const url = getAsUrl();
+    router.push(url);
+    return
+  };
+
+  const handleChangeMaxDate = (event: ChangeEvent<HTMLInputElement>): void => {
+    const date = getDateFromEvent(event);
+    if (!date) return;
+    updateMaxDate(date);
+    const url = getAsUrl();
+    router.push(url)
+  }
+
   useEffect(() => {
-    loadData();
-  }, []);
+    if (!id) return;
+    updateUserId(id)
+  }, [id]);
 
-  if (isLoading) {
-    return <Box>Loading...</Box>;
-  }
+  useEffect(() => {
+    console.log("Min date: ", params.min_date?.toDateString());
+    console.log("Max date: ", params.max_date?.toDateString());
+  }, [params.min_date, params.max_date])
 
-  if (!orders || !orders.length) {
-    return (
-      <Stack textAlign="center" w="full" marginTop="1em">
-        <Text>No orders</Text>
-        <Link href="/">
-          <Text>Click here to continue shopping</Text>
-        </Link>
-      </Stack>
-    );
-  }
+  useEffect(() => {
+    console.log(params);
+  }, [params])
+
 
   return (
-    <Stack alignItems="center" padding="1em" width="100%" mx="auto">
-      <Box>
+    <Stack alignItems="center" padding="1em" maxWidth="4xl" w="100vw" minW="300px" mx="auto">
+
+      <Box w="full">
         <Breadcrumb separator=">">
           <BreadcrumbItem>
             <BreadcrumbLink href="/user/account">Your Account</BreadcrumbLink>
@@ -64,15 +133,49 @@ export default function OrderPage(): JSX.Element {
             <BreadcrumbLink>Orders</BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Stack marginTop="1em">
-          {orders.length ? (
-            orders.map((orderView, index) => (
-              <OrderCard params={{ orderView: orderView }} key={index} />
-            ))
-          ) : (
-            <></>
-          )}
-        </Stack>
+        <Heading fontSize="4xl" marginY="0.4em">Your Orders</Heading>
+
+        <HStack w="full" flexDirection={isLessThan900px ? "column" : "row"}>
+          <Select placeholder="Order By" onChange={(event) => handleChangeFilter(event)} w="2xs">
+            <option value={1}>Date: Recent - Old</option>
+            <option value={2}>Date: Old - Recent</option>
+          </Select>
+          <Select placeholder="Date range" onChange={(event) => handleDateChange(event)} w="2xs">
+            <option value={30}>Last 30 days</option>
+            <option value={60}>Last 60 days</option>
+            <option value={90}>Last 90 days</option>
+            <option value={-1}>Custom</option>
+          </Select>
+          <HStack visibility={showCustom ? "visible" : "hidden"} flexDirection={isLessThan900px ? "column" : "row"}>
+            <Input type="datetime-local" onChange={(event) => handleChangeMinDate(event)} w="2xs"/>
+            {isLessThan900px ? <></> : <span>-</span>}
+            <Input type="datetime-local" onChange={(event) => handleChangeMaxDate(event)} w="2xs"/>
+          </HStack>
+        </HStack>
+
+        {isLoading 
+        ? 
+        <Box marginTop="1em">
+          <Spinner />
+        </Box>
+        : (
+          <Stack marginTop="1em" gap="1em">
+            {orders.length ? (
+              orders.map((orderView, index) => (
+                <OrderCard params={{ orderView: orderView }} key={index} />
+              ))
+            ) : (
+              <Stack textAlign="center" w="full" marginTop="1em">
+                <Text>No orders</Text>
+                <Link href="/">
+                  <Text>Click here to continue shopping</Text>
+                </Link>
+              </Stack>
+            )}
+          </Stack>
+        )
+        }
+        {PageNumberGrid({ params: { pageNumber: pageNumber, onClickPageNumber: updatePageNumber, maxPages: maxPages}})}
       </Box>
     </Stack>
   );

@@ -15,8 +15,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const productId = parseInt(searchParams.get("productId") || "");
   const score = parseInt(searchParams.get("score") || "");
   const review_filter = parseInt(searchParams.get("review_filter") || "");
+  const perPage = parseInt(searchParams.get("perPage") || "");
+  const pageNumber = parseInt(searchParams.get("pageNumber") || "");
 
-  const params: Partial<ReviewParams> = { productId, review_filter, score };
+  const params: Partial<ReviewParams> = { productId, review_filter, score, perPage, pageNumber };
 
   return getHelper(getReviewsBySearch, params);
 }

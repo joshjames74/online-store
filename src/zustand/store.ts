@@ -13,6 +13,7 @@ import {
 } from "@/api/request/basketRequest";
 import { getCountryById } from "@/api/request/countryRequest";
 import { getCurrencyById } from "@/api/request/currencyRequest";
+import { getOrdersByUserId } from "@/api/request/orderRequest";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { getReviewsBySearch } from "@/api/request/reviewRequest";
 import {
@@ -23,15 +24,16 @@ import {
 } from "@/api/request/userRequest";
 import { AddressWithCountry } from "@/api/services/addressService";
 import { Basket } from "@/api/services/basketItemService";
+import { OrderWithMetadata } from "@/api/services/orderService";
 import { ProductsWithMetadata } from "@/api/services/productService";
 import { ReviewWithUser } from "@/api/services/reviewService";
-import { OrderParams } from "@/api/transformers/orderSearchTransformer";
+import { OrderFilter, OrderParams } from "@/api/transformers/orderSearchTransformer";
 import {
   ProductFilter,
   ProductParams,
 } from "@/api/transformers/productSearchTransformer";
 import { ReviewFilter, ReviewParams } from "@/api/transformers/reviewSearchTransformer";
-import { Country, Currency, Usr } from "@prisma/client";
+import { Country, Currency, Order, Usr } from "@prisma/client";
 import { Session } from "next-auth";
 import { create } from "zustand";
 
@@ -178,31 +180,37 @@ export interface ReviewSearchState {
   productId: number;
   params: PageReviewParam;
   reviews: ReviewWithUser[];
+  maxPages: number;
 
   setParams: (params: PageReviewParam) => void;
   setReviews: (reviews: ReviewWithUser[]) => void;
   setProductId: (productId: number) => void;
+  setMaxPages: (maxPages: number) => void;
 
   updateParams: (params: PageReviewParam) => void;
   updateReviewFilter: (review_filter: ReviewFilter) => void;
   updateScore: (score: number) => void;
   updateProductId: (productId: number) => void;
+  updatePerPage: (perPage: number) => void;
+  updatePageNumber: (pageNumber: number) => void;
 
-
-
+  getMaxPages: () => Promise<void>;  
   getReviews: () => Promise<void>;
   getAsUrl: () => string;
   clearParams: () => void;
+  resetPagination: () => void;
 }
 
 export const useReviewSearchStore = create<ReviewSearchState>((set, get) => ({
   productId: -1,
-  params: {},
+  params: { perPage: 5, pageNumber: 1 },
   reviews: [],
+  maxPages: 1,
 
   setParams: (params) => set({ params: { ...get().params, ...params } }),
   setReviews: (reviews) => set({ reviews: reviews }),
   setProductId: (productId) => set({ productId: productId }),
+  setMaxPages: (maxPages: number) => set({ maxPages: maxPages }),
 
   updateParams: (params) => {
     get().setParams(params);
@@ -210,19 +218,38 @@ export const useReviewSearchStore = create<ReviewSearchState>((set, get) => ({
   },
   updateReviewFilter: (review_filter) => {
     get().setParams({ review_filter: review_filter });
+    get().resetPagination();
     get().getReviews();
   },
   updateScore: (score) => {
     get().setParams({ score: score });
+    get().resetPagination();
     get().getReviews();
   },
   updateProductId: (productId) => {
     get().setProductId(productId);
+    get().resetPagination();
     get().getReviews();
   },
+  updatePageNumber: (pageNumber: number) => {
+    get().setParams({ pageNumber: pageNumber });
+    get().getReviews();
+  },
+  updatePerPage: (perPage: number) => {
+    get().setParams({ perPage: perPage})
+  },
 
+  getMaxPages: async () => {
+    const params: Partial<ReviewParams> = { ...get().params, productId: get().productId };
+    const { pageNumber, perPage, ...paramsWithoutPagination } = params;
+    const response = await getReviewsBySearch(paramsWithoutPagination).catch((error) => error);
+    const count = response.length;
+    const maxPages = Math.ceil(Math.max(count / (perPage || -1), 0));
+    get().setMaxPages(maxPages);
+  },
   getReviews: async () => {
-    const params: Partial<ReviewParams> = { ...get().params, productId: get().productId } ;
+    await get().getMaxPages();
+    const params: Partial<ReviewParams> = { ...get().params, productId: get().productId };
     await getReviewsBySearch(params)
       .then((res) => set({ reviews: res }))
       .catch((error) => console.error(error));
@@ -232,39 +259,128 @@ export const useReviewSearchStore = create<ReviewSearchState>((set, get) => ({
     const params = get().params;
     const urlParams = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => urlParams.append(key, value.toString()));
-    return urlParams.toString();
+    return `?${urlParams.toString()}`;
   },
   clearParams: () => {
-    set({ params: {} });
+    set({ params: { pageNumber: 1, perPage: 5 }});
+    get().getReviews();
   },
+  resetPagination: () => {
+    set({ params: { ...get().params, pageNumber: 1, perPage: 5 }})
+  }
 }));
 
 // Order search state
+
+
+export type PageOrderParams = Omit<Partial<OrderParams>,"usrId">
+
 export interface OrderSearchState {
-  params: Partial<OrderParams>;
+
+  isLoading: boolean;
+  params: PageOrderParams;
+  userId: string;
+  orders: OrderWithMetadata[];
+  maxPages: number;
+
   setParams: (params: Partial<OrderParams>) => void;
+  setUserId: (id: string) => void;
+  setOrders: (orders: OrderWithMetadata[]) => void;
+  setMaxPages: (maxPages: number) => void;
+
+  updateMinDate: (min_date: Date) => void;
+  updateMaxDate: (max_date: Date) => void;
+  updateOrderFilter: (order_filter: OrderFilter) => void;
+  updatePageNumber: (pageNumber: number) => void;
+  updatePerPage: (perPage: number) => void;
+  updateUserId: (id: string) => void;
+
+  getOrders: () => Promise<void>;
+  getMaxPages: () => Promise<void>;
+
   getAsUrl: () => string;
   clearParams: () => void;
+  resetDate: () => void;
+  resetPagination: () => void;
 }
 
-// Storage states
+export const useOrderSearchStore = create<OrderSearchState>((set, get) => ({
+    isLoading: false,
+    params: { pageNumber: 1, perPage: 5 } as PageOrderParams,
+    userId: "",
+    orders: [] as OrderWithMetadata[],
+    maxPages: 1,
 
-
-export const useOrderSearchStore = create<OrderSearchState>((set, get) => {
-  return {
-    params: {},
     setParams: (params) => set({ params: { ...get().params, ...params } }),
+    setUserId: (id: string) => set({ userId:  id }),
+    setOrders: (orders: OrderWithMetadata[]) => set({ orders: orders }),
+    setMaxPages: (maxPages: number) => set({ maxPages: maxPages }),
+
+    updateMinDate: (min_date: Date) => {
+      get().setParams({ min_date: min_date })
+      get().resetPagination();
+      get().getOrders();
+    },
+    updateMaxDate: (max_date: Date) => {
+      get().setParams({ max_date: max_date })
+      get().resetPagination();
+      get().getOrders();
+    },
+    updateOrderFilter: (order_filter: OrderFilter) => {
+      get().setParams({ order_filter: order_filter });
+      get().resetPagination();
+      get().getOrders();
+    },
+    updatePageNumber: (pageNumber: number) => {
+      get().setParams({ pageNumber: pageNumber })
+      get().getOrders();
+    },
+    updatePerPage: (perPage: number) => {
+      get().setParams({ perPage: perPage })
+    },
+    updateUserId: (id: string) => {
+      get().setUserId(id);
+      get().resetPagination();
+      get().getOrders();
+    },
+
+    getOrders: async () => {
+      set({ isLoading: true });
+      await get().getMaxPages();
+      const params = get().params;
+      const id = get().userId;
+      await getOrdersByUserId({ id, params })
+        .then(res => get().setOrders(res))
+        .catch(error => console.error(error))
+        .finally(() => set({ isLoading: false }));
+    },
+    getMaxPages: async () => {
+      const params = get().params;
+      const { pageNumber, perPage, ...paramsWithoutPagination }: PageOrderParams = params;
+      const id = get().userId;
+      const response = await getOrdersByUserId({ id: id, params: paramsWithoutPagination }).catch(error => console.error(error));
+      const count = response?.length || 0;
+      const maxPages = Math.ceil(Math.max(count / (perPage || -1), 0));
+      get().setMaxPages(maxPages);
+    },
+
     getAsUrl: () => {
       const params = get().params;
       const urlParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         urlParams.append(key, value.toString());
       });
-      return urlParams.toString();
+      return `?${urlParams.toString()}`;
     },
     clearParams: () => set({ params: {} }),
-  };
-});
+    resetDate: () => {
+      get().setParams({ min_date: new Date(0), max_date: new Date(9999999999999) });
+    },
+    resetPagination: () => {
+      set({ params: { ...get().params, pageNumber: 1, perPage: 5 }})
+    }
+  })
+);
 
 // Basket state
 

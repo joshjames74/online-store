@@ -156,7 +156,7 @@ export default function ReviewSummary({
   const router = useRouter();
 
   useEffect(() => {
-    router.push(`?${getAsUrl()}`);
+    router.push(getAsUrl());
   }, [params]);
 
   return (

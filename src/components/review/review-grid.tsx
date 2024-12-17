@@ -21,6 +21,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { ThemeContext } from "@/contexts/theme-context";
 import { ReviewWithUser } from "@/api/services/reviewService";
 import { RenderComponentIfLoggedIn } from "../auth/render-conditionally";
+import PageNumberGrid from "../basket/pagination/page-number-grid";
 
 export default function ReviewGrid({
   id,
@@ -34,10 +35,12 @@ export default function ReviewGrid({
 
   const [showForm, setShowForm] = useState<boolean>(false);
 
+  const maxPages = useReviewSearchStore((state) => state.maxPages);
   const params = useReviewSearchStore((state) => state.params);
   const clearParams = useReviewSearchStore((state) => state.clearParams);
   const updateReviewFilter = useReviewSearchStore((state) => state.updateReviewFilter);
   const updateProductId = useReviewSearchStore((state) => state.updateProductId);
+  const updatePageNumber = useReviewSearchStore((state) => state.updatePageNumber);
   const getAsUrl = useReviewSearchStore((state) => state.getAsUrl);
   const reviews = useReviewSearchStore((state) => state.reviews);
 
@@ -45,7 +48,7 @@ export default function ReviewGrid({
 
   const handleChangeFilter = (filter: number) => {
     updateReviewFilter(filter);
-    router.push(`?${getAsUrl()}`);
+    router.push(getAsUrl());
   };
 
   const handleClickButton = () => {
@@ -57,6 +60,7 @@ export default function ReviewGrid({
     updateProductId(id);
   }, [id])
 
+  const pageNumber = params.pageNumber || 0;
 
   return (
     <>
@@ -116,6 +120,10 @@ export default function ReviewGrid({
                 </CardHeader>
               </Card>
             )}
+          {PageNumberGrid({ params: { 
+      pageNumber: pageNumber, 
+      onClickPageNumber: updatePageNumber, 
+      maxPages: maxPages }})}
           </Box>
         </Box>
       </Box>

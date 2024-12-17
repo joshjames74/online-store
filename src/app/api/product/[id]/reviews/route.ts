@@ -21,11 +21,15 @@ export async function GET(
 
   const score = parseInt(searchParams.get("score") || "");
   const review_filter = parseInt(searchParams.get("review_filter") || "");
+  const perPage = parseInt(searchParams.get("perPage") || "");
+  const pageNumber = parseInt(searchParams.get("pageNumber") || "");
 
   const reviewParams: Partial<ReviewParams> = {
     review_filter,
     score,
     productId: parseInt(id),
+    perPage: perPage,
+    pageNumber: pageNumber,
   };
 
   return getHelper(getReviewsBySearch, reviewParams);

@@ -28,7 +28,7 @@ export default function ProductWide({
 
   return (
     <Link href={`/product/${product.id}`}>
-      <Card maxW="2xl" minW={theme.sizes.minWidth}>
+      <Card w="2xl" minW={theme.sizes.minWidth}>
         <CardBody>
           <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2} w="full">
             <GridItem
@@ -41,11 +41,12 @@ export default function ProductWide({
               alignItems="center"
             >
               <Image
-                objectFit="cover"
-                h="auto"
+                objectFit="contain"
+                h="250px"
                 w="100%"
                 borderRadius="md"
-                src={defaultImageUrl}
+
+                src={product.image_url}
                 alt={product.image_alt}
               />
             </GridItem>

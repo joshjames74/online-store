@@ -25,3 +25,13 @@ body {
     text-wrap: balance;
   }
 }
+
+a {
+  text-decoration: none; /* Default - no underline */
+  transition: text-decoration 0.2s ease;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline; /* Underline on hover */
+}

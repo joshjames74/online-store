@@ -51,8 +51,8 @@ export const generateMockProduct = (ids?: string[]): Product => {
   product.price = faker.number.float({ fractionDigits: 2, max: 10000 });
   product.review_count = faker.number.int({ min: 0, max: 10000 });
   product.review_score = faker.number.float({ min: 0, max: 5 });
-  product.image_url = faker.image.url();
-  product.image_alt = faker.image.urlPlaceholder();
+  product.image_url = faker.image.urlPicsumPhotos();
+  product.image_alt = faker.image.urlPicsumPhotos();
   product.order_count = faker.number.int({ min: 0, max: 10000 });
   product.url = faker.internet.url();
   return product;
@@ -89,7 +89,7 @@ export const generateMockProductWithSeller = (
   product.price = faker.number.float({ fractionDigits: 2, max: 10000 });
   product.review_count = faker.number.int({ min: 0, max: 10000 });
   product.review_score = faker.number.float({ min: 0, max: 5 });
-  product.image_url = faker.image.url();
+  product.image_url = faker.image.urlPicsumPhotos();
   product.image_alt = faker.image.urlPlaceholder();
   product.order_count = faker.number.int({ min: 0, max: 10000 });
   product.url = faker.internet.url();

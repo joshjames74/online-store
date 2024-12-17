@@ -5,6 +5,7 @@ import {
 } from "../transformers/reviewSearchTransformer";
 import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
+import { getSkipTakeFromPage } from "../transformers";
 
 export type ReviewWithUser = ResultType<"review", { usr: true }>;
 
@@ -73,10 +74,19 @@ export async function getReviewById(id: string): Promise<Review | null> {
 
 export async function getReviewsByProductId(
   id: number,
+  perPage: number,
+  pageNumber: number,
 ): Promise<Review[] | void> {
-  return await prisma.review.findMany({
-    where: { productId: id },
-  });
+  const { skip, take } = getSkipTakeFromPage(perPage, pageNumber);
+  const query = { where: { productId: id }};
+  if (skip) {
+    Object.assign(query, { skip: skip });
+  }
+
+  if (take) {
+    Object.assign(query, { take: take });
+  }
+  return await prisma.review.findMany(query);
 }
 
 export async function getReviewsByUserId(id: string): Promise<Review[] | void> {
@@ -91,11 +101,24 @@ export async function getReviewsBySearch(
   const whereQuery = createWhereQueryFromParams(params);
   const orderQuery = createOrderByQueryFromParams(params);
 
-  return await prisma.review.findMany({
+  const query = { 
     where: whereQuery,
     orderBy: orderQuery,
-    include: { usr: true },
-  });
+    include: { usr: true }, 
+  };
+
+  const { skip, take } = getSkipTakeFromPage(params.perPage, params.pageNumber);
+  if (skip) {
+    Object.assign(query, { skip: skip });
+  }
+
+  if (take) {
+    Object.assign(query, { take: take });
+  }
+
+  console.log(query);
+
+  return await prisma.review.findMany(query);
 }
 
 export async function getReviewCountsByProductId(

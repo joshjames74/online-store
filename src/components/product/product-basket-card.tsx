@@ -69,13 +69,12 @@ export default function ProductBasketCard({
   };
 
   return (
-    <Card minW="2xs" className={styles.basket_container}>
-      <CardHeader>
+    <Card minW="2xs" className={styles.basket_container} h="fit-content">
+      <CardHeader paddingBottom="0">
         <Heading fontSize="lg" fontWeight="semibold">
           Add to basket
         </Heading>
       </CardHeader>
-      <Divider color={theme.colors.border.background} />
       <CardFooter>
         <Stack w="full">
           <Select
@@ -101,12 +100,11 @@ export default function ProductBasketCard({
                 <></>
               )
             }
-            bgColor={theme.colors.accent.secondary}
+            bgColor={theme.colors.accent.primary}
             onClick={handleClick}
           >
             {!user.id ? "Sign in to add to basket" : "Add to basket"}
           </Button>
-          <Button bgColor={theme.colors.accent.primary}>Buy now</Button>
         </Stack>
       </CardFooter>
     </Card>

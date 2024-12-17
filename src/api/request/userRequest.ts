@@ -91,3 +91,13 @@ export async function postUser(
   }
   return response.json();
 }
+
+export async function postUserGenerateData(userId: string): Promise<number[]> {
+  const response = await fetch(`/api/user/${userId}/generate-data`, {
+    method: "POST",
+  });
+  if (!response.ok) {
+    throw new Error("Error in posting user");
+  }
+  return response.json();
+}

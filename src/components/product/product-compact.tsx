@@ -34,7 +34,8 @@ export default function ProductCompact({
               h="150px"
               objectFit="cover"
               borderRadius="md"
-              src={defaultImageUrl}
+              src={product.image_url}
+              //src={defaultImageUrl}
             />
             <Heading noOfLines={1} fontSize="lg">
               {product.title}

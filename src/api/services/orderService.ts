@@ -12,16 +12,18 @@ import prisma from "@/lib/prisma";
 export function createWhereQuery(params: Partial<OrderParams>) {
   const whereQuery: any = {};
 
-  if (params.min_date) {
-    whereQuery.date = {
-      gte: params.min_date,
-    };
+  const dateQuery = {};
+
+  if (params.min_date && params.min_date !== undefined) {
+    Object.assign(dateQuery, { gte: params.min_date });
   }
 
-  if (params.max_date) {
-    whereQuery.date = {
-      lte: params.max_date,
-    };
+  if (params.max_date && params.max_date !== undefined) {
+    Object.assign(dateQuery, { lte: params.max_date });
+  }
+
+  if (dateQuery) {
+    whereQuery.date = dateQuery;
   }
 
   if (params.usrId) {

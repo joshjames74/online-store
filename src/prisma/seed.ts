@@ -20,7 +20,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const userCount = 20;
-  const productCount = 100;
+  const productCount = 20;
   const reviewCount = 300;
   const addressCount = 20;
   const orderCount = 20;

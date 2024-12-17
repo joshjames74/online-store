@@ -18,11 +18,11 @@ export async function getOrdersByUserId({
   cache,
 }: {
   id: string;
-  params: Omit<OrderParams, "usrId">;
+  params: Omit<Partial<OrderParams>, "usrId">;
   cache?: RequestCache;
 }): Promise<OrderWithMetadata[]> {
   const url = buildUrl(`/api/user/${id}/orders`, params);
-  return await fetchData(url, cache);
+  return await fetchData(url, "no-cache");
 }
 
 // POST methods

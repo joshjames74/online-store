@@ -1,24 +1,28 @@
 import { ThemeContext } from "@/contexts/theme-context";
 import {
+  Avatar,
+  Box,
   Card,
   CardBody,
   CardFooter,
   Heading,
   HStack,
   Stack,
+  Tag,
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { Address } from "@prisma/client";
 import { useContext } from "react";
 import styles from "./address-card.module.css";
 import {
   deleteAddressById,
 } from "@/api/request/addressRequest";
 import { useUserState } from "@/zustand/store";
+import { AddressWithCountry } from "@/api/services/addressService";
+
 
 export default function AddressCard(
-  address: Address,
+  address: AddressWithCountry,
 ): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const toast = useToast();
@@ -71,6 +75,9 @@ export default function AddressCard(
           status: "error",
           duration: 5000,
         });
+      })
+      .finally(() => {
+        location.reload();
       });
   };
 
@@ -78,10 +85,13 @@ export default function AddressCard(
     <Card w="300px" h="250px" borderRadius="1em">
       <CardBody paddingBottom={0}>
         <Stack gap="0.1em">
-          <Heading fontSize="md" noOfLines={2}>
-            {address.name}
-            {address.isDefault ? "[DEFAULT]" : ""}
-          </Heading>
+          <HStack>
+            <Avatar src={address.country.image_url} name={address.country.name} aria-label="country-avatar"/>
+            <Heading fontSize="md" noOfLines={2}>
+              {address.name}
+              {address.isDefault ? "[DEFAULT]" : ""}
+            </Heading>
+          </HStack>
           <Text noOfLines={3}>{address.address_line_1}</Text>
           <Text noOfLines={2}>{address.address_line_2}</Text>
           <Text noOfLines={1}>{address.area_code}</Text>
@@ -90,8 +100,6 @@ export default function AddressCard(
 
       <CardFooter paddingTop="0.4em">
         <HStack color={theme.colors.accent.tertiary} gap="1em">
-          <Text className={styles.button}>Edit</Text>
-          <span>|</span>
           <Text
             className={styles.button}
             onClick={handleDelete}
@@ -105,8 +113,19 @@ export default function AddressCard(
             _hover={{ cursor: "pointer" }}
             onClick={handleDefault}
           >
-            Set as default
+            Set default
           </Text>
+          <Box>
+            {address.isDefault 
+            ? 
+            <Tag 
+              bgColor={theme.colors.accent.primary}
+              borderRadius="full"
+              paddingX="1em">
+                Default
+            </Tag>
+            : <></> }
+          </Box>
         </HStack>
       </CardFooter>
     </Card>

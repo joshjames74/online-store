@@ -5,6 +5,7 @@
 import { Provider } from "@/contexts";
 import NavBar from "@/components/navigation";
 import { SessionProvider } from "next-auth/react";
+import './globals.css';
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
