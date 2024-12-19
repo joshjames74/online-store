@@ -1,6 +1,6 @@
 import { ThemeContext } from "@/contexts/theme-context";
 import { Box, Button, HStack } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 
 export type PageNumberParams = {
   pageNumber: number;

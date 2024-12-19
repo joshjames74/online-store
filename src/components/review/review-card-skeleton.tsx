@@ -1,4 +1,4 @@
-import { Box, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
+import { Box, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
 import styles from "./review-card.module.css";
 
 export default function ReviewCardSkeleton(): JSX.Element {

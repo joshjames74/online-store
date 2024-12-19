@@ -23,7 +23,7 @@ export function createWhereQuery(params: Partial<OrderParams>) {
   }
 
   if (dateQuery) {
-    whereQuery.date = dateQuery;
+    whereQuery.created_at = dateQuery;
   }
 
   if (params.usrId) {
@@ -50,18 +50,18 @@ export function getOrderFilterOrder(order_filter: OrderFilter): "asc" | "desc" {
 
 export function getOrderFilterColumn(
   order_filter: OrderFilter,
-): "date" | "total" {
+): "created_at" | "total" {
   switch (order_filter) {
     case OrderFilter.DATE_NEW_OLD:
-      return "date";
+      return "created_at";
     case OrderFilter.DATE_OLD_NEW:
-      return "date";
+      return "created_at";
     case OrderFilter.TOTAL_HIGH_LOW:
       return "total";
     case OrderFilter.TOTAL_LOW_HIGH:
       return "total";
     default:
-      return "date";
+      return "created_at";
   }
 }
 
@@ -154,6 +154,7 @@ export async function getOrderViewsBySearch(
     Object.assign(query, { take: take });
   }
 
+  console.log(query);
   const orders = await prisma.order.findMany(query);
 
   if (!orders) {
@@ -207,6 +208,7 @@ export async function postOrder(data: {
         productId: item.productId,
         price: item.product.price,
         quantity: item.quantity,
+        created_at: item.created_at,
       };
     });
 

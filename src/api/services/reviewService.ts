@@ -25,14 +25,14 @@ export function getReviewFilterOrder(
 
 export function getReviewFilterColumn(
   review_filter: ReviewFilter,
-): "score" | "date" {
+): "score" | "created_at" {
   if (
     review_filter === ReviewFilter.SCORE_HIGH_TO_LOW ||
     review_filter === ReviewFilter.SCORE_LOW_TO_HIGH
   ) {
     return "score";
   }
-  return "date";
+  return "created_at";
 }
 
 // Create query from search
@@ -78,7 +78,7 @@ export async function getReviewsByProductId(
   pageNumber: number,
 ): Promise<Review[] | void> {
   const { skip, take } = getSkipTakeFromPage(perPage, pageNumber);
-  const query = { where: { productId: id }};
+  const query = { where: { productId: id } };
   if (skip) {
     Object.assign(query, { skip: skip });
   }
@@ -101,10 +101,10 @@ export async function getReviewsBySearch(
   const whereQuery = createWhereQueryFromParams(params);
   const orderQuery = createOrderByQueryFromParams(params);
 
-  const query = { 
+  const query = {
     where: whereQuery,
     orderBy: orderQuery,
-    include: { usr: true }, 
+    include: { usr: true },
   };
 
   const { skip, take } = getSkipTakeFromPage(params.perPage, params.pageNumber);

@@ -1,8 +1,5 @@
 import {
   Card,
-  CardHeader,
-  Heading,
-  Divider,
   CardFooter,
   Stack,
   Select,
@@ -10,13 +7,11 @@ import {
   CircularProgress,
   Box,
 } from "@chakra-ui/react";
-import styles from "./product-page.module.css";
 import { useContext, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { useRouter } from "next/navigation";
 import { CheckCircleFilled, CloseCircleOutlined } from "@ant-design/icons";
 import { useBasketState, useUserState } from "@/zustand/store";
-
 
 export default function ProductBasketCard({
   props,
@@ -51,7 +46,7 @@ export default function ProductBasketCard({
       </Box>
     );
   };
-  
+
   const handleClick = () => {
     setIsLoading(true);
     postBasketItem(id, quantity)
@@ -65,16 +60,11 @@ export default function ProductBasketCard({
         if (isSuccessful) {
           router.push("/user/basket");
         }
-      })
+      });
   };
 
   return (
-    <Card minW="2xs" className={styles.basket_container} h="fit-content">
-      <CardHeader paddingBottom="0">
-        <Heading fontSize="lg" fontWeight="semibold">
-          Add to basket
-        </Heading>
-      </CardHeader>
+    <Card minW="2xs" maxW="2xl" h="fit-content" shadow="none">
       <CardFooter>
         <Stack w="full">
           <Select
@@ -89,7 +79,6 @@ export default function ProductBasketCard({
             ))}
           </Select>
           <Button
-            // to do: change to if authenticated
             isDisabled={!user.id}
             rightIcon={
               isLoading ? (

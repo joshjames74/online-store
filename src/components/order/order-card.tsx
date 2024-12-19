@@ -4,7 +4,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Divider,
   Heading,
   HStack,
   Popover,
@@ -26,7 +25,6 @@ import {
 } from "@/api/helpers/utils";
 import styles from "./order-card.module.css";
 import { useUserState } from "@/zustand/store";
-import AddressCard from "../navigation/delivery-button/address-card";
 import Link from "next/link";
 
 export default function OrderCard({
@@ -52,7 +50,7 @@ export default function OrderCard({
               ORDER PLACED
             </Heading>
             <Heading className={styles.value} fontSize="sm">
-              {formatDate(orderView.order.date.toString())}
+              {formatDate(orderView.order.created_at.toString())}
             </Heading>
           </Stack>
           <Stack className={styles.info_container}>
@@ -72,12 +70,13 @@ export default function OrderCard({
             </Heading>
             <Popover>
               <PopoverTrigger>
-                <Heading 
-                className={styles.value}
-                fontSize="sm"
-                color={theme.colors.accent.primary}
-                cursor="pointer"
-                _hover={{ textDecoration: "underline" }}>
+                <Heading
+                  className={styles.value}
+                  fontSize="sm"
+                  color={theme.colors.accent.primary}
+                  cursor="pointer"
+                  _hover={{ textDecoration: "underline" }}
+                >
                   {orderView.order.address.name}
                 </Heading>
               </PopoverTrigger>
@@ -85,9 +84,7 @@ export default function OrderCard({
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  <PopoverHeader>
-                    {orderView.order.address.name}
-                  </PopoverHeader>
+                  <PopoverHeader>{orderView.order.address.name}</PopoverHeader>
                   <PopoverBody>
                     <Text>{orderView.order.address.address_line_1}</Text>
                     <Text>{orderView.order.address.address_line_2}</Text>

@@ -14,13 +14,11 @@ import {
 import { Country } from "@prisma/client";
 import { FormEvent, useContext, useEffect, useState } from "react";
 import styles from "./address-form.module.css";
-import {
-  postAddress,
-} from "@/api/request/addressRequest";
+import { postAddress } from "@/api/request/addressRequest";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { ThemeContext } from "@/contexts/theme-context";
-import { useUserState } from "@/zustand/store";
+import { useAddressState, useUserState } from "@/zustand/store";
 
 export default function AddressForm(): JSX.Element {
   const {
@@ -31,6 +29,8 @@ export default function AddressForm(): JSX.Element {
 
   const { theme } = useContext(ThemeContext);
   const user = useUserState((state) => state.user);
+
+  const getAddresses = useAddressState((state) => state.getAddresses);
 
   const router = useRouter();
   const toast = useToast();
@@ -70,8 +70,9 @@ export default function AddressForm(): JSX.Element {
           status: "error",
           duration: 5000,
         });
-        console.log(error);
-      });
+        console.error(error);
+      })
+      .finally(() => getAddresses());
   };
 
   // handler function to pass event into onSubmit

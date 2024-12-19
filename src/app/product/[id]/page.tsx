@@ -2,9 +2,8 @@
 import { getProductById } from "@/api/request/productRequest";
 import { ProductWithSeller } from "@/api/services/productService";
 import ProductPage from "@/components/product/product-page";
-import ProductPageSkeleton from "@/components/product/product-page-skeleton";
 import ReviewGrid from "@/components/review/review-grid";
-import { Box } from "@chakra-ui/react";
+import { Box, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -16,7 +15,7 @@ export default function Page({
   const { id } = params;
 
   const [product, setProduct] = useState<ProductWithSeller>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const router = useRouter();
 
@@ -32,8 +31,12 @@ export default function Page({
     router.push("/404");
   }
 
-  if (isLoading || !product) {
-    return <ProductPageSkeleton />;
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (!product) {
+    return <></>;
   }
 
   return (

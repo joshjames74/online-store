@@ -12,9 +12,7 @@ export async function getBasketItemsByUserId(
   return fetchData<BasketItemWithProduct[]>(`/api/user/${id}/basket`, cache);
 }
 
-export async function getBasketByUserId(
-  id: string,
-): Promise<Basket> {
+export async function getBasketByUserId(id: string): Promise<Basket> {
   return fetchData<Basket>(`/api/user/${id}/basket`, "no-cache");
 }
 
@@ -51,7 +49,7 @@ export async function deleteBasketItemById(id: string): Promise<void> {
   const response = await fetch(`/api/basketItem/${id}`, { method: "DELETE" });
   if (!response) {
     throw new Error("Error deleting basket item");
-  };
+  }
   return response.json();
 }
 

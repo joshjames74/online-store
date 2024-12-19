@@ -1,17 +1,16 @@
 "use client";
 import ProductWide from "@/components/product/product-wide";
-import { Box, Card, CardBody, Heading } from "@chakra-ui/react";
+import { Box, Card, CardBody, Heading, Spinner } from "@chakra-ui/react";
 import ProductCompact from "./product-compact";
 import styles from "./product-grid.module.css";
 import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
 import PageNumberGrid from "../basket/pagination/page-number-grid";
-import { useRouter } from "next/navigation";
 import { Width } from "@/api/transformers/productSearchTransformer";
 import { ProductWithSeller } from "@/api/services/productService";
+import { useEffect } from "react";
+import { useDebounce } from "use-debounce";
 
 export default function ProductGrid(): JSX.Element {
-  const router = useRouter();
-
   const results = useSearchResultsState((state) => state.results);
   const maxPages = useSearchResultsState((state) => state.maxPages);
   const params = useSearchParamsState((state) => state.params);
@@ -20,13 +19,23 @@ export default function ProductGrid(): JSX.Element {
     (state) => state.updatePageNumber,
   );
   const executeSearch = useSearchParamsState((state) => state.executeSearch);
+  const isLoading = useSearchResultsState((state) => state.isLoading);
 
   // update page number, reload products, refresh
   const handleClickPageNumber = (pageNumber: number) => {
     updatePageNumber(pageNumber);
     executeSearch();
-    router.push("/");
   };
+
+  const [debouncedLoading] = useDebounce(isLoading, 300);
+
+  useEffect(() => {
+    executeSearch();
+  }, []);
+
+  if (debouncedLoading) {
+    return <Spinner />;
+  }
 
   if (!results.data?.length) {
     return (

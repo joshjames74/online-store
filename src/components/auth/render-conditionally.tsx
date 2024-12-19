@@ -26,7 +26,7 @@ export function RenderPageIfLoggedIn({
   // }
   const { status } = useSession();
   if (status === "unauthenticated") {
-    return <SignInRequiredPage />
+    return <SignInRequiredPage />;
   }
   if (status === "loading") {
     return <></>;
@@ -45,7 +45,7 @@ export function RenderComponentIfLoggedIn({
   // }
   const { status } = useSession();
   if (status === "unauthenticated") {
-    return <></>
+    return <></>;
   }
   if (status === "loading") {
     return <></>;
@@ -65,7 +65,7 @@ export function RenderPageIfLoggedOut({
   // }
   const { status } = useSession();
   if (status === "authenticated" || status === "loading") {
-    return <></>
+    return <></>;
   }
   return <>{children}</>;
 }
@@ -107,7 +107,6 @@ export function RenderComponentIfLoading({
   const { status } = useSession();
   if (status !== "loading") {
     return <></>;
-  };
+  }
   return <>{children}</>;
 }
-

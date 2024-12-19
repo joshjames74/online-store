@@ -6,6 +6,7 @@ import {
   Heading,
   HStack,
   Select,
+  Spinner,
 } from "@chakra-ui/react";
 import { useContext, useMemo, useState } from "react";
 import ReviewCard from "./review-card";
@@ -13,9 +14,7 @@ import styles from "./review-grid.module.css";
 import ReviewSummary from "./review-summary";
 import ReviewForm from "./review-form";
 import { useReviewSearchStore } from "@/zustand/store";
-import {
-  ReviewFilter,
-} from "@/api/transformers/reviewSearchTransformer";
+import { ReviewFilter } from "@/api/transformers/reviewSearchTransformer";
 import { useRouter } from "next/navigation";
 import { PlusOutlined } from "@ant-design/icons";
 import { ThemeContext } from "@/contexts/theme-context";
@@ -30,7 +29,6 @@ export default function ReviewGrid({
   id: number;
   score: number;
 }): JSX.Element {
-
   const { theme } = useContext(ThemeContext);
 
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -38,17 +36,20 @@ export default function ReviewGrid({
   const maxPages = useReviewSearchStore((state) => state.maxPages);
   const params = useReviewSearchStore((state) => state.params);
   const clearParams = useReviewSearchStore((state) => state.clearParams);
-  const updateReviewFilter = useReviewSearchStore((state) => state.updateReviewFilter);
-  const updateProductId = useReviewSearchStore((state) => state.updateProductId);
-  const updatePageNumber = useReviewSearchStore((state) => state.updatePageNumber);
-  const getAsUrl = useReviewSearchStore((state) => state.getAsUrl);
+  const updateReviewFilter = useReviewSearchStore(
+    (state) => state.updateReviewFilter,
+  );
+  const updateProductId = useReviewSearchStore(
+    (state) => state.updateProductId,
+  );
+  const updatePageNumber = useReviewSearchStore(
+    (state) => state.updatePageNumber,
+  );
   const reviews = useReviewSearchStore((state) => state.reviews);
-
-  const router = useRouter();
+  const isLoading = useReviewSearchStore((state) => state.isLoading);
 
   const handleChangeFilter = (filter: number) => {
     updateReviewFilter(filter);
-    router.push(getAsUrl());
   };
 
   const handleClickButton = () => {
@@ -58,7 +59,7 @@ export default function ReviewGrid({
   const loadProductId = useMemo(() => {
     clearParams();
     updateProductId(id);
-  }, [id])
+  }, [id]);
 
   const pageNumber = params.pageNumber || 0;
 
@@ -102,28 +103,34 @@ export default function ReviewGrid({
                 gap={2}
                 bgColor={theme.colors.accent.primary}
               >
-                <PlusOutlined /> <p className={styles.review_text}>Add Review</p>
+                <PlusOutlined />{" "}
+                <p className={styles.review_text}>Add Review</p>
               </Button>
             </RenderComponentIfLoggedIn>
           </HStack>
           <Box className={styles.grid_container}>
-            {reviews?.length ? (
+            {isLoading ? (
+              <Spinner />
+            ) : reviews?.length ? (
               reviews.map((review: ReviewWithUser, index: number) => (
                 <ReviewCard {...review} key={index} />
               ))
             ) : (
               <Card>
-                <CardHeader gap="1em" display="flex" flexDirection="column">
+                <CardHeader gap="1em" maxW="2xl">
                   <Heading fontWeight="semibold" fontSize="md">
                     No reviews found
                   </Heading>
                 </CardHeader>
               </Card>
             )}
-          {PageNumberGrid({ params: { 
-      pageNumber: pageNumber, 
-      onClickPageNumber: updatePageNumber, 
-      maxPages: maxPages }})}
+            {PageNumberGrid({
+              params: {
+                pageNumber: pageNumber,
+                onClickPageNumber: updatePageNumber,
+                maxPages: maxPages,
+              },
+            })}
           </Box>
         </Box>
       </Box>

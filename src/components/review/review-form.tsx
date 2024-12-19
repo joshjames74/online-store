@@ -20,9 +20,7 @@ import {
 import { FormEvent, useContext, useState } from "react";
 import { StarFilled } from "@ant-design/icons";
 import { ThemeContext } from "@/contexts/theme-context";
-import {
-  postReview,
-} from "@/api/request/reviewRequest";
+import { postReview } from "@/api/request/reviewRequest";
 import { useReviewSearchStore, useUserState } from "@/zustand/store";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -36,7 +34,6 @@ export default function ReviewForm({
   isVisible: boolean;
   onClose: () => void;
 }): JSX.Element {
-
   const { theme } = useContext(ThemeContext);
   const user = useUserState((state) => state.user);
   const toast = useToast();
@@ -96,8 +93,8 @@ export default function ReviewForm({
       .finally(() => {
         // reload reviews
         clearParams();
-        getReviews();
         onClose();
+        location.reload();
       });
   };
 
@@ -129,7 +126,7 @@ export default function ReviewForm({
   return (
     <Modal isOpen={isVisible} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent margin="1em">
         <ModalHeader>
           <Heading fontSize="2xl" fontWeight="semibold">
             Create Review
@@ -196,7 +193,6 @@ export default function ReviewForm({
               </Stack>
               <input type="hidden" name="usrId" value={user.id} />
               <input type="hidden" name="productId" value={id} />
-              <input type="hidden" name="image_urls" value={""} />
             </Stack>
           </ModalBody>
 

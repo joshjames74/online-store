@@ -22,7 +22,6 @@ export default function ProductCompact({
 }: ProductWithSeller): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
-  const { defaultImageUrl } = useContext(SettingsContext);
 
   return (
     <Link href={`/product/${product.id}`}>
@@ -35,7 +34,6 @@ export default function ProductCompact({
               objectFit="cover"
               borderRadius="md"
               src={product.image_url}
-              //src={defaultImageUrl}
             />
             <Heading noOfLines={1} fontSize="lg">
               {product.title}

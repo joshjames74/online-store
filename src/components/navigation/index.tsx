@@ -8,24 +8,20 @@ import styles from "./index.module.css";
 import { useBasketState, useUserState } from "@/zustand/store";
 import { useSession } from "next-auth/react";
 
-
 export default function NavBar(): JSX.Element {
   const user = useUserState((state) => state.user);
 
   const loadUserState = useUserState((state) => state.loadUserState);
-  const updateBasketUserId = useBasketState((state) => state.updateUserId); 
+  const updateBasketUserId = useBasketState((state) => state.updateUserId);
 
-  const { data: session, status  } = useSession();
+  const { data: session, status } = useSession();
 
-  const loadOnStateChange = useMemo(
-    () => {
-      if (status === "loading") {
-        return
-      }
-      loadUserState(session)
-    },
-    [status]
-  );
+  const loadOnStateChange = useMemo(() => {
+    if (status === "loading") {
+      return;
+    }
+    loadUserState(session);
+  }, [status]);
 
   useEffect(() => {
     if (!user.id) return;

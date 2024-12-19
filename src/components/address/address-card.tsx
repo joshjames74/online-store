@@ -14,22 +14,19 @@ import {
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import styles from "./address-card.module.css";
-import {
-  deleteAddressById,
-} from "@/api/request/addressRequest";
-import { useUserState } from "@/zustand/store";
+import { deleteAddressById } from "@/api/request/addressRequest";
+import { useAddressState, useUserState } from "@/zustand/store";
 import { AddressWithCountry } from "@/api/services/addressService";
 
-
-export default function AddressCard(
-  address: AddressWithCountry,
-): JSX.Element {
+export default function AddressCard(address: AddressWithCountry): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const toast = useToast();
 
   const updateDefaultAddress = useUserState(
     (state) => state.updateDefaultAddress,
   );
+  const getDefaultAddress = useUserState((state) => state.getDefaultAddress);
+  const getAddresses = useAddressState((state) => state.getAddresses);
 
   const handleDelete = () => {
     const pendingToast = toast({
@@ -44,15 +41,17 @@ export default function AddressCard(
           status: "success",
           duration: 1000,
         });
-        location.reload();
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         toast.update(pendingToast, {
           title: "Error deleting address",
           status: "error",
           duration: 5000,
         });
+      })
+      .finally(() => {
+        getDefaultAddress().then(() => getAddresses());
       });
   };
 
@@ -60,6 +59,7 @@ export default function AddressCard(
     const pendingToast = toast({
       title: "Setting as default...",
       status: "loading",
+      isClosable: true,
     });
     updateDefaultAddress(address.id)
       .then(() => {
@@ -76,9 +76,7 @@ export default function AddressCard(
           duration: 5000,
         });
       })
-      .finally(() => {
-        location.reload();
-      });
+      .finally(() => getAddresses());
   };
 
   return (
@@ -86,10 +84,13 @@ export default function AddressCard(
       <CardBody paddingBottom={0}>
         <Stack gap="0.1em">
           <HStack>
-            <Avatar src={address.country.image_url} name={address.country.name} aria-label="country-avatar"/>
+            <Avatar
+              src={address.country.image_url}
+              name={address.country.name}
+              aria-label="country-avatar"
+            />
             <Heading fontSize="md" noOfLines={2}>
               {address.name}
-              {address.isDefault ? "[DEFAULT]" : ""}
             </Heading>
           </HStack>
           <Text noOfLines={3}>{address.address_line_1}</Text>
@@ -116,15 +117,17 @@ export default function AddressCard(
             Set default
           </Text>
           <Box>
-            {address.isDefault 
-            ? 
-            <Tag 
-              bgColor={theme.colors.accent.primary}
-              borderRadius="full"
-              paddingX="1em">
+            {address.isDefault ? (
+              <Tag
+                bgColor={theme.colors.accent.primary}
+                borderRadius="full"
+                paddingX="1em"
+              >
                 Default
-            </Tag>
-            : <></> }
+              </Tag>
+            ) : (
+              <></>
+            )}
           </Box>
         </HStack>
       </CardFooter>

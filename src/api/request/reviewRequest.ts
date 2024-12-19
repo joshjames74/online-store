@@ -26,10 +26,9 @@ export async function getReviewCountsByProductId(
 
 export async function getReviewsBySearch(
   params: Partial<ReviewParams>,
-  cache?: RequestCache,
 ): Promise<ReviewWithUser[]> {
   const url = buildUrl("/api/review", params);
-  return fetchData<ReviewWithUser[]>(url, cache);
+  return fetchData<ReviewWithUser[]>(url, "no-cache");
 }
 
 // POST methods

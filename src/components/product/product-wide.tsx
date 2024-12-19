@@ -24,11 +24,10 @@ export default function ProductWide({
 }: ProductWithSeller): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
-  const { defaultImageUrl } = useContext(SettingsContext);
 
   return (
     <Link href={`/product/${product.id}`}>
-      <Card w="2xl" minW={theme.sizes.minWidth}>
+      <Card maxW="2xl" minW={theme.sizes.minWidth}>
         <CardBody>
           <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2} w="full">
             <GridItem
@@ -45,7 +44,6 @@ export default function ProductWide({
                 h="250px"
                 w="100%"
                 borderRadius="md"
-
                 src={product.image_url}
                 alt={product.image_alt}
               />

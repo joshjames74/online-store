@@ -4,7 +4,6 @@ import {
   Box,
   Card,
   CardBody,
-  Divider,
   Heading,
   HStack,
   Image,
@@ -13,9 +12,8 @@ import {
 } from "@chakra-ui/react";
 import styles from "./product-page.module.css";
 import { ThemeContext } from "@/contexts/theme-context";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import ReviewStars from "../review/review-stars";
-import Link from "next/link";
 import {
   convertAndFormatToUserCurrency,
   formatReviewScore,
@@ -29,14 +27,7 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
   const currency = useUserState((state) => state.currency);
 
   return (
-    <HStack
-      margin="20px"
-      alignItems="stretch"
-      className={styles.container}
-      gap="1em"
-    >
-      {/** Product info */}
-
+    <HStack alignItems="stretch" className={styles.container} gap="1em">
       <Card
         minW={theme.sizes.minWidth}
         maxW="5xl"
@@ -60,12 +51,12 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
               justifyContent="center"
               display="flex"
               padding="1em"
-              borderRadius="0.4em"
+              borderRadius="0.2em"
               height="fit-content"
               marginRight="0.4em"
             >
               <Image
-                height="400px"
+                height="min(400px, 50vw)"
                 width="600px"
                 objectFit="contain"
                 borderRadius="md"
@@ -92,9 +83,7 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
               </HStack>
               <HStack>
                 <Avatar name={product.seller?.name} size="xs" />
-                <Link href="">
-                  <Text fontSize="md">{product.seller?.name}</Text>
-                </Link>
+                <Text fontSize="md">{product.seller?.name}</Text>
               </HStack>
               <Heading
                 fontSize="3xl"
@@ -103,7 +92,7 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
               >
                 {convertAndFormatToUserCurrency(product.price, currency)}
               </Heading>
-              <Text>{product.description}</Text>
+              <Text textAlign="justify">{product.description}</Text>
             </Stack>
           </HStack>
         </CardBody>

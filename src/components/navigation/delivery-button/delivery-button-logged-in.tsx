@@ -2,14 +2,11 @@ import {
   Box,
   Button,
   Input,
-  InputGroup,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Radio,
-  RadioGroup,
   Spinner,
   Stack,
   Text,
@@ -19,7 +16,7 @@ import { EnvironmentOutlined } from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
 import { getAddressesByUserId } from "@/api/request/addressRequest";
 import Link from "next/link";
-import { useUserState } from "@/zustand/store";
+import { useAddressState, useUserState } from "@/zustand/store";
 import { ThemeContext } from "@/contexts/theme-context";
 import { AddressWithCountry } from "@/api/services/addressService";
 import { useDebounce } from "use-debounce";
@@ -35,48 +32,58 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
 
   const user = useUserState((state) => state.user);
 
-  const [addresses, setAddresses] = useState<AddressWithCountry[]>([]);
+  //const [addresses, setAddresses] = useState<AddressWithCountry[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingDefaultAddress, setIsLoadingDefaultAddress] =
+    useState<boolean>(false);
 
   const [debouncedId] = useDebounce(user.id, 500);
 
-  const loadData = () => {
-    setIsLoading(true);
-    if (!user.id) {
-      return;
-    }
-    getAddressesByUserId(user.id)
-      .then((addresses) => setAddresses(addresses))
-      .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false));
-  };
+  // const loadData = () => {
+  //   setIsLoading(true);
+  //   if (!user.id) {
+  //     return;
+  //   }
+  //   getAddressesByUserId(user.id)
+  //     .then((addresses) => setAddresses(addresses))
+  //     .catch((error) => console.error(error))
+  //     .finally(() => setIsLoading(false));
+  // };
+
+  const isLoading = useAddressState((state) => state.isLoading);
+  const getAddresses = useAddressState((state) => state.getAddresses);
+  const addresses = useAddressState((state) => state.addresses);
+  const setUserId = useAddressState((state) => state.setUserId);
 
   const onClick = () => {
     setIsOpen(false);
     if (!selectedAddress) {
       return;
     }
-    setIsLoading(true);
-    updateDefaultAddress(selectedAddress).finally(() => setIsLoading(false));
+    setIsLoadingDefaultAddress(true);
+    updateDefaultAddress(selectedAddress)
+      .then(() => getAddresses())
+      .finally(() => setIsLoadingDefaultAddress(false));
   };
 
   useEffect(() => {
-    loadData();
-  }, [debouncedId]);
+    if (!user.id) return;
+    setUserId(user.id);
+    getAddresses();
+  }, [user.id]);
 
   const isSelected = (addressId: string): boolean => {
     if (!selectedAddress && addressId === defaultAddress.id) {
-      return true
+      return true;
     }
     if (addressId === selectedAddress) {
-      return true
+      return true;
     }
     return false;
-  }
+  };
 
-  if (isLoading) {
+  if (isLoading || isLoadingDefaultAddress) {
     return (
       <Button className={styles.text_button}>
         <Spinner />
@@ -102,7 +109,7 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
       >
         <EnvironmentOutlined />
         <Box className={styles.text_container} fontSize="xs" overflow="hidden">
-          {defaultAddress && defaultAddress.id ? (
+          {defaultAddress && defaultAddress.id && !defaultAddress.isDeleted ? (
             <>
               <Text fontWeight="normal" className={styles.text_wrap}>
                 Deliver to {defaultAddress.address_line_1}
@@ -129,15 +136,25 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
             <Stack>
               {addresses.map((address, index: number) => {
                 return (
-                  <Box
-                  onClick={() => setSelectedAddress(address.id)}>
-                  <AddressCard 
-                  params={{ address: address, isSelected: isSelected(address.id)} } />
-                  <Input key={index} type="hidden" value={address.id.toString()} />
+                  <Box onClick={() => setSelectedAddress(address.id)}>
+                    <AddressCard
+                      params={{
+                        address: address,
+                        isSelected: isSelected(address.id),
+                      }}
+                    />
+                    <Input
+                      key={index}
+                      type="hidden"
+                      value={address.id.toString()}
+                    />
                   </Box>
                 );
               })}
             </Stack>
+            <Link href="/user/addresses" onClick={() => setIsOpen(false)}>
+              Manage Addresses
+            </Link>
           </ModalBody>
           <ModalFooter justifyContent="space-between">
             <Button onClick={() => setIsOpen(false)}>Close</Button>

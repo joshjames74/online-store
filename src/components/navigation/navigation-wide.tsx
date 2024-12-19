@@ -16,7 +16,6 @@ import {
 } from "../auth/render-conditionally";
 
 export default function NavigationWide(): JSX.Element {
-
   const { theme } = useContext(ThemeContext);
 
   const renderLoading = (): JSX.Element => {
@@ -68,12 +67,8 @@ export default function NavigationWide(): JSX.Element {
 
   return (
     <>
-      <RenderComponentIfLoading>
-        {renderLoading()}
-      </RenderComponentIfLoading>
-      <RenderComponentIfLoggedIn>
-        {renderLoggedIn()}
-      </RenderComponentIfLoggedIn>
+      <RenderComponentIfLoading>{renderLoading()}</RenderComponentIfLoading>
+      <RenderComponentIfLoggedIn>{renderLoggedIn()}</RenderComponentIfLoggedIn>
       <RenderComponentIfLoggedOut>
         {renderLoggedOut()}
       </RenderComponentIfLoggedOut>

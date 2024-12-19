@@ -1,6 +1,5 @@
 "use client";
 import { ProductWithSeller } from "@/api/services/productService";
-import { SettingsContext } from "@/contexts/settings-context";
 import {
   Box,
   Heading,
@@ -10,45 +9,39 @@ import {
   Text,
   useMediaQuery,
 } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import Link from "next/link";
 
 export default function OrderProductCard(
   product: ProductWithSeller,
 ): JSX.Element {
-  const { defaultImageUrl } = useContext(SettingsContext);
-  const router = useRouter();
-
   const [isLessThan500px] = useMediaQuery("(max-width: 500px)");
-
-  const reviewButton = () => {
-    return (
-      <Text
-        fontSize="xs"
-        _hover={{ textDecoration: "underline" }}
-        onClick={() => router.push(`/product/${product.id}#reviews`)}
-      >
-        Write a review
-      </Text>
-    );
-  };
 
   const wide = () => {
     return (
       <Box>
         <HStack justifyContent="space-between" alignItems="stretch">
-          <HStack alignItems="stretch">
-            <Image h="70px" w="auto" src={defaultImageUrl} />
-            <Stack>
-              <Heading textOverflow="ellipsis" noOfLines={2} fontSize="md">
-                {product.title}
-              </Heading>
-              <Text noOfLines={3} textOverflow="ellipsis">
-                {product.description}
-              </Text>
+          <HStack w="full">
+            <Link href={`/product/${product.id}`}>
+              <Box w="fit-content" h="fit-content" display="flex">
+                <Image
+                  h="70px"
+                  w="100px"
+                  objectFit="cover"
+                  src={product.image_url}
+                />
+              </Box>
+            </Link>
+            <Stack w="fit-content">
+              <Link href={`/product/${product.id}`}>
+                <Heading textOverflow="ellipsis" noOfLines={2} fontSize="md">
+                  {product.title}
+                </Heading>
+                <Text noOfLines={3} textOverflow="ellipsis" textAlign="justify">
+                  {product.description}
+                </Text>
+              </Link>
             </Stack>
           </HStack>
-          {reviewButton()}
         </HStack>
       </Box>
     );
@@ -58,12 +51,27 @@ export default function OrderProductCard(
     return (
       <Box>
         <HStack w="full">
-          <Image h="70px" w="auto" src={defaultImageUrl} />
-          <Stack>
-            <Heading textOverflow="ellipsis" noOfLines={2} fontSize="md">
-              {product.title}
-            </Heading>
-            {reviewButton()}
+          <Link href={`/product/${product.id}`}>
+            <Box w="fit-content" h="fit-content" display="flex">
+              <Image
+                h="70px"
+                w="100px"
+                objectFit="cover"
+                src={product.image_url}
+              />
+            </Box>
+          </Link>
+          <Stack w="fit-content">
+            <Link href={`/product/${product.id}`}>
+              <Heading
+                textOverflow="ellipsis"
+                noOfLines={2}
+                fontSize="md"
+                textAlign="justify"
+              >
+                {product.title}
+              </Heading>
+            </Link>
           </Stack>
         </HStack>
       </Box>

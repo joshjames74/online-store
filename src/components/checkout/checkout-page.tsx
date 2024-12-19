@@ -1,11 +1,9 @@
 "use client";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
-import { getAddressesByUserId } from "@/api/request/addressRequest";
-import { getBasketByUserId } from "@/api/request/basketRequest";
-import { getOrdersByUserId, postOrder } from "@/api/request/orderRequest";
+import { postOrder } from "@/api/request/orderRequest";
 import { Basket } from "@/api/services/basketItemService";
 import { ThemeContext } from "@/contexts/theme-context";
-import { useUserState } from "@/zustand/store";
+import { useAddressState, useBasketState, useUserState } from "@/zustand/store";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -19,12 +17,11 @@ import {
   Stack,
   Text,
   useToast,
-  VStack,
 } from "@chakra-ui/react";
-import { Address, Order } from "@prisma/client";
+import { Order } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function CheckoutPage({
@@ -44,16 +41,20 @@ export default function CheckoutPage({
   const currency = useUserState((state) => state.currency);
   const { theme } = useContext(ThemeContext);
 
+  const addresses = useAddressState((state) => state.addresses);
+
+  const fetchBasket = useBasketState((state) => state.fetchBasket);
+
   const toast = useToast();
   const router = useRouter();
 
-  const [addresses, setAddresses] = useState<Address[]>();
   const [addressId, setAddressId] = useState<string>();
 
   const onSubmit = (event: FormEvent<any>) => {
     const pendingToast = toast({
       title: "Processing order",
       status: "loading",
+      isClosable: true,
     });
 
     // get form data
@@ -65,9 +66,7 @@ export default function CheckoutPage({
     order.addressId = formObject.addressId;
     order.currencyId = parseInt(formObject.currencyId.toString() || "");
     order.usrId = formObject.usrId;
-    order.date = new Date(
-      parseInt(formObject.date.toString() || ""),
-    ).toISOString() as unknown as Date;
+    order.created_at = new Date(Date.now());
 
     // post the order
     postOrder({ order })
@@ -78,9 +77,6 @@ export default function CheckoutPage({
           duration: 1000,
         });
         router.push("/user/orders");
-        getOrdersByUserId({ id: user.id, params: {} as any, cache: "reload" })
-          .then(() => {})
-          .catch((error) => console.error(error));
       })
       .catch((error) => {
         console.error(error);
@@ -89,27 +85,14 @@ export default function CheckoutPage({
           status: "error",
           duration: 5000,
         });
-      });
+      })
+      .finally(() => fetchBasket());
   };
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleSubmit(() => onSubmit(event))();
   };
-
-  // load addresses
-  useEffect(() => {
-    if (!user || !user.id) {
-      return;
-    }
-    getAddressesByUserId(user.id)
-      .then((res) => setAddresses(res))
-      .catch((error) => console.error(error));
-  }, [user]);
-
-  if (!user || !user?.id) {
-    return <></>;
-  }
 
   return (
     <>
@@ -141,9 +124,7 @@ export default function CheckoutPage({
                 <Stack>
                   <Select
                     placeholder="Select Address"
-                    onChange={(event) =>
-                      setAddressId(event.target.value)
-                    }
+                    onChange={(event) => setAddressId(event.target.value)}
                   >
                     {addresses.map((address) => (
                       <option value={address.id} key={address.id}>

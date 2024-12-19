@@ -1,5 +1,4 @@
 "use client";
-import { getAddressesByUserId } from "@/api/request/addressRequest";
 import AddAddressCard from "@/components/address/add-address-card";
 import AddressCard from "@/components/address/address-card";
 import {
@@ -13,25 +12,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
 import styles from "./address-page.module.css";
-import { useUserState } from "@/zustand/store";
-import { AddressWithCountry } from "@/api/services/addressService";
+import { useAddressState } from "@/zustand/store";
 
 export default function AddressesPage(): JSX.Element {
-  const user = useUserState((state) => state.user);
-  const id = user.id;
-
-  const [addresses, setAddresses] = useState<AddressWithCountry[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!id) return;
-    getAddressesByUserId(id)
-      .then((res) => setAddresses(res))
-      .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false));
-  }, [id]);
+  const addresses = useAddressState((state) => state.addresses);
+  const isLoading = useAddressState((state) => state.isLoading);
 
   if (isLoading) {
     return <></>;

@@ -7,13 +7,16 @@ import SearchResultsInfo from "@/components/product/search-results-info";
 
 const Page = () => {
   return (
-    <Box className={styles.container} fontFamily={"Montserrat"}>
-      <SearchResultsInfo />
-      <Box className={styles.product_area_container}>
-        <Sidebar />
-        <ProductGrid />
+    <>
+      <title>Home</title>
+      <Box className={styles.container} fontFamily={"Montserrat"}>
+        <SearchResultsInfo />
+        <Box className={styles.product_area_container}>
+          <Sidebar />
+          <ProductGrid />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

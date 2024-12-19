@@ -27,12 +27,18 @@ import { Basket } from "@/api/services/basketItemService";
 import { OrderWithMetadata } from "@/api/services/orderService";
 import { ProductsWithMetadata } from "@/api/services/productService";
 import { ReviewWithUser } from "@/api/services/reviewService";
-import { OrderFilter, OrderParams } from "@/api/transformers/orderSearchTransformer";
+import {
+  OrderFilter,
+  OrderParams,
+} from "@/api/transformers/orderSearchTransformer";
 import {
   ProductFilter,
   ProductParams,
 } from "@/api/transformers/productSearchTransformer";
-import { ReviewFilter, ReviewParams } from "@/api/transformers/reviewSearchTransformer";
+import {
+  ReviewFilter,
+  ReviewParams,
+} from "@/api/transformers/reviewSearchTransformer";
 import { Country, Currency, Order, Usr } from "@prisma/client";
 import { Session } from "next-auth";
 import { create } from "zustand";
@@ -98,6 +104,7 @@ export interface SearchResultsState {
   resultsCount: number;
   maxPrice: number;
   maxPages: number;
+  isLoading: boolean;
   setMaxPages: (perPage: number) => void;
   fetchSearchResults: (params: Partial<ProductParams>) => Promise<void>;
   fetchMaxPriceWithoutParams: () => Promise<void>;
@@ -112,6 +119,7 @@ export const useSearchResultsState = create<SearchResultsState>((set, get) => ({
   results: defaultResults,
   resultsCount: 0,
   maxPages: 0,
+  isLoading: false,
   setMaxPages: () => {
     const perPage = useSearchParamsState.getState().params.perPage;
     const count = get().resultsCount;
@@ -161,16 +169,17 @@ export const useSearchResultsState = create<SearchResultsState>((set, get) => ({
       });
   },
   fetchAllData: async (params: Partial<ProductParams>) => {
+    set({ isLoading: true });
     const fetchState = get();
     await fetchState.fetchMaxPriceWithoutParams();
     await fetchState.fetchResultsCountWithoutPagination(params);
     fetchState.setMaxPages(params.perPage || 0);
-    fetchState.fetchSearchResults(params);
+    await fetchState.fetchSearchResults(params);
+    set({ isLoading: false });
   },
 }));
 
 export type BasketItemCoreProperties = { [key: number]: number };
-
 
 // Review search state
 
@@ -181,6 +190,7 @@ export interface ReviewSearchState {
   params: PageReviewParam;
   reviews: ReviewWithUser[];
   maxPages: number;
+  isLoading: boolean;
 
   setParams: (params: PageReviewParam) => void;
   setReviews: (reviews: ReviewWithUser[]) => void;
@@ -194,9 +204,8 @@ export interface ReviewSearchState {
   updatePerPage: (perPage: number) => void;
   updatePageNumber: (pageNumber: number) => void;
 
-  getMaxPages: () => Promise<void>;  
+  getMaxPages: () => Promise<void>;
   getReviews: () => Promise<void>;
-  getAsUrl: () => string;
   clearParams: () => void;
   resetPagination: () => void;
 }
@@ -206,6 +215,7 @@ export const useReviewSearchStore = create<ReviewSearchState>((set, get) => ({
   params: { perPage: 5, pageNumber: 1 },
   reviews: [],
   maxPages: 1,
+  isLoading: false,
 
   setParams: (params) => set({ params: { ...get().params, ...params } }),
   setReviews: (reviews) => set({ reviews: reviews }),
@@ -236,47 +246,49 @@ export const useReviewSearchStore = create<ReviewSearchState>((set, get) => ({
     get().getReviews();
   },
   updatePerPage: (perPage: number) => {
-    get().setParams({ perPage: perPage})
+    get().setParams({ perPage: perPage });
   },
 
   getMaxPages: async () => {
-    const params: Partial<ReviewParams> = { ...get().params, productId: get().productId };
+    const params: Partial<ReviewParams> = {
+      ...get().params,
+      productId: get().productId,
+    };
     const { pageNumber, perPage, ...paramsWithoutPagination } = params;
-    const response = await getReviewsBySearch(paramsWithoutPagination).catch((error) => error);
+    const response = await getReviewsBySearch(paramsWithoutPagination).catch(
+      (error) => error,
+    );
     const count = response.length;
     const maxPages = Math.ceil(Math.max(count / (perPage || -1), 0));
     get().setMaxPages(maxPages);
   },
   getReviews: async () => {
+    set({ isLoading: true });
     await get().getMaxPages();
-    const params: Partial<ReviewParams> = { ...get().params, productId: get().productId };
+    const productId = get().productId;
+    const params: Partial<ReviewParams> = {
+      ...get().params,
+      productId: productId,
+    };
     await getReviewsBySearch(params)
       .then((res) => set({ reviews: res }))
       .catch((error) => console.error(error));
-  },
-
-  getAsUrl: () => {
-    const params = get().params;
-    const urlParams = new URLSearchParams();
-    Object.entries(params).forEach(([key, value]) => urlParams.append(key, value.toString()));
-    return `?${urlParams.toString()}`;
+    set({ isLoading: false });
   },
   clearParams: () => {
-    set({ params: { pageNumber: 1, perPage: 5 }});
+    set({ params: { pageNumber: 1, perPage: 5 } });
     get().getReviews();
   },
   resetPagination: () => {
-    set({ params: { ...get().params, pageNumber: 1, perPage: 5 }})
-  }
+    set({ params: { ...get().params, pageNumber: 1, perPage: 5 } });
+  },
 }));
 
 // Order search state
 
-
-export type PageOrderParams = Omit<Partial<OrderParams>,"usrId">
+export type PageOrderParams = Omit<Partial<OrderParams>, "usrId">;
 
 export interface OrderSearchState {
-
   isLoading: boolean;
   params: PageOrderParams;
   userId: string;
@@ -298,95 +310,93 @@ export interface OrderSearchState {
   getOrders: () => Promise<void>;
   getMaxPages: () => Promise<void>;
 
-  getAsUrl: () => string;
   clearParams: () => void;
   resetDate: () => void;
   resetPagination: () => void;
 }
 
 export const useOrderSearchStore = create<OrderSearchState>((set, get) => ({
-    isLoading: false,
-    params: { pageNumber: 1, perPage: 5 } as PageOrderParams,
-    userId: "",
-    orders: [] as OrderWithMetadata[],
-    maxPages: 1,
+  isLoading: false,
+  params: { pageNumber: 1, perPage: 5 } as PageOrderParams,
+  userId: "",
+  orders: [] as OrderWithMetadata[],
+  maxPages: 1,
 
-    setParams: (params) => set({ params: { ...get().params, ...params } }),
-    setUserId: (id: string) => set({ userId:  id }),
-    setOrders: (orders: OrderWithMetadata[]) => set({ orders: orders }),
-    setMaxPages: (maxPages: number) => set({ maxPages: maxPages }),
+  setParams: (params) => set({ params: { ...get().params, ...params } }),
+  setUserId: (id: string) => set({ userId: id }),
+  setOrders: (orders: OrderWithMetadata[]) => set({ orders: orders }),
+  setMaxPages: (maxPages: number) => set({ maxPages: maxPages }),
 
-    updateMinDate: (min_date: Date) => {
-      get().setParams({ min_date: min_date })
-      get().resetPagination();
-      get().getOrders();
-    },
-    updateMaxDate: (max_date: Date) => {
-      get().setParams({ max_date: max_date })
-      get().resetPagination();
-      get().getOrders();
-    },
-    updateOrderFilter: (order_filter: OrderFilter) => {
-      get().setParams({ order_filter: order_filter });
-      get().resetPagination();
-      get().getOrders();
-    },
-    updatePageNumber: (pageNumber: number) => {
-      get().setParams({ pageNumber: pageNumber })
-      get().getOrders();
-    },
-    updatePerPage: (perPage: number) => {
-      get().setParams({ perPage: perPage })
-    },
-    updateUserId: (id: string) => {
-      get().setUserId(id);
-      get().resetPagination();
-      get().getOrders();
-    },
+  updateMinDate: (min_date: Date) => {
+    get().setParams({ min_date: min_date });
+    get().resetPagination();
+    get().getOrders();
+  },
+  updateMaxDate: (max_date: Date) => {
+    get().setParams({ max_date: max_date });
+    get().resetPagination();
+    get().getOrders();
+  },
+  updateOrderFilter: (order_filter: OrderFilter) => {
+    get().setParams({ order_filter: order_filter });
+    get().resetPagination();
+    get().getOrders();
+  },
+  updatePageNumber: (pageNumber: number) => {
+    get().setParams({ pageNumber: pageNumber });
+    get().getOrders();
+  },
+  updatePerPage: (perPage: number) => {
+    get().setParams({ perPage: perPage });
+  },
+  updateUserId: (id: string) => {
+    get().setUserId(id);
+    get().resetPagination();
+    get().getOrders();
+  },
 
-    getOrders: async () => {
-      set({ isLoading: true });
-      await get().getMaxPages();
-      const params = get().params;
-      const id = get().userId;
-      await getOrdersByUserId({ id, params })
-        .then(res => get().setOrders(res))
-        .catch(error => console.error(error))
-        .finally(() => set({ isLoading: false }));
-    },
-    getMaxPages: async () => {
-      const params = get().params;
-      const { pageNumber, perPage, ...paramsWithoutPagination }: PageOrderParams = params;
-      const id = get().userId;
-      const response = await getOrdersByUserId({ id: id, params: paramsWithoutPagination }).catch(error => console.error(error));
-      const count = response?.length || 0;
-      const maxPages = Math.ceil(Math.max(count / (perPage || -1), 0));
-      get().setMaxPages(maxPages);
-    },
+  getOrders: async () => {
+    set({ isLoading: true });
+    await get().getMaxPages();
+    const params = get().params;
+    const id = get().userId;
+    await getOrdersByUserId({ id, params })
+      .then((res) => get().setOrders(res))
+      .catch((error) => console.error(error))
+      .finally(() => set({ isLoading: false }));
+  },
+  getMaxPages: async () => {
+    const params = get().params;
+    const { pageNumber, perPage, ...paramsWithoutPagination }: PageOrderParams =
+      params;
+    const id = get().userId;
+    const response = await getOrdersByUserId({
+      id: id,
+      params: paramsWithoutPagination,
+    }).catch((error) => console.error(error));
+    const count = response?.length || 0;
+    const maxPages = Math.ceil(Math.max(count / (perPage || -1), 0));
+    get().setMaxPages(maxPages);
+  },
 
-    getAsUrl: () => {
-      const params = get().params;
-      const urlParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        urlParams.append(key, value.toString());
-      });
-      return `?${urlParams.toString()}`;
-    },
-    clearParams: () => set({ params: {} }),
-    resetDate: () => {
-      get().setParams({ min_date: new Date(0), max_date: new Date(9999999999999) });
-    },
-    resetPagination: () => {
-      set({ params: { ...get().params, pageNumber: 1, perPage: 5 }})
-    }
-  })
-);
+  clearParams: () => set({ params: {} }),
+  resetDate: () => {
+    get().setParams({
+      min_date: new Date(0),
+      max_date: new Date(9999999999999),
+    });
+  },
+  resetPagination: () => {
+    set({ params: { ...get().params, pageNumber: 1, perPage: 5 } });
+  },
+}));
 
 // Basket state
 
 export interface BasketState {
   basket: Basket;
   userId: string;
+  isLoading: boolean;
 
   setBasket: (basket: Basket) => void;
   setUserId: (userId: string) => void;
@@ -403,6 +413,7 @@ export interface BasketState {
 export const useBasketState = create<BasketState>((set, get) => ({
   basket: {} as Basket,
   userId: "",
+  isLoading: false,
 
   setBasket: (basket: Basket) => set({ basket: basket }),
   setUserId: (userId: string) => set({ userId: userId }),
@@ -413,6 +424,7 @@ export const useBasketState = create<BasketState>((set, get) => ({
   },
 
   fetchBasket: async () => {
+    set({ isLoading: true });
     const userId = get().userId;
     if (!userId) {
       return;
@@ -420,6 +432,7 @@ export const useBasketState = create<BasketState>((set, get) => ({
     await getBasketByUserId(userId)
       .then((res) => get().setBasket(res))
       .catch((error) => console.error(error));
+    set({ isLoading: false });
   },
 
   deleteBasket: async () => {
@@ -435,20 +448,22 @@ export const useBasketState = create<BasketState>((set, get) => ({
   },
 
   putBasketItem: async (id: string, quantity: number) => {
-    await putBasketItemQuantityById(id, quantity)
-      .then(() => get().fetchBasket()
-      .catch((error) => console.error(error)),
-  );
+    await putBasketItemQuantityById(id, quantity).then(() =>
+      get()
+        .fetchBasket()
+        .catch((error) => console.error(error)),
+    );
   },
   postBasketItem: async (productId: number, quantity: number) => {
     const userId = get().userId;
     if (!userId) {
       return;
-    };
+    }
     await postBasketItem({
       usrId: userId,
       productId: productId,
       quantity: quantity,
+      created_at: new Date(Date.now()),
     })
       .then(() => get().fetchBasket())
       .catch((error) => console.error(error));
@@ -462,21 +477,22 @@ export interface UserState {
   currency: Currency;
   country: Country;
   defaultAddress: AddressWithCountry;
-  
+  isLoading: boolean;
+
   setUser: (user: Usr) => void;
   setCurrency: (currency: Currency) => void;
   setCountry: (country: Country) => void;
   setDefaultAddress: (address: AddressWithCountry) => void;
-  
+
   updateCurrency: (id: number) => Promise<void>;
   updateCountry: (id: number) => Promise<void>;
   updateDefaultAddress: (id: string) => Promise<void>;
-  
+
   getUser: (sub: string) => Promise<void>;
   getCurrency: () => Promise<void>;
   getCountry: () => Promise<void>;
   getDefaultAddress: () => Promise<void>;
-  
+
   loadUserState: (session: Session | null) => Promise<void>;
   reload: () => Promise<void>;
 }
@@ -486,20 +502,21 @@ export const useUserState = create<UserState>((set, get) => ({
   currency: {} as Currency,
   country: {} as Country,
   defaultAddress: {} as AddressWithCountry,
-  
+  isLoading: false,
+
   setUser: (user: Usr) => set({ user: user }),
   setCurrency: (currency: Currency) => set({ currency: currency }),
   setCountry: (country: Country) => set({ country: country }),
   setDefaultAddress: (address: AddressWithCountry) =>
     set({ defaultAddress: address }),
-  
+
   updateCurrency: async (id: number) => {
     // check user
     const userState = get().user;
     if (!userState || !userState.id) {
       return;
     }
-    
+
     // update user country
     const updatedUser = await putUserCurrencyById(userState.id, id).catch(
       (error) => console.error(error),
@@ -507,12 +524,12 @@ export const useUserState = create<UserState>((set, get) => ({
     if (!updatedUser) {
       return;
     }
-    
+
     // update user and currency
     await get().getUser(userState.id);
     await get().getCurrency();
   },
-  
+
   updateCountry: async (id: number) => {
     //
     const userState = get().user;
@@ -526,7 +543,7 @@ export const useUserState = create<UserState>((set, get) => ({
     if (!updatedUser) {
       return;
     }
-    
+
     await get().getUser(userState.id);
     await get().getCountry();
   },
@@ -535,34 +552,33 @@ export const useUserState = create<UserState>((set, get) => ({
     if (!userState || !userState.id) {
       return;
     }
-    
+
     const updatedUser = await putUserDefaultAddress(userState.id, id).catch(
       (error) => console.error(error),
     );
+
     if (!updatedUser) {
       return;
     }
-    
+
     await get().getUser(userState.id);
     await get().getDefaultAddress();
-    await getAddressesByUserId(userState.id);
   },
   getUser: async (sub: string) => {
-    // const user = await getUserBySub(sub).catch(
-    //   (error) => console.log(error),
-    // );
+    set({ isLoading: true });
     const user = await getUserById(sub).catch((error) => console.log(error));
     if (!user) {
       return;
     }
     get().setUser(user);
+    set({ isLoading: false });
   },
   getCurrency: async () => {
     const userState = get().user;
     if (!userState || !userState.currencyId) {
       return;
     }
-    
+
     const currency = await getCurrencyById(userState.currencyId).catch(
       (error) => console.log(error),
     );
@@ -576,31 +592,28 @@ export const useUserState = create<UserState>((set, get) => ({
     if (!userState || !userState.countryId) {
       return;
     }
-    
+
     const country = await getCountryById(userState.countryId).catch((error) =>
       console.error(error),
-  );
-  if (!country) {
-    return;
-  }
-  get().setCountry(country);
-},
-getDefaultAddress: async () => {
-  const userState = get().user;
-  if (!userState || !userState.defaultAddressId) {
-    return;
-  }
-  
-  const address = await getAddressById(userState.defaultAddressId);
-  if (!address) {
-    return;
-  }
-  get().setDefaultAddress(address);
-},
+    );
+    if (!country) {
+      return;
+    }
+    get().setCountry(country);
+  },
+  getDefaultAddress: async () => {
+    const userState = get().user;
+    if (!userState || !userState.defaultAddressId) {
+      return;
+    }
 
-loadUserState: async (session: any | null) => {
-  if (!session?.user || !session?.user?.id) {
-    return;
+    const address = await getAddressById(userState.defaultAddressId);
+    get().setDefaultAddress(address);
+  },
+
+  loadUserState: async (session: any | null) => {
+    if (!session?.user || !session?.user?.id) {
+      return;
     }
     await get().getUser(session.user.id || "");
     await get().getCurrency();
@@ -616,5 +629,35 @@ loadUserState: async (session: any | null) => {
     await get().getCurrency();
     await get().getCountry();
     await get().getDefaultAddress();
+  },
+}));
+
+export interface AddressState {
+  userId: string;
+  addresses: AddressWithCountry[];
+  isLoading: boolean;
+
+  setUserId: (userId: string) => void;
+  setAddresses: (addresses: AddressWithCountry[]) => void;
+
+  getAddresses: () => Promise<void>;
+}
+
+export const useAddressState = create<AddressState>((set, get) => ({
+  userId: "",
+  addresses: [],
+  isLoading: false,
+
+  setUserId: (userId: string) => set({ userId: userId }),
+  setAddresses: (addresses: AddressWithCountry[]) =>
+    set({ addresses: addresses }),
+
+  getAddresses: async () => {
+    set({ isLoading: true });
+    const userId = get().userId;
+    await getAddressesByUserId(userId)
+      .then((res) => get().setAddresses(res))
+      .catch((error) => console.error(error));
+    set({ isLoading: false });
   },
 }));

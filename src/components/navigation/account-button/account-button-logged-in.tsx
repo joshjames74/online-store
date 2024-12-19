@@ -39,9 +39,6 @@ export default function AccountButtonLoggedIn(): JSX.Element {
                 <Text>Your addresses</Text>
               </Link>
               <Link href="/auth/signout">
-                <Text>Your payments</Text>
-              </Link>
-              <Link href="/auth/signout">
                 <Text>Sign out</Text>
               </Link>
             </Stack>

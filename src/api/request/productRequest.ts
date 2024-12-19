@@ -8,11 +8,8 @@ import {
 
 // GET methods
 
-export async function getProductById(
-  id: number,
-  cache?: RequestCache,
-): Promise<ProductWithSeller> {
-  return fetchData<ProductWithSeller>(`/api/product/${id}`, cache);
+export async function getProductById(id: number): Promise<ProductWithSeller> {
+  return fetchData<ProductWithSeller>(`/api/product/${id}`, "no-cache");
 }
 
 export async function getProductsBySearchParams(

@@ -130,8 +130,7 @@ export const generateMockReview = (
   review.usrId = getRandomElement(usrIds);
   review.score = faker.number.int({ min: 0, max: 5 });
   review.title = faker.lorem.sentence({ min: 1, max: 100 });
-  review.image_urls = "";
-  review.date = faker.date.anytime();
+  review.created_at = faker.date.anytime();
   review.content = faker.lorem.paragraph({ min: 0, max: 10 });
   return review;
 };
@@ -196,7 +195,7 @@ export const generateMockBasketItemWithProduct = (
   basketItem.product = product;
   basketItem.quantity = faker.number.int({ min: 0, max: 100 });
   basketItem.usrId = getRandomElement(usrIds);
-  basketItem.date_added = faker.date.recent();
+  basketItem.created_at = faker.date.recent();
 
   return basketItem;
 };
@@ -207,7 +206,7 @@ export const generateMockBasketItem = (
 ): BasketItem => {
   const basketItem: BasketItem = {} as BasketItem;
   basketItem.id = randomUUID();
-  basketItem.date_added = faker.date.recent();
+  basketItem.created_at = faker.date.recent();
   basketItem.productId = getRandomElement(productIds);
   basketItem.quantity = faker.number.int({ min: 1, max: 100 });
   basketItem.usrId = getRandomElement(usrIds);
@@ -266,7 +265,7 @@ export const generateMockOrder = (
   order.addressId = getRandomElement(addressIds);
   order.currencyId = getRandomElement(currencyIds);
   order.usrId = getRandomElement(usrIds);
-  order.date = faker.date.recent();
+  order.created_at = faker.date.recent();
   return order;
 };
 

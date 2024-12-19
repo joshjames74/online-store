@@ -19,10 +19,6 @@ export default function AccountPage(): JSX.Element {
       subtitle: "Sign out",
       href: "/auth/signout",
     },
-    {
-      title: "Payments",
-      subtitle: "Your payments",
-    },
   ];
 
   return (

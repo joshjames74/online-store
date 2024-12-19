@@ -1,6 +1,5 @@
-import { UserWithCurrencyAndCountry } from "@/api/services/userService";
 import { useUserState } from "@/zustand/store";
-import { CaretDownOutlined, DownOutlined } from "@ant-design/icons";
+import { CaretDownOutlined } from "@ant-design/icons";
 import {
   Button,
   Heading,
@@ -34,7 +33,7 @@ export default function LocaleButton(): JSX.Element {
             w="auto"
             objectFit="cover"
             src={
-              country
+              country.image_url
                 ? country.image_url
                 : "https://flagsapi.com/GB/flat/64.png"
             }
@@ -48,7 +47,9 @@ export default function LocaleButton(): JSX.Element {
             <Heading fontSize="md">Currency</Heading>
             <HStack justifyContent="space-between">
               <Text>
-                {currency ? `${currency.symbol} - ${currency.code}` : "£ - GBP"}
+                {currency.symbol && currency.code
+                  ? `${currency.symbol} - ${currency.code}`
+                  : "£ - GBP"}
               </Text>
               <Link
                 href={`/user/preferences/currency?redirectUrl=${location.pathname}`}
@@ -60,7 +61,7 @@ export default function LocaleButton(): JSX.Element {
             <Heading fontSize="md">Country</Heading>
             <HStack justifyContent="space-between">
               <Text>
-                {country
+                {country.code && country.name
                   ? `${country.code} - ${country.name}`
                   : "GB - United Kingdom"}
               </Text>

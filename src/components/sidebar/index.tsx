@@ -41,7 +41,7 @@ export default function Sidebar(): JSX.Element {
     clearParams();
     executeSearch();
   };
-  
+
   const sidebar = () => {
     return (
       <Card className={styles.container} h="fit-content" minW="2xs">
@@ -59,13 +59,20 @@ export default function Sidebar(): JSX.Element {
           </Stack>
         </CardBody>
         <CardFooter paddingTop={1}>
-          <Text
-            textDecoration="underline"
-            _hover={{ color: theme.colors.accent.secondary }}
-            onClick={handleDelete}
-          >
-            Clear Filters
-          </Text>
+          <HStack gap="1em">
+            <Button
+              _hover={{ color: theme.colors.accent.secondary }}
+              onClick={handleDelete}
+            >
+              Clear Filters
+            </Button>
+            <Button
+              bgColor={theme.colors.accent.primary}
+              onClick={executeSearch}
+            >
+              Search
+            </Button>
+          </HStack>
         </CardFooter>
       </Card>
     );
@@ -102,13 +109,20 @@ export default function Sidebar(): JSX.Element {
               </Stack>
             </DrawerBody>
             <DrawerFooter>
-              <Text
-                textDecoration="underline"
-                _hover={{ color: theme.colors.accent.secondary }}
-                onClick={handleDelete}
-              >
-                Clear Filters
-              </Text>
+              <HStack gap="1em">
+                <Button
+                  _hover={{ color: theme.colors.accent.secondary }}
+                  onClick={handleDelete}
+                >
+                  Clear Filters
+                </Button>
+                <Button
+                  bgColor={theme.colors.accent.primary}
+                  onClick={executeSearch}
+                >
+                  Search
+                </Button>
+              </HStack>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>

@@ -6,6 +6,7 @@ import {
   InputLeftAddon,
   InputRightElement,
   Select,
+  Spinner,
 } from "@chakra-ui/react";
 import styles from "./search-bar.module.css";
 import { useContext, useEffect, useState } from "react";
@@ -34,6 +35,8 @@ export default function SearchBar(): JSX.Element {
   const query = useSearchParamsState((state) => state.params.query);
   const params = useSearchParamsState((state) => state.params);
   const executeSearch = useSearchParamsState((state) => state.executeSearch);
+
+  const isLoadingProducts = useSearchResultsState((state) => state.isLoading);
 
   // fetch categories
   useEffect(() => {
@@ -94,7 +97,7 @@ export default function SearchBar(): JSX.Element {
           maxW="fit-content"
           paddingX="1em"
         >
-          <SearchOutlined />
+          {isLoadingProducts ? <Spinner /> : <SearchOutlined />}
         </InputRightElement>
       </InputGroup>
     </Box>

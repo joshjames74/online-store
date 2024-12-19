@@ -55,8 +55,6 @@ export async function deleteAddressById(id: string): Promise<Address | void> {
 export async function postAddress(
   address: Omit<Address, "id">,
 ): Promise<Address | void> {
-  console.log("Address Service");
-  console.log(address);
   return await prisma.address.create({
     data: address,
   });

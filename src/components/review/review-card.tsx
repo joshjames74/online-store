@@ -6,7 +6,6 @@ import {
   Avatar,
   Heading,
   CardBody,
-  Divider,
   HStack,
   CardFooter,
   IconButton,
@@ -14,23 +13,18 @@ import {
 } from "@chakra-ui/react";
 import styles from "./review-card.module.css";
 import ReviewStars from "./review-stars";
-import {
-  deleteReviewById,
-  getReviewCountsByProductId,
-  getReviewsBySearch,
-} from "@/api/request/reviewRequest";
+import { deleteReviewById } from "@/api/request/reviewRequest";
 import { useReviewSearchStore, useUserState } from "@/zustand/store";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { formatDate } from "@/api/helpers/utils";
-import { getProductById } from "@/api/request/productRequest";
 import { ReviewWithUser } from "@/api/services/reviewService";
-
 
 export default function ReviewCard(review: ReviewWithUser): JSX.Element {
   const user = useUserState((state) => state.user);
   const clearParams = useReviewSearchStore((store) => store.clearParams);
+  // const getReviews = useReviewSearchStore((state) => state.getReviews);
   const { theme } = useContext(ThemeContext);
   const toast = useToast();
 
@@ -63,25 +57,13 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
       })
       .finally(() => {
         clearParams();
-
-        // reset the cache status of the reviews
-        getReviewsBySearch({ productId: review.productId }, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
-        getReviewCountsByProductId(review.productId)
-          .then(() => {})
-          .catch((error) => console.error(error));
-        getProductById(review.productId, "reload")
-          .then(() => {})
-          .catch((error) => console.error(error));
-
         location.reload();
       });
   };
 
   return (
     <Card className={styles.container} maxW="2xl">
-      <CardHeader w="full" paddingBottom="0">
+      <CardHeader paddingBottom="0">
         <HStack justifyContent="space-around" w="full">
           <HStack flex={1} overflow="hidden" w="full">
             <Avatar
@@ -94,7 +76,7 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
             </Heading>
           </HStack>
           <Text flex={1} overflow="hidden" textAlign="right" maxW="fit-content">
-            {formatDate(review.date.toString())}
+            {formatDate(review.created_at.toString())}
           </Text>
         </HStack>
       </CardHeader>
@@ -111,7 +93,12 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
             {review.title}
           </Heading>
         </HStack>
-        <Text noOfLines={15} textOverflow="ellipsis" overflow="hidden">
+        <Text
+          noOfLines={15}
+          textOverflow="ellipsis"
+          overflow="hidden"
+          textAlign="justify"
+        >
           {review.content}
         </Text>
       </CardBody>
