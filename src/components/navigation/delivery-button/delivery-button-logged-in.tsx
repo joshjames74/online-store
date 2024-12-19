@@ -14,11 +14,9 @@ import {
 import styles from "./index.module.css";
 import { EnvironmentOutlined } from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
-import { getAddressesByUserId } from "@/api/request/addressRequest";
 import Link from "next/link";
 import { useAddressState, useUserState } from "@/zustand/store";
 import { ThemeContext } from "@/contexts/theme-context";
-import { AddressWithCountry } from "@/api/services/addressService";
 import { useDebounce } from "use-debounce";
 import AddressCard from "./address-card";
 
@@ -32,24 +30,12 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
 
   const user = useUserState((state) => state.user);
 
-  //const [addresses, setAddresses] = useState<AddressWithCountry[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoadingDefaultAddress, setIsLoadingDefaultAddress] =
     useState<boolean>(false);
 
   const [debouncedId] = useDebounce(user.id, 500);
-
-  // const loadData = () => {
-  //   setIsLoading(true);
-  //   if (!user.id) {
-  //     return;
-  //   }
-  //   getAddressesByUserId(user.id)
-  //     .then((addresses) => setAddresses(addresses))
-  //     .catch((error) => console.error(error))
-  //     .finally(() => setIsLoading(false));
-  // };
 
   const isLoading = useAddressState((state) => state.isLoading);
   const getAddresses = useAddressState((state) => state.getAddresses);
@@ -136,7 +122,7 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
             <Stack>
               {addresses.map((address, index: number) => {
                 return (
-                  <Box onClick={() => setSelectedAddress(address.id)}>
+                  <Box onClick={() => setSelectedAddress(address.id)} key={index}>
                     <AddressCard
                       params={{
                         address: address,
