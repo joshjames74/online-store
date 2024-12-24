@@ -4,19 +4,8 @@ import { fetchData } from ".";
 
 // GET methods
 
-export async function getUserByEmail(
-  email: string,
-  cache?: RequestCache,
-): Promise<UserWithCurrencyAndCountry> {
-  return fetchData(`/api/user/by-email/${email}`, cache);
-}
-
-export async function getUserBySub(sub: string): Promise<Usr> {
-  return fetchData(`/api/user/by-sub/${sub}`, "no-cache");
-}
-
-export async function getUserById(id: string): Promise<Usr> {
-  return fetchData(`/api/user/${id}`, "no-cache");
+export async function getUserByAuthId(id: string): Promise<Usr> {
+  return fetchData(`/api/user/by-auth/${id}`, "no-cache");
 }
 
 // PUT methods
@@ -64,20 +53,6 @@ export async function putUserDefaultAddress(
 }
 
 // POST methods
-
-export async function findOrPostUser(
-  user: Partial<Omit<Usr, "usr_id">>,
-): Promise<Usr> {
-  const response = await fetch(`/api/user/by-email`, {
-    method: "POST",
-    body: JSON.stringify(user),
-    cache: "force-cache",
-  });
-  if (!response) {
-    throw new Error("Error in find or post user");
-  }
-  return response.json();
-}
 
 export async function postUser(
   user: Partial<Omit<Usr, "usr_id">>,

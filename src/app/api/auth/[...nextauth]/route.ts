@@ -2,7 +2,7 @@ import NextAuth, { SessionStrategy } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import prisma from "../../../../lib/prisma";
 import { randomUUID } from "crypto";
-import { postUserGenerateData } from "@/api/request/userRequest";
+
 
 const authOptions = {
   providers: [
@@ -17,6 +17,7 @@ const authOptions = {
     async signIn({ user, profile }: any) {
       console.log("Running sign in");
 
+      // check we have a sub
       const { email, name } = user;
       const sub = profile?.sub;
 
@@ -28,38 +29,51 @@ const authOptions = {
       try {
         // Check if the user already exists
         console.log("Checking if user exists...");
-        const existingUser = await prisma.usr.findFirst({
-          where: { sub: sub },
-        });
+        const existingUser = await prisma.usrAuth.findFirst({ where: { sub: sub } });
 
-        if (!existingUser) {
-          console.log("Creating new user...");
-          // Create a new user in the database
-          const newUser = await prisma.usr.create({
+        if (existingUser) {
+          return true;
+        }
+        
+        console.log("Creating new user...");
+        const transaction = await prisma.$transaction(async (tx) => {
+          // create the user auth
+          const userAuth = await tx.usrAuth.create({
             data: {
               id: randomUUID(),
-              sub: sub,
               email: email,
-              name: name,
-            },
+              sub: sub,
+            }
           });
-
-          // await postUserGenerateData(newUser.id);
-        }
-
-        return true; // Allow sign-in
+          if (!userAuth) throw new Error("Cannot create user auth")
+          // create the user
+          const user = await tx.usr.create({ 
+            data: {
+              id: randomUUID(),
+              name: name,
+              authId: userAuth.id,
+            }
+          })
+          if (!user) throw new Error("Cannot create user");
+          return user;
+        });
+        if (!transaction) throw new Error("Error creating user and user auth");
+        return true;
       } catch (error) {
+        // Reject sign in if there's an error
         console.error("Error during user creation:", error);
-        return false; // Reject sign-in if there's an error
+        return false;
       }
     },
     async jwt({ token, profile }: any) {
       if (profile) {
-        const user = await prisma.usr.findFirst({
-          where: { sub: profile.sub },
-        });
+        const userAuth = await prisma.usrAuth.findFirst({ where: { sub: profile.sub } });
+        if (!userAuth) throw new Error("Error finding user auth");
         token.sub = profile.sub;
-        token.id = user?.id;
+        token.authId = userAuth.id;
+        const user = await prisma.usr.findFirst({ where: { authId: userAuth.id }});
+        if (!user) throw new Error("Error finding user");
+        token.id = user.id;
       }
       return token;
     },
@@ -67,6 +81,7 @@ const authOptions = {
       if (session.user) {
         session.user.sub = token.sub as string;
         session.user.id = token.id as string;
+        session.user.authId = token.authId as string;
       }
       return session;
     },

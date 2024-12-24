@@ -31,11 +31,21 @@ model Currency {
   @@map("currency")
 }
 
+model UsrAuth {
+  id              String        @id @default(uuid()) @unique
+  email           String        @db.VarChar(100) @default("")
+  sub             String?        
+  created_at      DateTime      @default(now())
+  Usr             Usr?
+
+  @@map("usrAuth")
+}
+
 model Usr {
   id                String       @id @default(uuid())
   name              String       @db.VarChar(100) @default("")
-  email             String       @db.VarChar(100) @default("") @unique
-  sub               String?       
+  auth              UsrAuth?     @relation(fields: [authId], references: [id])        
+  authId            String?      @unique
   country           Country?     @relation(fields: [countryId], references: [id])
   countryId         Int?
   currency          Currency?    @relation(fields: [currencyId], references: [id])

@@ -21,28 +21,13 @@ export async function getUserById(id: string): Promise<Usr | null> {
   return await prisma.usr.findFirst({
     where: { id: id },
   });
-}
+};
 
-export async function getUserBySub(id: string): Promise<Usr | null> {
+export async function getUserByAuthId(id: string): Promise<Usr | null> {
   return await prisma.usr.findFirst({
-    where: { sub: id },
+    where: { authId: id }
   });
-}
-
-export async function getUsersByCountryId(id: number): Promise<Usr[] | void> {
-  return await prisma.usr.findMany({
-    where: { countryId: id },
-  });
-}
-
-export async function getUserByEmail(
-  email: string,
-): Promise<UserWithCurrencyAndCountry | null> {
-  return (await prisma.usr.findFirst({
-    where: { email: email },
-    include: { currency: true, country: true },
-  })) as UserWithCurrencyAndCountry;
-}
+};
 
 // POST methods
 

@@ -33,6 +33,8 @@ async function main() {
   await prisma.$executeRaw`TRUNCATE TABLE Category RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE Product RESTART IDENTITY CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE Address RESTART IDENTITY CASCADE`;
+
+  await prisma.usrAuth.deleteMany({});
   //await prisma.$executeRaw`TRUNCATE TABLE Order RESTART IDENTITY CASCADE`;
   //await prisma.$executeRaw`TRUNCATE TABLE BasketItem RESTART IDENTITY CASCADE`;
   //await prisma.$executeRaw`TRUNCATE TABLE OrderItem RESTART IDENTITY CASCADE`;
