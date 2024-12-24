@@ -18,7 +18,9 @@ import { MenuOutlined } from "@ant-design/icons";
 import SearchBar from "./search-bar";
 import BasketButton from "./basket-button";
 import Logo from "./logo";
-import { RenderComponentIfLoggedIn } from "../auth/render-conditionally";
+import { RenderComponentIfLoggedIn, RenderComponentIfLoggedOut } from "../auth/render-conditionally";
+import SignInButton from "./account-button/sign-in-button";
+import AccountButtonLoggedIn from "./account-button/account-button-logged-in";
 
 export default function NavigationCompact(): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,6 +50,12 @@ export default function NavigationCompact(): JSX.Element {
               />
             </Button>
             <Logo />
+            <RenderComponentIfLoggedIn>
+              <AccountButtonLoggedIn />
+            </RenderComponentIfLoggedIn>
+            <RenderComponentIfLoggedOut>
+              <SignInButton />
+            </RenderComponentIfLoggedOut>
           </HStack>
           <RenderComponentIfLoggedIn>
             <BasketButton />

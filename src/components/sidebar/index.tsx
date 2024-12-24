@@ -44,13 +44,13 @@ export default function Sidebar(): JSX.Element {
 
   const sidebar = () => {
     return (
-      <Card className={styles.container} h="fit-content" minW="2xs">
-        <CardHeader paddingBottom={2}>
+      <Card className={styles.container} h="fit-content" minW="2xs" shadow="none" padding="0">
+        <CardHeader paddingBottom={2} paddingX="0">
           <Heading fontSize="lg" fontWeight="semibold">
             Filters
           </Heading>
         </CardHeader>
-        <CardBody paddingTop={2} paddingBottom={0}>
+        <CardBody paddingTop={2} paddingBottom={0} paddingX="0">
           <Stack gap={2}>
             <SortFilter />
             <PriceFilter />

@@ -25,8 +25,8 @@ export default function ProductCompact({
 
   return (
     <Link href={`/product/${product.id}`}>
-      <Card w="180px">
-        <CardBody>
+      <Card w="150px" padding={0} shadow="none">
+        <CardBody padding={0}>
           <Stack>
             <Image
               w="100%"

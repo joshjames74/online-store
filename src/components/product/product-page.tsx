@@ -46,11 +46,9 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
             }}
           >
             <Box
-              bgColor={theme.colors.background.secondary}
               alignItems="center"
               justifyContent="center"
               display="flex"
-              padding="1em"
               borderRadius="0.2em"
               height="fit-content"
               marginRight="0.4em"

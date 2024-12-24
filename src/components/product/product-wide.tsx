@@ -15,7 +15,6 @@ import {
 import { useContext } from "react";
 import ProductReviewBox from "./product-review-box";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
-import { SettingsContext } from "@/contexts/settings-context";
 import { useUserState } from "@/zustand/store";
 import { ProductWithSeller } from "@/api/services/productService";
 
@@ -27,22 +26,21 @@ export default function ProductWide({
 
   return (
     <Link href={`/product/${product.id}`}>
-      <Card maxW="2xl" minW={theme.sizes.minWidth}>
-        <CardBody>
+      <Card maxW="min(2xl, 30%)" minW="100px" padding={0} shadow="none">
+        <CardBody padding="0.4em" >
           <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2} w="full">
             <GridItem
               colSpan={1}
-              bgColor={theme.colors.background.secondary}
               display="flex"
-              padding="0.4em"
-              borderRadius="1em"
               justifyContent="center"
               alignItems="center"
+              padding={0}
             >
               <Image
                 objectFit="contain"
                 h="250px"
-                w="100%"
+                w="auto"
+                margin={0}
                 borderRadius="md"
                 src={product.image_url}
                 alt={product.image_alt}
@@ -68,6 +66,7 @@ export default function ProductWide({
                   noOfLines={6}
                   overflow="hidden"
                   textOverflow="ellipsis"
+                  textAlign="justify"
                 >
                   {product.description}
                 </Text>

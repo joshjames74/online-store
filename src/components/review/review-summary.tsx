@@ -63,8 +63,8 @@ export default function ReviewSummary({
   };
 
   return (
-    <Card h="fit-content" minW="xs" maxW="2xl">
-      <CardHeader paddingBottom={0}>
+    <Card h="fit-content" minW="xs" maxW="2xl" shadow="0" padding="0">
+      <CardHeader padding="0">
         <Stack gap={1}>
           <Heading fontSize="2xl">Customer Reviews</Heading>
           {isLoading ? (
@@ -85,7 +85,7 @@ export default function ReviewSummary({
         </Stack>
       </CardHeader>
 
-      <CardBody className={styles.body} paddingBottom={0} paddingTop="0.4em">
+      <CardBody className={styles.body} paddingBottom={0} paddingTop="0.4em" paddingX="0">
         {isLoading ? (
           <SkeletonText noOfLines={5} />
         ) : (
@@ -129,7 +129,7 @@ export default function ReviewSummary({
         )}
       </CardBody>
 
-      <CardFooter paddingTop="0.4em">
+      <CardFooter paddingTop="0.4em" paddingX="0">
         <Text
           _hover={{ textDecoration: "underline" }}
           fontSize="sm"

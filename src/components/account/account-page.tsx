@@ -6,7 +6,7 @@ export default function AccountPage(): JSX.Element {
   const pages: AccountCardProps[] = [
     {
       title: "Your orders",
-      subtitle: "Track, return, cancel an order, download invoice or buy again",
+      subtitle: "View and filter orders",
       href: "/user/orders",
     },
     {

@@ -62,8 +62,8 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
   };
 
   return (
-    <Card className={styles.container} maxW="2xl">
-      <CardHeader paddingBottom="0">
+    <Card className={styles.container} maxW="2xl" padding="0" shadow="none">
+      <CardHeader padding="0">
         <HStack justifyContent="space-around" w="full">
           <HStack flex={1} overflow="hidden" w="full">
             <Avatar
@@ -81,7 +81,7 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
         </HStack>
       </CardHeader>
 
-      <CardBody>
+      <CardBody paddingX="0" paddingY="0.4em">
         <HStack paddingBottom="0.4em">
           <ReviewStars value={review.score} fontSize="md" />
           <Heading
