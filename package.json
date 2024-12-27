@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "prisma": {
-    "seed": "tsx seed.ts"
+    "seed": "tsx seed.ts",
+    "schema": "src/prisma/schema.prisma"
   },
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
