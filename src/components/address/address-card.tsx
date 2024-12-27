@@ -93,18 +93,25 @@ export default function AddressCard(address: AddressWithCountry): JSX.Element {
               {address.name}
             </Heading>
           </HStack>
-          <Text as="h5" className="noOfLines-3">{address.address_line_1}</Text>
-          <Text as="h5" className="noOfLines-2">{address.address_line_2}</Text>
-          <Text as="h5" className="noOfLines-1">{address.area_code}</Text>
+          <Text as="h5" className="noOfLines-3">
+            {address.address_line_1}
+          </Text>
+          <Text as="h5" className="noOfLines-2">
+            {address.address_line_2}
+          </Text>
+          <Text as="h5" className="noOfLines-1">
+            {address.area_code}
+          </Text>
         </Stack>
       </CardBody>
 
       <CardFooter paddingTop="0.4em">
-        <HStack 
-        color={theme.colors.accent.tertiary} 
-        gap="0.4em"
-        h="fit-content"
-        alignItems="stretch">
+        <HStack
+          color={theme.colors.accent.tertiary}
+          gap="0.4em"
+          h="fit-content"
+          alignItems="stretch"
+        >
           <Button
             className="primary-button"
             color={`${theme.colors.semantic.error} !important`}

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Box,
   Button,
@@ -20,7 +20,6 @@ import { useAddressState, useUserState } from "@/zustand/store";
 import { ThemeContext } from "@/contexts/theme-context";
 import { useDebounce } from "use-debounce";
 import AddressCard from "./address-card";
-
 
 export default function DeliveryButtonLoggedIn(): JSX.Element {
   const { theme } = useContext(ThemeContext);
@@ -97,11 +96,10 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
         w="max-content"
         maxW="20vw"
       >
-        <EnvironmentOutlined style={{ marginRight: "0.5em" }}/>
-          {defaultAddress && defaultAddress.id && !defaultAddress.isDeleted 
+        <EnvironmentOutlined style={{ marginRight: "0.5em" }} />
+        {defaultAddress && defaultAddress.id && !defaultAddress.isDeleted
           ? `${defaultAddress.country.name} ${defaultAddress.area_code}`
-          : `Set default address`
-        }
+          : `Set default address`}
       </Button>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalContent minH="400px">
@@ -110,7 +108,10 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
             <Stack>
               {addresses.map((address, index: number) => {
                 return (
-                  <Box onClick={() => setSelectedAddress(address.id)} key={index}>
+                  <Box
+                    onClick={() => setSelectedAddress(address.id)}
+                    key={index}
+                  >
                     <AddressCard
                       params={{
                         address: address,
@@ -135,8 +136,18 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
                 </Heading>
               </Link>
               <HStack>
-                <Button onClick={() => setIsOpen(false)} bgColor={`${theme.colors.background.secondary} !important`} className="primary-button">Close</Button>
-                <Button onClick={onClick} bgColor={`${theme.colors.accent.primary} !important`} className="primary-button">
+                <Button
+                  onClick={() => setIsOpen(false)}
+                  bgColor={`${theme.colors.background.secondary} !important`}
+                  className="primary-button"
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={onClick}
+                  bgColor={`${theme.colors.accent.primary} !important`}
+                  className="primary-button"
+                >
                   Set as default
                 </Button>
               </HStack>

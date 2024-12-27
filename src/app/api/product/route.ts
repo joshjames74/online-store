@@ -7,7 +7,6 @@ import { NextRequest, NextResponse } from "next/server";
 // GET request
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
-
   const { searchParams } = new URL(req.url);
   const params = parseQueryParams(searchParams);
 

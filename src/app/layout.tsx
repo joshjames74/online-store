@@ -1,11 +1,10 @@
 "use client";
-import '@fontsource-variable/lora';
-import '@fontsource-variable/inter';
+import "@fontsource-variable/lora";
+import "@fontsource-variable/inter";
 import { Provider } from "@/contexts";
 import NavBar from "@/components/navigation";
 import { SessionProvider } from "next-auth/react";
 import "./globals.css";
-
 
 export default function RootLayout({
   children,

@@ -20,11 +20,7 @@ export default function NavigationWide(): JSX.Element {
 
   const renderLoading = (): JSX.Element => {
     return (
-      <HStack
-        bgColor="black"
-        padding="1em"
-        alignContent="center"
-      >
+      <HStack bgColor="black" padding="1em" alignContent="center">
         <Logo />
         <SearchBar />
         <SignInButton />
@@ -34,11 +30,7 @@ export default function NavigationWide(): JSX.Element {
 
   const renderLoggedOut = (): JSX.Element => {
     return (
-      <HStack
-        bgColor="black"
-        padding="1em"
-        alignContent="center"
-      >
+      <HStack bgColor="black" padding="1em" alignContent="center">
         <Logo />
         <DeliveryButtonLoggedOut />
         <SearchBar />
@@ -49,12 +41,7 @@ export default function NavigationWide(): JSX.Element {
 
   const renderLoggedIn = (): JSX.Element => {
     return (
-      <HStack
-        bgColor="black"
-        padding="1em"
-        alignContent="center"
-        w="full"
-      >
+      <HStack bgColor="black" padding="1em" alignContent="center" w="full">
         <Logo />
         <DeliveryButtonLoggedIn />
         <SearchBar />
@@ -69,7 +56,9 @@ export default function NavigationWide(): JSX.Element {
     <>
       <RenderComponentIfLoading>{renderLoading()}</RenderComponentIfLoading>
       <RenderComponentIfLoggedIn>{renderLoggedIn()}</RenderComponentIfLoggedIn>
-      <RenderComponentIfLoggedOut>{renderLoggedOut()}</RenderComponentIfLoggedOut>
+      <RenderComponentIfLoggedOut>
+        {renderLoggedOut()}
+      </RenderComponentIfLoggedOut>
     </>
   );
 }

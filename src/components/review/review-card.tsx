@@ -68,17 +68,24 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
       <CardHeader padding="0">
         <HStack justifyContent="space-around" w="full">
           <HStack flex={1} overflow="hidden" w="full">
-              <Avatar
-                size="sm"
-                name={review.usr.name}
-                src={review.usr.image_url || ""}
-              />
-              <Heading as="h4" className="noOfLines-1 muted-heading">
-                {review.usr.name}
-              </Heading>
+            <Avatar
+              size="sm"
+              name={review.usr.name}
+              src={review.usr.image_url || ""}
+            />
+            <Heading as="h4" className="noOfLines-1 muted-heading">
+              {review.usr.name}
+            </Heading>
           </HStack>
 
-          <Heading flex={1} overflow="hidden" textAlign="right" maxW="fit-content" as="h4" className="muted-heading">
+          <Heading
+            flex={1}
+            overflow="hidden"
+            textAlign="right"
+            maxW="fit-content"
+            as="h4"
+            className="muted-heading"
+          >
             {formatDate(review.created_at.toString())}
           </Heading>
         </HStack>
@@ -91,9 +98,7 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
             {review.title}
           </Heading>
         </HStack>
-        <Text className="noOfLines-15 justify">
-          {review.content}
-        </Text>
+        <Text className="noOfLines-15 justify">{review.content}</Text>
       </CardBody>
 
       <CardFooter
@@ -110,7 +115,7 @@ export default function ReviewCard(review: ReviewWithUser): JSX.Element {
           <DeleteOutlined />
         </Button>
       </CardFooter>
-      <Divider color="gray" w="full"/>
+      <Divider color="gray" w="full" />
     </Card>
   );
 }

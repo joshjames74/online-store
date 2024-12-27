@@ -30,7 +30,6 @@ async function main() {
 
   await prisma.usrAuth.deleteMany({});
 
-
   // set up sql files
   const country_sql = await readFile("../database/country.sql", {
     encoding: "utf8",

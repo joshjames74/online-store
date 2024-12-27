@@ -1,8 +1,10 @@
-import { ProductFilter, ProductParams } from "@/api/transformers/productSearchTransformer";
+import {
+  ProductFilter,
+  ProductParams,
+} from "@/api/transformers/productSearchTransformer";
 import { create } from "zustand";
 import { useSearchResultsState } from "./store";
 import { ManyWithMetadata } from "@/api/helpers/types";
-
 
 export const defaultParams: Partial<ProductParams> = {
   query: "",
@@ -11,8 +13,10 @@ export const defaultParams: Partial<ProductParams> = {
   perPage: 20,
   pageNumber: 1,
 };
-export const defaultResults = {} as ManyWithMetadata<"product", { seller: true }>;
-
+export const defaultResults = {} as ManyWithMetadata<
+  "product",
+  { seller: true }
+>;
 
 export interface SearchParamsState {
   params: Partial<ProductParams>;

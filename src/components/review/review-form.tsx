@@ -197,7 +197,11 @@ export default function ReviewForm({
 
           <ModalFooter>
             <HStack justifyContent="space-between" w="100%">
-              <Button onClick={onClose} bgColor={`${theme.colors.background.secondary} !important`} className="primary-button">
+              <Button
+                onClick={onClose}
+                bgColor={`${theme.colors.background.secondary} !important`}
+                className="primary-button"
+              >
                 Cancel
               </Button>
               <Button

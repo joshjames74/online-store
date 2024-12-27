@@ -18,7 +18,6 @@ import BasketProductCard from "./basket-product-card";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import { useBasketState, useUserState } from "@/zustand/store";
 
-
 export default function BasketPage(): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const [isLessThan500px] = useMediaQuery("(max-width: 500px)");
@@ -40,16 +39,9 @@ export default function BasketPage(): JSX.Element {
 
   if (!basket || !basket?.items?.length) {
     return (
-      <Card
-        marginY="20px"
-        flexGrow={1}
-        maxW="xl"
-        shadow="none"
-      >
+      <Card marginY="20px" flexGrow={1} maxW="xl" shadow="none">
         <CardHeader paddingBottom={0}>
-          <Heading as="h1">
-            Basket is empty
-          </Heading>
+          <Heading as="h1">Basket is empty</Heading>
         </CardHeader>
         <CardBody>
           <Link href="/">
@@ -62,10 +54,7 @@ export default function BasketPage(): JSX.Element {
 
   return (
     <>
-      <Card
-        w="max-content"
-        shadow="none"
-      >
+      <Card w="max-content" shadow="none">
         <CardHeader paddingBottom={0}>
           <Heading as="h1">Basket</Heading>
           <Heading
@@ -88,14 +77,16 @@ export default function BasketPage(): JSX.Element {
               ))}
           </Stack>
 
-          <HStack 
-          alignItems="flex-start"
-          justifyContent={isLessThan500px ? "flex-start" : "right"} 
-          w="full" 
-          marginTop="1em"
-          flexDirection={isLessThan500px ? "column" : "row"}>
+          <HStack
+            alignItems="flex-start"
+            justifyContent={isLessThan500px ? "flex-start" : "right"}
+            w="full"
+            marginTop="1em"
+            flexDirection={isLessThan500px ? "column" : "row"}
+          >
             <Heading as="h3" className="muted-heading noOfLines-1">
-              Subtotal ({basket.metadata && basket.metadata.total.quantity} items):
+              Subtotal ({basket.metadata && basket.metadata.total.quantity}{" "}
+              items):
             </Heading>
             <Heading as="h3">
               {basket.metadata &&
@@ -109,7 +100,12 @@ export default function BasketPage(): JSX.Element {
 
         <CardFooter marginRight={0} marginLeft="auto">
           <Link href="/user/basket/checkout">
-            <Button className="primary-button" bgColor={`${theme.colors.accent.primary} !important`}>Checkout</Button>
+            <Button
+              className="primary-button"
+              bgColor={`${theme.colors.accent.primary} !important`}
+            >
+              Checkout
+            </Button>
           </Link>
         </CardFooter>
       </Card>

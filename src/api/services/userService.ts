@@ -20,13 +20,13 @@ export async function getUserById(id: string): Promise<Usr | null> {
   return await prisma.usr.findFirst({
     where: { id: id },
   });
-};
+}
 
 export async function getUserByAuthId(id: string): Promise<Usr | null> {
   return await prisma.usr.findFirst({
-    where: { authId: id }
+    where: { authId: id },
   });
-};
+}
 
 // POST methods
 

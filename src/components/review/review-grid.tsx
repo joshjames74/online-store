@@ -33,7 +33,7 @@ export default function ReviewGrid({
   const { theme } = useContext(ThemeContext);
 
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [isLessThan600px] = useMediaQuery('(max-width: 600px)');
+  const [isLessThan600px] = useMediaQuery("(max-width: 600px)");
 
   const maxPages = useReviewSearchStore((state) => state.maxPages);
   const params = useReviewSearchStore((state) => state.params);
@@ -72,17 +72,25 @@ export default function ReviewGrid({
 
         <Stack className={styles.review_container}>
           <HStack className={styles.review_meta_container} alignItems="left">
-            <Heading as="h2" className="noOfLines-1">Top Reviews</Heading>
+            <Heading as="h2" className="noOfLines-1">
+              Top Reviews
+            </Heading>
             <HStack justifyContent="left">
               <Select
                 className="select"
                 placeholder="Filter By"
                 value={params.review_filter}
-                onChange={(e) => handleChangeFilter(parseInt(e.target.value || ""))}
+                onChange={(e) =>
+                  handleChangeFilter(parseInt(e.target.value || ""))
+                }
                 w="200px"
               >
-                <option value={ReviewFilter.SCORE_LOW_TO_HIGH}>Score: Low - High</option>
-                <option value={ReviewFilter.SCORE_HIGH_TO_LOW}>Score: High - Low</option>
+                <option value={ReviewFilter.SCORE_LOW_TO_HIGH}>
+                  Score: Low - High
+                </option>
+                <option value={ReviewFilter.SCORE_HIGH_TO_LOW}>
+                  Score: High - Low
+                </option>
                 <option value={ReviewFilter.DATE_NEW_TO_OLD}>Recent</option>
                 <option value={ReviewFilter.DATE_OLD_TO_NEW}>Oldest</option>
               </Select>
@@ -92,39 +100,38 @@ export default function ReviewGrid({
                   onClick={handleClickButton}
                   minW="fit-content"
                   gap={2}
-                  >
+                >
                   <PlusOutlined /> Add Review
                 </Button>
               </RenderComponentIfLoggedIn>
             </HStack>
           </HStack>
 
-
           <Stack gap="1em" w="full">
-            {isLoading 
-            ? <Spinner />
-            : reviews?.length 
-              ? 
-                reviews.map((review: ReviewWithUser, index: number) => (
-                  <ReviewCard {...review} key={index} />
-                ))
-              : (
-                <Card>
-                  <CardHeader gap="1em" maxW="2xl">
-                    <Heading as="h2">No reviews found</Heading>
-                  </CardHeader>
-                </Card>
-              )
-            }
-            {isLoading 
-            ? <></>
-            : PageNumberGrid({
-              params: {
-                pageNumber: pageNumber,
-                onClickPageNumber: updatePageNumber,
-                maxPages: maxPages,
-              },
-            })}
+            {isLoading ? (
+              <Spinner />
+            ) : reviews?.length ? (
+              reviews.map((review: ReviewWithUser, index: number) => (
+                <ReviewCard {...review} key={index} />
+              ))
+            ) : (
+              <Card>
+                <CardHeader gap="1em" maxW="2xl">
+                  <Heading as="h2">No reviews found</Heading>
+                </CardHeader>
+              </Card>
+            )}
+            {isLoading ? (
+              <></>
+            ) : (
+              PageNumberGrid({
+                params: {
+                  pageNumber: pageNumber,
+                  onClickPageNumber: updatePageNumber,
+                  maxPages: maxPages,
+                },
+              })
+            )}
           </Stack>
         </Stack>
       </Box>

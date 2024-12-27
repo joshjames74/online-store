@@ -66,35 +66,35 @@ export default function ProductBasketCard({
 
   return (
     <HStack w="240px" h="fit-content">
-        <Select 
-          w="30%"
-          className="select"
-          value={quantity}
-          onChange={(e) => setQuantity(parseInt(e.target.value))}
-        >
-          {Array.from({ length: maxQuantity }).map((_, index: number) => (
-            <option value={index + 1} key={index}>
-              {index + 1}
-            </option>
-          ))}
-        </Select>
-        <Button
-          w="70%"
-          isDisabled={!user.id}
-          className="primary-button"
-          rightIcon={
-            isLoading ? (
-              <CircularProgress size="1em" isIndeterminate />
-            ) : showSuccess ? (
-              renderStatus(isSuccessful)
-            ) : (
-              <></>
-            )
-          }
-          onClick={handleClick}
-        >
-          {!user.id ? "Sign in to add to basket" : "Add to basket"}
-        </Button>
+      <Select
+        w="30%"
+        className="select"
+        value={quantity}
+        onChange={(e) => setQuantity(parseInt(e.target.value))}
+      >
+        {Array.from({ length: maxQuantity }).map((_, index: number) => (
+          <option value={index + 1} key={index}>
+            {index + 1}
+          </option>
+        ))}
+      </Select>
+      <Button
+        w="70%"
+        isDisabled={!user.id}
+        className="primary-button"
+        rightIcon={
+          isLoading ? (
+            <CircularProgress size="1em" isIndeterminate />
+          ) : showSuccess ? (
+            renderStatus(isSuccessful)
+          ) : (
+            <></>
+          )
+        }
+        onClick={handleClick}
+      >
+        {!user.id ? "Sign in to add to basket" : "Add to basket"}
+      </Button>
     </HStack>
   );
 }

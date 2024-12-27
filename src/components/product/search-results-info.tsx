@@ -35,11 +35,7 @@ export default function SearchResultsInfo(): JSX.Element {
       : 1;
 
   return (
-    <HStack
-      bgColor="var(--muted-text)"
-      justify="space-between"
-      padding="1em"
-    >
+    <HStack bgColor="var(--muted-text)" justify="space-between" padding="1em">
       <Heading as="h5">
         {resultsCount > 0
           ? `Showing ${lowerBound} - ${upperBound} of ${resultsCount} results`
@@ -48,14 +44,15 @@ export default function SearchResultsInfo(): JSX.Element {
       <HStack gap={2}>
         <HStack>
           <Heading as="h5">Results per page</Heading>
-          <Heading 
+          <Heading
             as="h5"
             onClick={() => handleChangeWidth(Width.WIDE)}
             textDecoration={perPage === Width.WIDE ? "underline" : ""}
-            className="underline_hover">
+            className="underline_hover"
+          >
             {Width.WIDE}
           </Heading>
-          <Heading 
+          <Heading
             as="h5"
             onClick={() => handleChangeWidth(Width.COMPACT)}
             textDecoration={perPage === Width.COMPACT ? "underline" : ""}

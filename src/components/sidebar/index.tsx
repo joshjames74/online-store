@@ -27,8 +27,6 @@ import { ThemeContext } from "@/contexts/theme-context";
 import { ControlOutlined } from "@ant-design/icons";
 import SortFilter from "./sort-filter";
 
-
-
 export default function Sidebar(): JSX.Element {
   const { theme } = useContext(ThemeContext);
 
@@ -47,7 +45,9 @@ export default function Sidebar(): JSX.Element {
     return (
       <Card h="fit-content" minW="250px" shadow="none" padding="0">
         <CardHeader paddingBottom={2} paddingX="0" paddingTop="0">
-          <Heading as="h2" className="upper">Filters</Heading>
+          <Heading as="h2" className="upper">
+            Filters
+          </Heading>
         </CardHeader>
         <CardBody paddingTop={2} paddingBottom={0} paddingX={0}>
           <Stack gap="1em">
@@ -59,12 +59,20 @@ export default function Sidebar(): JSX.Element {
         </CardBody>
         <CardFooter paddingTop="1em" paddingX={0}>
           <HStack gap="1em">
-          <Button className="primary-button" onClick={handleDelete} bgColor={`${theme.colors.background.secondary} !important`}>
-            Clear Filters
-          </Button>
-          <Button className="primary-button" onClick={executeSearch} bgColor={`${theme.colors.accent.primary} !important`}>
-            Search
-          </Button>
+            <Button
+              className="primary-button"
+              onClick={handleDelete}
+              bgColor={`${theme.colors.background.secondary} !important`}
+            >
+              Clear Filters
+            </Button>
+            <Button
+              className="primary-button"
+              onClick={executeSearch}
+              bgColor={`${theme.colors.accent.primary} !important`}
+            >
+              Search
+            </Button>
           </HStack>
         </CardFooter>
       </Card>
@@ -89,7 +97,9 @@ export default function Sidebar(): JSX.Element {
           <DrawerContent>
             <DrawerCloseButton />
             <DrawerHeader>
-              <Heading as="h2" className="upper">Filters</Heading>
+              <Heading as="h2" className="upper">
+                Filters
+              </Heading>
             </DrawerHeader>
             <DrawerBody className="sans-serif">
               <Stack gap={2}>
@@ -101,10 +111,18 @@ export default function Sidebar(): JSX.Element {
             </DrawerBody>
             <DrawerFooter>
               <HStack gap="1em">
-                <Button className="primary-button" onClick={handleDelete} bgColor={`${theme.colors.background.secondary} !important`}>
+                <Button
+                  className="primary-button"
+                  onClick={handleDelete}
+                  bgColor={`${theme.colors.background.secondary} !important`}
+                >
                   Clear Filters
                 </Button>
-                <Button className="primary-button" onClick={executeSearch} bgColor={`${theme.colors.accent.primary} !important`}>
+                <Button
+                  className="primary-button"
+                  onClick={executeSearch}
+                  bgColor={`${theme.colors.accent.primary} !important`}
+                >
                   Search
                 </Button>
               </HStack>

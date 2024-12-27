@@ -1,7 +1,6 @@
 import { Box, Button, HStack } from "@chakra-ui/react";
 import "./../../../app/globals.css";
 
-
 export type PageNumberParams = {
   pageNumber: number;
   onClickPageNumber: (pageNumber: number) => void;

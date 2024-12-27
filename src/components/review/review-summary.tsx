@@ -68,16 +68,16 @@ export default function ReviewSummary({
       <CardHeader padding="0">
         <Stack gap={1}>
           <Heading fontSize="2xl">Customer Reviews</Heading>
-          {isLoading 
-          ? <SkeletonText noOfLines={1} />
-          : (
+          {isLoading ? (
+            <SkeletonText noOfLines={1} />
+          ) : (
             <>
-              <Heading as="h3" className="muted-heading">{total} global reviews</Heading>
+              <Heading as="h3" className="muted-heading">
+                {total} global reviews
+              </Heading>
               <HStack>
                 <ReviewStars value={score} fontSize="xl" />
-                <Heading as="h3">
-                  {formatReviewScore(score)} out of 5
-                </Heading>
+                <Heading as="h3">{formatReviewScore(score)} out of 5</Heading>
               </HStack>
             </>
           )}
@@ -104,7 +104,14 @@ export default function ReviewSummary({
                   onClick={() => handleClickReviewScore(index)}
                   cursor="pointer"
                 >
-                  <Text className={styles.star_text} as="h5" w="10px" marginRight="1em">{index} star</Text>
+                  <Text
+                    className={styles.star_text}
+                    as="h5"
+                    w="10px"
+                    marginRight="1em"
+                  >
+                    {index} star
+                  </Text>
                   <Box
                     style={{
                       gridTemplateColumns: `${percentages[index]}fr ${1 - percentages[index]}fr`,
@@ -114,9 +121,7 @@ export default function ReviewSummary({
                     <Box bgColor={theme.colors.accent.primary}></Box>
                     <Box bgColor={theme.colors.background.primary}></Box>
                   </Box>
-                  <Text as="h5">
-                    {Math.round(percentages[index] * 100)}%
-                  </Text>
+                  <Text as="h5">{Math.round(percentages[index] * 100)}%</Text>
                 </Box>
               );
             })
@@ -124,7 +129,9 @@ export default function ReviewSummary({
       </CardBody>
 
       <CardFooter paddingTop="0.4em" paddingX="0">
-        <Button onClick={() => handleClearFilters()} className="primary-button">Clear Filters</Button>
+        <Button onClick={() => handleClearFilters()} className="primary-button">
+          Clear Filters
+        </Button>
       </CardFooter>
     </Card>
   );

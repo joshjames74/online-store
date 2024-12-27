@@ -28,54 +28,58 @@ export default function ProductWide({
   const reviewUrl = `${url}#reviews`;
 
   return (
-      <Card maxW="5xl" minW="100px" padding={0} shadow="none">
-        <CardBody padding="0.4em" >
-          <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2} w="full">
-            <GridItem
-              colSpan={1}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              padding={0}
-            >
+    <Card maxW="5xl" minW="100px" padding={0} shadow="none">
+      <CardBody padding="0.4em">
+        <Grid templateColumns="minmax(150px, 1fr) 1fr" gap={2} w="full">
+          <GridItem
+            colSpan={1}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            padding={0}
+          >
+            <Link href={url}>
+              <Image
+                objectFit="contain"
+                h="250px"
+                w="auto"
+                margin={0}
+                borderRadius="md"
+                src={product.image_url}
+                alt={product.image_alt}
+              />
+            </Link>
+          </GridItem>
+          <GridItem colSpan={1} overflow="hidden" textOverflow="ellipsis">
+            <Stack gap="0.7em">
               <Link href={url}>
-                <Image
-                  objectFit="contain"
-                  h="250px"
-                  w="auto"
-                  margin={0}
-                  borderRadius="md"
-                  src={product.image_url}
-                  alt={product.image_alt}
-                  />
+                <Heading
+                  as={isLessThan700px ? "h2" : "h1"}
+                  className={isLessThan700px ? "noOfLines-2" : "noOfLines-1"}
+                >
+                  {product.title}
+                </Heading>
               </Link>
 
-            </GridItem>
-            <GridItem colSpan={1} overflow="hidden" textOverflow="ellipsis">
-              <Stack gap="0.7em">
+              <Heading as="h3" className="noOfLines-1 muted-heading">
+                {product.seller?.name}
+              </Heading>
 
-                <Link href={url}>
-                  <Heading as={isLessThan700px ? "h2" : "h1"} className={isLessThan700px ? "noOfLines-2" : "noOfLines-1"}>{product.title}</Heading>
-                </Link>
-                
-                
-                <Heading as="h3" className="noOfLines-1 muted-heading">{product.seller?.name}</Heading>
+              <Link href={url} className="justify">
+                <Text className="noOfLines-6">{product.description}</Text>
+              </Link>
 
-                <Link href={url} className="justify">
-                  <Text className="noOfLines-6">{product.description}</Text>
-                </Link>
+              <Link href={reviewUrl}>
+                <ProductReviewBox {...product} />
+              </Link>
 
-                <Link href={reviewUrl}>
-                  <ProductReviewBox {...product} />
-                </Link>
-
-                <Heading as="h3">
-                  {convertAndFormatToUserCurrency(product.price, currency)}
-                </Heading>
-              </Stack>
-            </GridItem>
-          </Grid>
-        </CardBody>
-      </Card>
+              <Heading as="h3">
+                {convertAndFormatToUserCurrency(product.price, currency)}
+              </Heading>
+            </Stack>
+          </GridItem>
+        </Grid>
+      </CardBody>
+    </Card>
   );
 }

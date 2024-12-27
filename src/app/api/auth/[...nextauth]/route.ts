@@ -3,7 +3,6 @@ import GoogleProvider from "next-auth/providers/google";
 import prisma from "../../../../lib/prisma";
 import { randomUUID } from "crypto";
 
-
 const authOptions = {
   providers: [
     GoogleProvider({
@@ -25,12 +24,14 @@ const authOptions = {
 
       try {
         // Check if the user already exists
-        const existingUser = await prisma.usrAuth.findFirst({ where: { sub: sub } });
+        const existingUser = await prisma.usrAuth.findFirst({
+          where: { sub: sub },
+        });
 
         if (existingUser) {
           return true;
         }
-        
+
         const transaction = await prisma.$transaction(async (tx) => {
           // create the user auth
           const userAuth = await tx.usrAuth.create({
@@ -38,17 +39,17 @@ const authOptions = {
               id: randomUUID(),
               email: email,
               sub: sub,
-            }
+            },
           });
-          if (!userAuth) throw new Error("Cannot create user auth")
+          if (!userAuth) throw new Error("Cannot create user auth");
           // create the user
-          const user = await tx.usr.create({ 
+          const user = await tx.usr.create({
             data: {
               id: randomUUID(),
               name: name,
               authId: userAuth.id,
-            }
-          })
+            },
+          });
           if (!user) throw new Error("Cannot create user");
           return user;
         });
@@ -56,17 +57,21 @@ const authOptions = {
         return true;
       } catch (error) {
         // Reject sign in if there's an error
-        console.error("Error during user creation:", error)
+        console.error("Error during user creation:", error);
         return false;
       }
     },
     async jwt({ token, profile }: any) {
       if (profile) {
-        const userAuth = await prisma.usrAuth.findFirst({ where: { sub: profile.sub } });
+        const userAuth = await prisma.usrAuth.findFirst({
+          where: { sub: profile.sub },
+        });
         if (!userAuth) throw new Error("Error finding user auth");
         token.sub = profile.sub;
         token.authId = userAuth.id;
-        const user = await prisma.usr.findFirst({ where: { authId: userAuth.id }});
+        const user = await prisma.usr.findFirst({
+          where: { authId: userAuth.id },
+        });
         if (!user) throw new Error("Error finding user");
         token.id = user.id;
       }

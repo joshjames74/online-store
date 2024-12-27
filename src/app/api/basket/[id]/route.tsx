@@ -1,6 +1,4 @@
-import {
-  putHelper,
-} from "@/api/helpers/request";
+import { putHelper } from "@/api/helpers/request";
 import { putBasketItemByQuantity } from "@/api/services/basketItemService";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -10,7 +10,6 @@ import { ProductWithSeller } from "@/api/services/productService";
 import { useEffect } from "react";
 import { useDebounce } from "use-debounce";
 
-
 export default function ProductGrid(): JSX.Element {
   const results = useSearchResultsState((state) => state.results);
   const maxPages = useSearchResultsState((state) => state.maxPages);

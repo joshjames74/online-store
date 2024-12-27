@@ -31,7 +31,13 @@ export default function Page(): JSX.Element {
     return (
       <>
         <title>Checkout</title>
-        <Box w="full" display="flex" justifyContent="center" flexDirection="column" margin="1em">
+        <Box
+          w="full"
+          display="flex"
+          justifyContent="center"
+          flexDirection="column"
+          margin="1em"
+        >
           <Text as="h3">Basket is empty</Text>
           <Link href="/">
             <Text as="h5">Click here to shop for products</Text>

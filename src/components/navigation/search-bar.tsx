@@ -60,28 +60,27 @@ export default function SearchBar(): JSX.Element {
         alignItems="stretch"
         gap={0}
       >
-      
-          <Select
-            onChange={(e) => updateCategories([parseInt(e.target.value || "")])}
-            className="secondary-button"
-            borderRight="none !important"
-            display={isLessThan1100px ? "none" : "block"}
-            maxW="200px"
-            textOverflow="ellipsis"
-            placeholder="All"
-            value={params.categories?.length === 1 ? params.categories[0] : "All"}
-            color="white"
-          >
-            {isLoading || !categories.length 
-            ? <></>
-            :
-              categories.map((category, index) => (
-                <option key={index} value={category.id}>
-                  {category.name}
-                </option>
-              )
-            )}
-          </Select>
+        <Select
+          onChange={(e) => updateCategories([parseInt(e.target.value || "")])}
+          className="secondary-button"
+          borderRight="none !important"
+          display={isLessThan1100px ? "none" : "block"}
+          maxW="200px"
+          textOverflow="ellipsis"
+          placeholder="All"
+          value={params.categories?.length === 1 ? params.categories[0] : "All"}
+          color="white"
+        >
+          {isLoading || !categories.length ? (
+            <></>
+          ) : (
+            categories.map((category, index) => (
+              <option key={index} value={category.id}>
+                {category.name}
+              </option>
+            ))
+          )}
+        </Select>
         <Input
           borderRightWidth="0 !important"
           placeholder="Search"
@@ -89,8 +88,13 @@ export default function SearchBar(): JSX.Element {
           className="secondary-button"
           onChange={(e) => updateQuery(e.target.value)}
         />
-        <Button onClick={() => handleClick()} className="secondary-button" bgColor={`${theme.colors.accent.primary} !important`} color="var(--primary-text) !important">
-          <SearchOutlined  />
+        <Button
+          onClick={() => handleClick()}
+          className="secondary-button"
+          bgColor={`${theme.colors.accent.primary} !important`}
+          color="var(--primary-text) !important"
+        >
+          <SearchOutlined />
         </Button>
       </HStack>
     </Box>

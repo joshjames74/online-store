@@ -14,7 +14,9 @@ export default function SortFilter(): JSX.Element {
 
   return (
     <>
-      <Heading as="h3" className="upper">Sort by</Heading>
+      <Heading as="h3" className="upper">
+        Sort by
+      </Heading>
       <Select onChange={(event) => handleChange(event)}>
         <option value={ProductFilter.PRICE_LOW_TO_HIGH}>Low to high</option>
         <option value={ProductFilter.PRICE_HIGH_TO_LOW}>High to low</option>

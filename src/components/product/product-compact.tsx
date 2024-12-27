@@ -28,7 +28,6 @@ export default function ProductCompact({
     <Card w="220px" padding={0} shadow="none">
       <CardBody padding={0}>
         <Stack>
-
           <Link href={url}>
             <Image
               w="100%"
@@ -36,29 +35,29 @@ export default function ProductCompact({
               objectFit="contain"
               borderRadius="md"
               src={product.image_url}
-              />
+            />
           </Link>
-          
+
           <Link href={url}>
             <Heading as="h3" className="noOfLines-2" h="45px">
               {product.title}
             </Heading>
           </Link>
 
-          <Heading as="h4" className="noOfLines-2 muted-heading">{product.seller.name}</Heading>
+          <Heading as="h4" className="noOfLines-2 muted-heading">
+            {product.seller.name}
+          </Heading>
 
           <Heading as="h4">
             {convertAndFormatToUserCurrency(product.price, currency)}
           </Heading>
 
-
           <Link href={reviewUrl}>
             <HStack alignItems="center">
-              <ReviewStars value={product.review_score} fontSize="md"/>
+              <ReviewStars value={product.review_score} fontSize="md" />
               <Heading as="h4">{product.review_count} Reviews</Heading>
             </HStack>
           </Link>
-          
         </Stack>
       </CardBody>
     </Card>

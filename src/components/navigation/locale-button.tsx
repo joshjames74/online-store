@@ -52,8 +52,12 @@ export default function LocaleButton(): JSX.Element {
                   ? `${currency.symbol} - ${currency.code}`
                   : "£ - GBP"}
               </Heading>
-              <Link href={`/user/preferences/currency?redirectUrl=${location.pathname}`}>
-                <Heading as="h5" textDecoration="underline">Change currency</Heading>
+              <Link
+                href={`/user/preferences/currency?redirectUrl=${location.pathname}`}
+              >
+                <Heading as="h5" textDecoration="underline">
+                  Change currency
+                </Heading>
               </Link>
             </HStack>
 
@@ -64,8 +68,12 @@ export default function LocaleButton(): JSX.Element {
                   ? `${country.code} - ${country.name}`
                   : "GB - United Kingdom"}
               </Heading>
-              <Link href={`/user/preferences/country?redirectUrl=${location.pathname}`}>
-                <Heading as="h5" textDecoration="underline">Change country</Heading>
+              <Link
+                href={`/user/preferences/country?redirectUrl=${location.pathname}`}
+              >
+                <Heading as="h5" textDecoration="underline">
+                  Change country
+                </Heading>
               </Link>
             </HStack>
           </Stack>

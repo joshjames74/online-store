@@ -13,7 +13,7 @@ import {
 import { signIn } from "next-auth/react";
 
 export default function Page() {
-  const googleUrl = process.env.GOOGLE_AUTH_URL
+  const googleUrl = process.env.GOOGLE_AUTH_URL;
   const handleGoogleSignIn = () => {
     signIn("google", { callbackUrl: "/" });
   };
@@ -37,7 +37,9 @@ export default function Page() {
           <CardHeader>
             <HStack as="a" gap="1em" justifyContent="center">
               <Image src={googleUrl} h="30px" w="auto" />
-              <Button onClick={handleGoogleSignIn} className="primary-button">Sign in with Google</Button>
+              <Button onClick={handleGoogleSignIn} className="primary-button">
+                Sign in with Google
+              </Button>
             </HStack>
           </CardHeader>
         </Card>

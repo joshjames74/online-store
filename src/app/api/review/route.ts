@@ -1,8 +1,6 @@
 import { getHelper, postHelper } from "@/api/helpers/request";
 import { getReviewsBySearch, postReview } from "@/api/services/reviewService";
-import {
-  ReviewParams,
-} from "@/api/transformers/reviewSearchTransformer";
+import { ReviewParams } from "@/api/transformers/reviewSearchTransformer";
 import { Review } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 

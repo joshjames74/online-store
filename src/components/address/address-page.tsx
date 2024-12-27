@@ -18,7 +18,6 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 
-
 export default function AddressesPage(): JSX.Element {
   const addresses = useAddressState((state) => state.addresses);
   const isLoading = useAddressState((state) => state.isLoading);
@@ -48,8 +47,12 @@ export default function AddressesPage(): JSX.Element {
           <Stack w="fit-content">
             <Heading as="h2">Your Addresses</Heading>
             <Link href="/user/addresses/add">
-              <Button className="primary-button" w="200px" bgColor={`${theme.colors.accent.primary} !important`}>
-                <PlusOutlined style={{ marginRight: "0.4em" }}/>
+              <Button
+                className="primary-button"
+                w="200px"
+                bgColor={`${theme.colors.accent.primary} !important`}
+              >
+                <PlusOutlined style={{ marginRight: "0.4em" }} />
                 Add Address
               </Button>
             </Link>

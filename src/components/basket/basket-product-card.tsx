@@ -28,8 +28,7 @@ export default function BasketProductCard({
 }: {
   basketItem: BasketItemWithProduct;
 }): JSX.Element {
-
-  const url = `/product/${basketItem.product.id}`
+  const url = `/product/${basketItem.product.id}`;
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
 
@@ -68,8 +67,6 @@ export default function BasketProductCard({
     setTimeout(() => setShowStatus(false), 1000);
   };
 
-
-
   const QuantityButton = (): JSX.Element => (
     <Button
       className="primary-button"
@@ -80,14 +77,21 @@ export default function BasketProductCard({
       h="30px"
       w="80px"
     >
-      <MinusOutlined onClick={basketItem.quantity <= 1 ? () => {} : handleDecrementQuantity} />
-      {isLoadingQuantity ? <CircularProgress isIndeterminate size="1em" /> : showStatus 
-      ? <CheckCircleFilled color={theme.colors.semantic.success} /> 
-        : <Text as="h6" color="inherit" margin="0">{basketItem.quantity}</Text>}
+      <MinusOutlined
+        onClick={basketItem.quantity <= 1 ? () => {} : handleDecrementQuantity}
+      />
+      {isLoadingQuantity ? (
+        <CircularProgress isIndeterminate size="1em" />
+      ) : showStatus ? (
+        <CheckCircleFilled color={theme.colors.semantic.success} />
+      ) : (
+        <Text as="h6" color="inherit" margin="0">
+          {basketItem.quantity}
+        </Text>
+      )}
       <PlusOutlined onClick={handleIncrementQuantity} />
     </Button>
   );
-
 
   const DeleteButton = (): JSX.Element => (
     <Button
@@ -96,26 +100,27 @@ export default function BasketProductCard({
       w="80px"
       onClick={handleDelete}
       _hover={{ bgColor: "red !important" }}
-      >
+    >
       Delete
-      {isLoadingDelete 
-      ? <CircularProgress size="1em" isIndeterminate />
-      : <></>}
+      {isLoadingDelete ? (
+        <CircularProgress size="1em" isIndeterminate />
+      ) : (
+        <></>
+      )}
     </Button>
   );
 
   const PriceDiv = (): JSX.Element => (
     <Heading overflow="nowrap" as="h3">
-      {convertAndFormatToUserCurrency(basketItem.product.price * basketItem.quantity, currency )}
+      {convertAndFormatToUserCurrency(
+        basketItem.product.price * basketItem.quantity,
+        currency,
+      )}
     </Heading>
   );
 
   const MetaCardLarge = (): JSX.Element => (
-    <Stack 
-    w="100px"
-    h="100%"
-    justifyContent="flex-start"
-    alignItems="flex-end">
+    <Stack w="100px" h="100%" justifyContent="flex-start" alignItems="flex-end">
       <PriceDiv />
       <QuantityButton />
       <DeleteButton />
@@ -130,7 +135,7 @@ export default function BasketProductCard({
         <DeleteButton />
       </HStack>
     </Stack>
-  )
+  );
 
   const InfoCardLarge = (): JSX.Element => (
     <Stack h="full" w="full">
@@ -140,14 +145,14 @@ export default function BasketProductCard({
         </Heading>
       </Link>
       <HStack>
-          <ReviewStars value={basketItem.product.review_score} />
-          <Text as="h5">{basketItem.product.review_count} Reviews</Text>
+        <ReviewStars value={basketItem.product.review_score} />
+        <Text as="h5">{basketItem.product.review_count} Reviews</Text>
       </HStack>
       <Link href={url}>
         <Text className="noOfLines-3 justify" fontSize="inherit">
           {basketItem.product.description}
         </Text>
-      </Link>  
+      </Link>
     </Stack>
   );
 
@@ -159,14 +164,11 @@ export default function BasketProductCard({
         </Heading>
       </Link>
       <HStack>
-          <ReviewStars value={basketItem.product.review_score} />
-          <Text as="h5">{basketItem.product.review_count} Reviews</Text>
+        <ReviewStars value={basketItem.product.review_score} />
+        <Text as="h5">{basketItem.product.review_count} Reviews</Text>
       </HStack>
     </Stack>
   );
-
-
-
 
   return (
     <Card shadow="none" padding="0" maxW="5xl" minW="md">
@@ -178,7 +180,6 @@ export default function BasketProductCard({
         height="fit-content"
         flexDirection={isLessThan500px ? "column" : "row"}
       >
-
         <Image
           src={basketItem.product.image_url}
           alt={basketItem.product.image_url}
@@ -188,23 +189,17 @@ export default function BasketProductCard({
           objectFit="cover"
         />
 
-          {isLessThan700px 
-          ?
-          (
-            <Stack>
-              <InfoCardSmall />
-              <MetaCardSmall />
-            </Stack>
-          )  
-          :
-          (
+        {isLessThan700px ? (
+          <Stack>
+            <InfoCardSmall />
+            <MetaCardSmall />
+          </Stack>
+        ) : (
           <HStack h="100%" justifyContent="space-between" gap="0.3em" w="100%">
             <InfoCardLarge />
             <MetaCardLarge />
           </HStack>
-          )
-          }
-
+        )}
       </HStack>
     </Card>
   );

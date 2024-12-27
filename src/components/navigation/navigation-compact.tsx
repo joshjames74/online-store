@@ -19,8 +19,10 @@ import { MenuOutlined } from "@ant-design/icons";
 import SearchBar from "./search-bar";
 import BasketButton from "./basket-button";
 import Logo from "./logo";
-import { RenderComponentIfLoggedIn, RenderComponentIfLoggedOut } from "../auth/render-conditionally";
-
+import {
+  RenderComponentIfLoggedIn,
+  RenderComponentIfLoggedOut,
+} from "../auth/render-conditionally";
 
 export default function NavigationCompact(): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -40,7 +42,9 @@ export default function NavigationCompact(): JSX.Element {
             </Button>
             <Logo />
           </HStack>
-          <RenderComponentIfLoggedIn><BasketButton /></RenderComponentIfLoggedIn>
+          <RenderComponentIfLoggedIn>
+            <BasketButton />
+          </RenderComponentIfLoggedIn>
         </HStack>
         <SearchBar />
       </Stack>
@@ -57,37 +61,51 @@ export default function NavigationCompact(): JSX.Element {
             <Stack w="150px">
               <RenderComponentIfLoggedIn>
                 <Link href="/user/account">
-                  <Button className="primary-button" w="100%">Your Account</Button>
+                  <Button className="primary-button" w="100%">
+                    Your Account
+                  </Button>
                 </Link>
               </RenderComponentIfLoggedIn>
               <RenderComponentIfLoggedOut>
                 <Link href="/auth/signin">
-                  <Button className="primary-button" w="100%">Sign In</Button>
+                  <Button className="primary-button" w="100%">
+                    Sign In
+                  </Button>
                 </Link>
               </RenderComponentIfLoggedOut>
               <RenderComponentIfLoggedIn>
                 <Link href="/user/basket">
-                  <Button className="primary-button" w="100%">Your Basket</Button>
+                  <Button className="primary-button" w="100%">
+                    Your Basket
+                  </Button>
                 </Link>
               </RenderComponentIfLoggedIn>
               <RenderComponentIfLoggedIn>
                 <Link href="/user/orders">
-                  <Button className="primary-button" w="100%">Your Orders</Button>
+                  <Button className="primary-button" w="100%">
+                    Your Orders
+                  </Button>
                 </Link>
               </RenderComponentIfLoggedIn>
               <RenderComponentIfLoggedIn>
                 <Link href="/user/addresses">
-                  <Button className="primary-button" w="100%">Your Addresses</Button>
+                  <Button className="primary-button" w="100%">
+                    Your Addresses
+                  </Button>
                 </Link>
               </RenderComponentIfLoggedIn>
               <RenderComponentIfLoggedIn>
                 <Link href="/user/preferences/currency">
-                  <Button className="primary-button" w="100%">Edit Currency</Button>
+                  <Button className="primary-button" w="100%">
+                    Edit Currency
+                  </Button>
                 </Link>
               </RenderComponentIfLoggedIn>
               <RenderComponentIfLoggedIn>
                 <Link href="/user/preferences/country">
-                  <Button className="primary-button" w="100%">Edit Country</Button>
+                  <Button className="primary-button" w="100%">
+                    Edit Country
+                  </Button>
                 </Link>
               </RenderComponentIfLoggedIn>
             </Stack>
@@ -96,7 +114,9 @@ export default function NavigationCompact(): JSX.Element {
             <Box w="150px">
               <RenderComponentIfLoggedIn>
                 <Link href="/auth/signout">
-                  <Button className="primary-button" w="100%">Sign Out</Button>
+                  <Button className="primary-button" w="100%">
+                    Sign Out
+                  </Button>
                 </Link>
               </RenderComponentIfLoggedIn>
             </Box>

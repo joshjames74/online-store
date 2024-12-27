@@ -11,7 +11,9 @@ export default function ProductReviewBox({
   return (
     <HStack gap="0.5em" alignItems="center">
       <ReviewStars value={review_score} fontSize="1rem"></ReviewStars>
-      <Heading as="h6" fontSize="inherit">{review_count.toString()} Reviews</Heading>
+      <Heading as="h6" fontSize="inherit">
+        {review_count.toString()} Reviews
+      </Heading>
     </HStack>
   );
 }

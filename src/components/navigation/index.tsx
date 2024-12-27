@@ -8,7 +8,6 @@ import styles from "./index.module.css";
 import { useAddressState, useBasketState, useUserState } from "@/zustand/store";
 import { useSession } from "next-auth/react";
 
-
 export default function NavBar(): JSX.Element {
   const user = useUserState((state) => state.user);
 
@@ -24,13 +23,11 @@ export default function NavBar(): JSX.Element {
     loadUserState(session);
   }, [status]);
 
-  
   useEffect(() => {
     if (!user.id) return;
     updateBasketUserId(user.id);
     updateAddressUserId(user.id);
   }, [user.id]);
-  
 
   const [isSmallerThan800px] = useMediaQuery("(max-width: 800px)");
   const { theme } = useContext(ThemeContext);

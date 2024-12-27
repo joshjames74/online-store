@@ -40,7 +40,7 @@ export default function CheckoutPage({
   const user = useUserState((state) => state.user);
   const currency = useUserState((state) => state.currency);
   const addresses = useAddressState((state) => state.addresses);
-  
+
   const { theme } = useContext(ThemeContext);
 
   const fetchBasket = useBasketState((state) => state.fetchBasket);
@@ -98,7 +98,9 @@ export default function CheckoutPage({
     <>
       <Card w="md" shadow="none">
         <CardHeader paddingBottom={0}>
-          <Heading as="h1" w="full" textAlign="center">Order Summary</Heading>
+          <Heading as="h1" w="full" textAlign="center">
+            Order Summary
+          </Heading>
         </CardHeader>
 
         <CardBody w="full">
@@ -111,7 +113,9 @@ export default function CheckoutPage({
                 </Heading>
               ) : (
                 <Link href="/user/preferences/currency">
-                  <Heading as="h4" color={theme.colors.semantic.error}>Set currency</Heading>
+                  <Heading as="h4" color={theme.colors.semantic.error}>
+                    Set currency
+                  </Heading>
                 </Link>
               )}
             </HStack>
@@ -135,14 +139,20 @@ export default function CheckoutPage({
                 </Stack>
               ) : (
                 <Link href="/user/addresses/add">
-                  <Heading as="h4" color={theme.colors.semantic.error}>Add address</Heading>
+                  <Heading as="h4" color={theme.colors.semantic.error}>
+                    Add address
+                  </Heading>
                 </Link>
               )}
             </HStack>
 
             <HStack justifyContent="space-between">
               <Heading as="h3">Total</Heading>
-              <Heading as="h4" className="noOfLines-1" color={theme.colors.accent.tertiary}>
+              <Heading
+                as="h4"
+                className="noOfLines-1"
+                color={theme.colors.accent.tertiary}
+              >
                 {convertAndFormatToUserCurrency(
                   basket.metadata.total.price,
                   currency,

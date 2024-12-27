@@ -5,7 +5,6 @@ import { useSearchParamsState } from "./store";
 import { getProductsBySearchParams } from "@/api/request/productRequest";
 import { ManyWithMetadata } from "@/api/helpers/types";
 
-
 export const defaultParams: Partial<ProductParams> = {
   query: "",
   min_review: 0,
@@ -13,7 +12,10 @@ export const defaultParams: Partial<ProductParams> = {
   perPage: 20,
   pageNumber: 1,
 };
-export const defaultResults = {} as ManyWithMetadata<"product", { seller: true }>;
+export const defaultResults = {} as ManyWithMetadata<
+  "product",
+  { seller: true }
+>;
 
 export interface SearchResultsState {
   results: ProductsWithMetadata;

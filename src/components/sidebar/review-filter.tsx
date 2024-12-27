@@ -3,7 +3,6 @@ import styles from "./review-filter.module.css";
 import ReviewStars from "../review/review-stars";
 import { useSearchParamsState } from "@/zustand/store";
 
-
 export default function ReviewFilter(): JSX.Element {
   const minReview = useSearchParamsState((state) => state.params.min_review);
   const updateMinReview = useSearchParamsState(
@@ -22,9 +21,7 @@ export default function ReviewFilter(): JSX.Element {
           cursor="pointer"
         >
           <ReviewStars value={val} fontSize="s" />
-          <Text as="h5">
-            {val.toString()} stars and up
-          </Text>
+          <Text as="h5">{val.toString()} stars and up</Text>
         </Box>
       );
     });
@@ -32,7 +29,9 @@ export default function ReviewFilter(): JSX.Element {
 
   return (
     <Stack>
-      <Heading as="h3" className="upper">Review Score</Heading>
+      <Heading as="h3" className="upper">
+        Review Score
+      </Heading>
       <Box className={styles.review_star_wrapper}>{renderReviewStars()}</Box>
     </Stack>
   );

@@ -42,8 +42,12 @@ export default function PriceFilter(): JSX.Element {
 
   return (
     <Box paddingRight="1em">
-      <Heading as="h3" className="upper" marginBottom="0.4em">Price</Heading>
-      <Text as="h5">Under {convertAndFormatToUserCurrency(maxPrice || 0, currency)}</Text>
+      <Heading as="h3" className="upper" marginBottom="0.4em">
+        Price
+      </Heading>
+      <Text as="h5">
+        Under {convertAndFormatToUserCurrency(maxPrice || 0, currency)}
+      </Text>
       <Slider
         onChange={(newPrice: number) => updateMaxPrice(newPrice)}
         min={min}
@@ -51,7 +55,7 @@ export default function PriceFilter(): JSX.Element {
         value={maxPrice}
       >
         <SliderTrack>
-          <SliderFilledTrack bgColor="var(--muted-text)"/>
+          <SliderFilledTrack bgColor="var(--muted-text)" />
         </SliderTrack>
         <SliderThumb borderColor="var(--primary-text)" borderWidth="2px" />
       </Slider>
