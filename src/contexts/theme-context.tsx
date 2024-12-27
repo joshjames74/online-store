@@ -1,8 +1,5 @@
 "use client";
 import React from "react";
-// import "@fontsource/open-sans";
-// import "@fontsource/raleway";
-
 // create interface theme
 export interface ITheme {
   theme: {

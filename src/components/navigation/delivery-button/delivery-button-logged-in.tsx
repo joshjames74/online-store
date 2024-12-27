@@ -1,3 +1,4 @@
+"use client"
 import {
   Box,
   Button,
@@ -13,12 +14,13 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { EnvironmentOutlined } from "@ant-design/icons";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
 import { useAddressState, useUserState } from "@/zustand/store";
 import { ThemeContext } from "@/contexts/theme-context";
 import { useDebounce } from "use-debounce";
 import AddressCard from "./address-card";
+
 
 export default function DeliveryButtonLoggedIn(): JSX.Element {
   const { theme } = useContext(ThemeContext);
@@ -40,7 +42,6 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
   const isLoading = useAddressState((state) => state.isLoading);
   const getAddresses = useAddressState((state) => state.getAddresses);
   const addresses = useAddressState((state) => state.addresses);
-  const setUserId = useAddressState((state) => state.setUserId);
 
   const onClick = () => {
     setIsOpen(false);
@@ -53,11 +54,11 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
       .finally(() => setIsLoadingDefaultAddress(false));
   };
 
-  useEffect(() => {
-    if (!user.id) return;
-    setUserId(user.id);
-    getAddresses();
-  }, [user.id]);
+  // useEffect(() => {
+  //   if (!user.id) return;
+  //   setUserId(user.id);
+  //   getAddresses();
+  // }, [user.id]);
 
   const isSelected = (addressId: string): boolean => {
     if (!selectedAddress && addressId === defaultAddress.id) {

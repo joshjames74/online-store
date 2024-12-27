@@ -41,7 +41,7 @@ export default function ReviewSummary({
         setTotal(total);
         setPercentages(percentages);
       })
-      .catch((error) => console.log(error))
+      .catch((error) => console.error(error))
       .finally(() => setIsLoading(false));
   };
 

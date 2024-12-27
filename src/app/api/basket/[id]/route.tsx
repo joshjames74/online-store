@@ -1,6 +1,4 @@
 import {
-  FieldValuePair,
-  formatBodyToField,
   putHelper,
 } from "@/api/helpers/request";
 import { putBasketItemByQuantity } from "@/api/services/basketItemService";

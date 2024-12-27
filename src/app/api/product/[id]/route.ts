@@ -34,28 +34,3 @@ export async function DELETE(
 
   return await deleteHelper("product", deleteProductById, parseInt(id));
 }
-
-// // PUT method
-
-// export async function PUT(
-//   req: NextRequest,
-//   { params }: { params: { id: string } },
-// ): Promise<NextResponse> {
-//   const { id } = params;
-
-//   const body = await req.json();
-
-//   const searchField: FieldValuePair<"product"> = {
-//     field: "id",
-//     value: parseInt(id),
-//   };
-//   const putField = formatBodyToField<"product">(body);
-
-//   if (!id || isNaN(Number(id))) {
-//     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-//   }
-
-//   const putParams = { searchField, putField };
-
-//   return await putHelper("product", putProductByFields, putParams);
-// }

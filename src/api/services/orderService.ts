@@ -154,7 +154,6 @@ export async function getOrderViewsBySearch(
     Object.assign(query, { take: take });
   }
 
-  console.log(query);
   const orders = await prisma.order.findMany(query);
 
   if (!orders) {

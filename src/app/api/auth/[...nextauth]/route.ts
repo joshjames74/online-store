@@ -15,27 +15,22 @@ const authOptions = {
   session: { strategy: "jwt" as SessionStrategy },
   callbacks: {
     async signIn({ user, profile }: any) {
-      console.log("Running sign in");
-
       // check we have a sub
       const { email, name } = user;
       const sub = profile?.sub;
 
       if (!email || !sub) {
-        console.log("No email or sub");
         return false;
       }
 
       try {
         // Check if the user already exists
-        console.log("Checking if user exists...");
         const existingUser = await prisma.usrAuth.findFirst({ where: { sub: sub } });
 
         if (existingUser) {
           return true;
         }
         
-        console.log("Creating new user...");
         const transaction = await prisma.$transaction(async (tx) => {
           // create the user auth
           const userAuth = await tx.usrAuth.create({
@@ -61,7 +56,7 @@ const authOptions = {
         return true;
       } catch (error) {
         // Reject sign in if there's an error
-        console.error("Error during user creation:", error);
+        console.error("Error during user creation:", error)
         return false;
       }
     },

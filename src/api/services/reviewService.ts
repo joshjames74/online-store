@@ -116,8 +116,6 @@ export async function getReviewsBySearch(
     Object.assign(query, { take: take });
   }
 
-  console.log(query);
-
   return await prisma.review.findMany(query);
 }
 
@@ -144,7 +142,6 @@ export async function postReview(
   review: Omit<Review, "review_id">,
 ): Promise<Review | void> {
   return prisma.$transaction(async (tx) => {
-    console.log("Running transaction....");
     // find product and compute new scores
     const product = await tx.product.findFirst({
       where: { id: review.productId },

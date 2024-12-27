@@ -18,6 +18,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 
+
 export default function AddressesPage(): JSX.Element {
   const addresses = useAddressState((state) => state.addresses);
   const isLoading = useAddressState((state) => state.isLoading);

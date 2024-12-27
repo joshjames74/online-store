@@ -3,7 +3,7 @@ import { getProductById } from "@/api/request/productRequest";
 import { ProductWithSeller } from "@/api/services/productService";
 import ProductPage from "@/components/product/product-page";
 import ReviewGrid from "@/components/review/review-grid";
-import { Box, HStack, Spinner, Stack } from "@chakra-ui/react";
+import { Spinner, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

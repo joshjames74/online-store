@@ -15,18 +15,15 @@ import {
   DrawerFooter,
   Box,
 } from "@chakra-ui/react";
-import { useContext } from "react";
 import { MenuOutlined } from "@ant-design/icons";
 import SearchBar from "./search-bar";
 import BasketButton from "./basket-button";
 import Logo from "./logo";
 import { RenderComponentIfLoggedIn, RenderComponentIfLoggedOut } from "../auth/render-conditionally";
-import SignInButton from "./account-button/sign-in-button";
-import AccountButtonLoggedIn from "./account-button/account-button-logged-in";
+
 
 export default function NavigationCompact(): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { theme } = useContext(ThemeContext);
 
   return (
     <>

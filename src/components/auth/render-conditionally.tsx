@@ -18,12 +18,6 @@ export function RenderPageIfLoggedIn({
 }: {
   children: JSX.Element;
 }): JSX.Element {
-  // const user = useUserState((state) => state.user);
-  // console.log("At render page");
-  // console.log(user);
-  // if (!isLoggedIn(user)) {
-  //   return <SignInRequiredPage />;
-  // }
   const { status } = useSession();
   if (status === "unauthenticated") {
     return <SignInRequiredPage />;
@@ -39,10 +33,6 @@ export function RenderComponentIfLoggedIn({
 }: {
   children: JSX.Element;
 }): JSX.Element {
-  // const user = useUserState((state) => state.user);
-  // if (!isLoggedIn(user)) {
-  //   return <></>;
-  // }
   const { status } = useSession();
   if (status === "unauthenticated") {
     return <></>;
@@ -59,10 +49,6 @@ export function RenderPageIfLoggedOut({
 }: {
   children: JSX.Element;
 }): JSX.Element {
-  // const user = useUserState((state) => state.user);
-  // if (isLoggedIn(user)) {
-  //   <></>;
-  // }
   const { status } = useSession();
   if (status === "authenticated" || status === "loading") {
     return <></>;
@@ -75,10 +61,6 @@ export function RenderComponentIfLoggedOut({
 }: {
   children: JSX.Element;
 }): JSX.Element {
-  // const user = useUserState((state) => state.user);
-  // if (isLoggedIn(user)) {
-  //   return <></>;
-  // }
   const { status } = useSession();
   if (status === "authenticated" || status === "loading") {
     return <></>;

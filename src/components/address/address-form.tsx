@@ -72,7 +72,12 @@ export default function AddressForm(): JSX.Element {
         });
         console.error(error);
       })
-      .finally(() => getAddresses());
+      .finally(() => {
+        console.log("calling addressses..")
+        getAddresses().then(() => {
+          console.log("finished");
+        }).catch(error => console.log("Error"))
+      });
   };
 
   // handler function to pass event into onSubmit
