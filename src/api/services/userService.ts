@@ -1,7 +1,6 @@
 import { Usr } from "@prisma/client";
 import { ResultType } from "../helpers/types.js";
 import prisma from "@/lib/prisma";
-import { useDrawerContext } from "@chakra-ui/react";
 import {
   generateMockAddress,
   generateMockBasketItem,

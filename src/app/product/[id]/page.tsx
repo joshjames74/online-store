@@ -3,7 +3,7 @@ import { getProductById } from "@/api/request/productRequest";
 import { ProductWithSeller } from "@/api/services/productService";
 import ProductPage from "@/components/product/product-page";
 import ReviewGrid from "@/components/review/review-grid";
-import { Box, Spinner } from "@chakra-ui/react";
+import { Box, HStack, Spinner, Stack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -40,12 +40,14 @@ export default function Page({
   }
 
   return (
-    <Box>
+    <>
       <title>{product.title}</title>
-      <ProductPage {...product} />
-      <section id="reviews">
-        <ReviewGrid id={parseInt(id)} score={product.review_score} />
-      </section>
-    </Box>
+      <Stack margin="1em" w="fit-content" maxW="5xl" gap="2em">
+        <ProductPage {...product} />
+        <section id="reviews">
+          <ReviewGrid id={parseInt(id)} score={product.review_score} />
+        </section>
+      </Stack>
+    </>
   );
 }

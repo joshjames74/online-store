@@ -1,11 +1,11 @@
 "use client";
-import AddAddressCard from "@/components/address/add-address-card";
 import AddressCard from "@/components/address/address-card";
 import {
   Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Button,
   Grid,
   GridItem,
   Heading,
@@ -14,10 +14,14 @@ import {
 import Link from "next/link";
 import styles from "./address-page.module.css";
 import { useAddressState } from "@/zustand/store";
+import { PlusOutlined } from "@ant-design/icons";
+import { useContext } from "react";
+import { ThemeContext } from "@/contexts/theme-context";
 
 export default function AddressesPage(): JSX.Element {
   const addresses = useAddressState((state) => state.addresses);
   const isLoading = useAddressState((state) => state.isLoading);
+  const { theme } = useContext(ThemeContext);
 
   if (isLoading) {
     return <></>;
@@ -40,14 +44,17 @@ export default function AddressesPage(): JSX.Element {
             </Breadcrumb>
           </Box>
 
-          <Heading>Your Addresses</Heading>
+          <Stack w="fit-content">
+            <Heading as="h2">Your Addresses</Heading>
+            <Link href="/user/addresses/add">
+              <Button className="primary-button" w="200px" bgColor={`${theme.colors.accent.primary} !important`}>
+                <PlusOutlined style={{ marginRight: "0.4em" }}/>
+                Add Address
+              </Button>
+            </Link>
+          </Stack>
 
           <Grid className={styles.grid} gap="1em" marginBottom="1em">
-            <GridItem>
-              <Link href="/user/addresses/add">
-                <AddAddressCard />
-              </Link>
-            </GridItem>
             {addresses.length ? (
               addresses.map((address, index: number) => (
                 <GridItem key={index}>
@@ -55,7 +62,9 @@ export default function AddressesPage(): JSX.Element {
                 </GridItem>
               ))
             ) : (
-              <></>
+              <Box>
+                <Heading as="h4">No addresses</Heading>
+              </Box>
             )}
           </Grid>
         </Stack>

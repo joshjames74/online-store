@@ -27,6 +27,7 @@ export default function LocaleButton(): JSX.Element {
           gap="0.4em"
           paddingX="1em"
           minW="fit-content"
+          className="secondary-button"
         >
           <Image
             h="full"
@@ -41,34 +42,30 @@ export default function LocaleButton(): JSX.Element {
           <CaretDownOutlined />
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent w="max-content">
         <PopoverBody>
-          <Stack>
-            <Heading fontSize="md">Currency</Heading>
-            <HStack justifyContent="space-between">
-              <Text>
+          <Stack w="max-content">
+            <Heading as="h2">Currency</Heading>
+            <HStack justifyContent="space-between" gap="1em">
+              <Heading as="h5">
                 {currency.symbol && currency.code
                   ? `${currency.symbol} - ${currency.code}`
                   : "£ - GBP"}
-              </Text>
-              <Link
-                href={`/user/preferences/currency?redirectUrl=${location.pathname}`}
-              >
-                <Text textDecoration="underline">Change currency</Text>
+              </Heading>
+              <Link href={`/user/preferences/currency?redirectUrl=${location.pathname}`}>
+                <Heading as="h5" textDecoration="underline">Change currency</Heading>
               </Link>
             </HStack>
 
-            <Heading fontSize="md">Country</Heading>
-            <HStack justifyContent="space-between">
-              <Text>
+            <Heading as="h2">Country</Heading>
+            <HStack justifyContent="space-between" gap="1em">
+              <Heading as="h5">
                 {country.code && country.name
                   ? `${country.code} - ${country.name}`
                   : "GB - United Kingdom"}
-              </Text>
-              <Link
-                href={`/user/preferences/country?redirectUrl=${location.pathname}`}
-              >
-                <Text textDecoration="underline">Change country</Text>
+              </Heading>
+              <Link href={`/user/preferences/country?redirectUrl=${location.pathname}`}>
+                <Heading as="h5" textDecoration="underline">Change country</Heading>
               </Link>
             </HStack>
           </Stack>

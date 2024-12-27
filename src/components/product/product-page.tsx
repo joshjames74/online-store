@@ -10,37 +10,35 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import styles from "./product-page.module.css";
 import { ThemeContext } from "@/contexts/theme-context";
 import { useContext } from "react";
 import ReviewStars from "../review/review-stars";
 import {
   convertAndFormatToUserCurrency,
-  formatReviewScore,
 } from "@/api/helpers/utils";
 import ProductBasketCard from "./product-basket-card";
 import { useUserState } from "@/zustand/store";
 import { ProductWithSeller } from "@/api/services/productService";
+import Link from "next/link";
 
 export default function ProductPage(product: ProductWithSeller): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
 
   return (
-    <HStack alignItems="stretch" className={styles.container} gap="1em">
       <Card
+        alignItems="stretch"
         minW={theme.sizes.minWidth}
         maxW="5xl"
         w="full"
-        className={styles.product_container}
         shadow={"none"}
       >
-        <CardBody>
+        <CardBody padding={0}>
           <HStack
             h="full"
             alignItems="stretch"
             sx={{
-              "@media screen and (max-width: 1000px)": {
+              "@media screen and (max-width: 800px)": {
                 flexDirection: "column",
               },
             }}
@@ -51,7 +49,6 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
               display="flex"
               borderRadius="0.2em"
               height="fit-content"
-              marginRight="0.4em"
             >
               <Image
                 height="min(400px, 50vw)"
@@ -62,40 +59,24 @@ export default function ProductPage(product: ProductWithSeller): JSX.Element {
               />
             </Box>
             <Stack w="full">
-              <Heading>{product.title}</Heading>
-              <HStack
-                className={styles.review_container}
-                fontSize="lg"
-                fontWeight="medium"
-              >
-                <Text>{formatReviewScore(product.review_score)}</Text>
-                <ReviewStars fontSize="lg" value={product.review_score} />
-                <a href="#reviews">
-                  <Text
-                    className={styles.ratings_link}
-                    _hover={{ color: theme.colors.accent.primary }}
-                  >
-                    {product.review_count} ratings
-                  </Text>
-                </a>
+              <Heading as="h1" className="noOfLines-2">{product.title}</Heading>
+              <Heading as="h3" className="noOfLines-1 muted-heading">{product.seller?.name}</Heading>
+              <Link href="#reviews">
+                <HStack>
+                  <ReviewStars fontSize="lg" value={product.review_score} />
+                  <Heading as="h3">{product.review_count} Reviews</Heading>
+                </HStack>
+              </Link>
+              <HStack w="full" justifyContent="left">
+                <ProductBasketCard props={{ id: product.id }} />
               </HStack>
-              <HStack>
-                <Avatar name={product.seller?.name} size="xs" />
-                <Text fontSize="md">{product.seller?.name}</Text>
-              </HStack>
-              <Heading
-                fontSize="3xl"
-                fontWeight="semibold"
-                color={theme.colors.accent.tertiary}
-              >
+              <Heading as="h2">
                 {convertAndFormatToUserCurrency(product.price, currency)}
               </Heading>
-              <Text textAlign="justify">{product.description}</Text>
+              <Text className="justify">{product.description}</Text>
             </Stack>
           </HStack>
         </CardBody>
       </Card>
-      <ProductBasketCard props={{ id: product.id }} />
-    </HStack>
   );
 }

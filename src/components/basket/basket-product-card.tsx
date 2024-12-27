@@ -4,7 +4,6 @@ import { ThemeContext } from "@/contexts/theme-context";
 import { useBasketState, useUserState } from "@/zustand/store";
 import {
   CheckCircleFilled,
-  DeleteOutlined,
   MinusOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
@@ -29,10 +28,13 @@ export default function BasketProductCard({
 }: {
   basketItem: BasketItemWithProduct;
 }): JSX.Element {
+
+  const url = `/product/${basketItem.product.id}`
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
 
-  const [isLessThan600px] = useMediaQuery("(max-width: 600px)");
+  const [isLessThan700px] = useMediaQuery("(max-width: 700px)");
+  const [isLessThan500px] = useMediaQuery("(max-width: 500px)");
 
   // set vars relating to displaying success, error, and loading
   const [isLoadingQuantity, setIsLoadingQuantity] = useState<boolean>(false);
@@ -66,103 +68,143 @@ export default function BasketProductCard({
     setTimeout(() => setShowStatus(false), 1000);
   };
 
-  return (
-    <Card>
-      <HStack
-        gap="0.4em"
-        padding="1em"
-        w="full"
-        alignItems="center"
-        justifyContent="space-between"
-        height="120px"
+
+
+  const QuantityButton = (): JSX.Element => (
+    <Button
+      className="primary-button"
+      justifyContent="space-evenly"
+      alignItems="center"
+      display="flex"
+      padding="0.4em"
+      h="30px"
+      w="80px"
+    >
+      <MinusOutlined onClick={basketItem.quantity <= 1 ? () => {} : handleDecrementQuantity} />
+      {isLoadingQuantity ? <CircularProgress isIndeterminate size="1em" /> : showStatus 
+      ? <CheckCircleFilled color={theme.colors.semantic.success} /> 
+        : <Text as="h6" color="inherit" margin="0">{basketItem.quantity}</Text>}
+      <PlusOutlined onClick={handleIncrementQuantity} />
+    </Button>
+  );
+
+
+  const DeleteButton = (): JSX.Element => (
+    <Button
+      className="primary-button"
+      h="30px"
+      w="80px"
+      onClick={handleDelete}
+      _hover={{ bgColor: "red !important" }}
       >
+      Delete
+      {isLoadingDelete 
+      ? <CircularProgress size="1em" isIndeterminate />
+      : <></>}
+    </Button>
+  );
+
+  const PriceDiv = (): JSX.Element => (
+    <Heading overflow="nowrap" as="h3">
+      {convertAndFormatToUserCurrency(basketItem.product.price * basketItem.quantity, currency )}
+    </Heading>
+  );
+
+  const MetaCardLarge = (): JSX.Element => (
+    <Stack 
+    w="100px"
+    h="100%"
+    justifyContent="flex-start"
+    alignItems="flex-end">
+      <PriceDiv />
+      <QuantityButton />
+      <DeleteButton />
+    </Stack>
+  );
+
+  const MetaCardSmall = (): JSX.Element => (
+    <Stack>
+      <PriceDiv />
+      <HStack alignItems="left">
+        <QuantityButton />
+        <DeleteButton />
+      </HStack>
+    </Stack>
+  )
+
+  const InfoCardLarge = (): JSX.Element => (
+    <Stack h="full" w="full">
+      <Link href={url}>
+        <Heading as="h3" className="noOfLines-1">
+          {basketItem.product.title}
+        </Heading>
+      </Link>
+      <HStack>
+          <ReviewStars value={basketItem.product.review_score} />
+          <Text as="h5">{basketItem.product.review_count} Reviews</Text>
+      </HStack>
+      <Link href={url}>
+        <Text className="noOfLines-3 justify" fontSize="inherit">
+          {basketItem.product.description}
+        </Text>
+      </Link>  
+    </Stack>
+  );
+
+  const InfoCardSmall = (): JSX.Element => (
+    <Stack h="full" w="full">
+      <Link href={url}>
+        <Heading as="h4" className="noOfLines-1">
+          {basketItem.product.title}
+        </Heading>
+      </Link>
+      <HStack>
+          <ReviewStars value={basketItem.product.review_score} />
+          <Text as="h5">{basketItem.product.review_count} Reviews</Text>
+      </HStack>
+    </Stack>
+  );
+
+
+
+
+  return (
+    <Card shadow="none" padding="0" maxW="5xl" minW="md">
+      <HStack
+        gap="0.4rem"
+        w={isLessThan500px ? "200px" : "100%"}
+        alignItems="flex-start"
+        justifyContent="flex-start"
+        height="fit-content"
+        flexDirection={isLessThan500px ? "column" : "row"}
+      >
+
         <Image
           src={basketItem.product.image_url}
           alt={basketItem.product.image_url}
-          width="200px"
-          minW="10vw"
+          minW="200px"
+          maxW="200px"
           height="120px"
-          objectFit="contain"
+          objectFit="cover"
         />
 
-        <Stack
-          w="full"
-          flexDirection={isLessThan600px ? "column" : "row"}
-          justifyContent="space-between"
-        >
-          <Link href={`/product/${basketItem.product.id}`}>
-            <HStack gap="1em">
-              <Stack>
-                <Heading fontSize="xl" noOfLines={1} textOverflow="ellipsis">
-                  {basketItem.product.title}
-                </Heading>
-                {isLessThan600px ? (
-                  <></>
-                ) : (
-                  <ReviewStars value={basketItem.product.review_score} />
-                )}
-              </Stack>
-            </HStack>
-          </Link>
+          {isLessThan700px 
+          ?
+          (
+            <Stack>
+              <InfoCardSmall />
+              <MetaCardSmall />
+            </Stack>
+          )  
+          :
+          (
+          <HStack h="100%" justifyContent="space-between" gap="0.3em" w="100%">
+            <InfoCardLarge />
+            <MetaCardLarge />
+          </HStack>
+          )
+          }
 
-          <Stack>
-            <Heading
-              overflow="nowrap"
-              fontSize="lg"
-              color={theme.colors.accent.tertiary}
-            >
-              {convertAndFormatToUserCurrency(
-                basketItem.product.price * basketItem.quantity,
-                currency,
-              )}
-            </Heading>
-
-            <HStack>
-              <HStack
-                as={Button}
-                gap={5}
-                h="fit-content"
-                padding="0.4em"
-                fontSize="xs"
-              >
-                <MinusOutlined
-                  onClick={
-                    basketItem.quantity <= 1
-                      ? () => {}
-                      : handleDecrementQuantity
-                  }
-                />
-                {isLoadingQuantity ? (
-                  <CircularProgress isIndeterminate size="1em" />
-                ) : showStatus ? (
-                  <Box color={theme.colors.semantic.success}>
-                    <CheckCircleFilled />
-                  </Box>
-                ) : (
-                  <Text>{basketItem.quantity}</Text>
-                )}
-                <PlusOutlined onClick={handleIncrementQuantity} />
-              </HStack>
-              <Text
-                fontSize="xs"
-                fill={theme.colors.semantic.error}
-                _hover={{
-                  color: theme.colors.text.focus,
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                }}
-                onClick={handleDelete}
-              >
-                <DeleteOutlined />{" "}
-                {isLoadingDelete ? (
-                  <CircularProgress size="1em" isIndeterminate />
-                ) : (
-                  <></>
-                )}
-              </Text>
-            </HStack>
-          </Stack>
-        </Stack>
       </HStack>
     </Card>
   );

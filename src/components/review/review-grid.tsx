@@ -7,6 +7,8 @@ import {
   HStack,
   Select,
   Spinner,
+  Stack,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { useContext, useMemo, useState } from "react";
 import ReviewCard from "./review-card";
@@ -15,7 +17,6 @@ import ReviewSummary from "./review-summary";
 import ReviewForm from "./review-form";
 import { useReviewSearchStore } from "@/zustand/store";
 import { ReviewFilter } from "@/api/transformers/reviewSearchTransformer";
-import { useRouter } from "next/navigation";
 import { PlusOutlined } from "@ant-design/icons";
 import { ThemeContext } from "@/contexts/theme-context";
 import { ReviewWithUser } from "@/api/services/reviewService";
@@ -32,6 +33,7 @@ export default function ReviewGrid({
   const { theme } = useContext(ThemeContext);
 
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [isLessThan600px] = useMediaQuery('(max-width: 600px)');
 
   const maxPages = useReviewSearchStore((state) => state.maxPages);
   const params = useReviewSearchStore((state) => state.params);
@@ -65,74 +67,66 @@ export default function ReviewGrid({
 
   return (
     <>
-      <Box className={styles.container}>
+      <Box className={styles.container} gap="1em" w="full">
         <ReviewSummary id={id} score={score} />
-        <Box
-          className={styles.review_container}
-          minW="fit-content"
-          w="max-content"
-          maxW="100%"
-        >
-          <HStack justifyContent="space-between" w="full">
-            <HStack>
-              <Heading fontWeight="semibold" fontSize="xl" whiteSpace="nowrap">
-                Top Reviews
-              </Heading>
+
+        <Stack className={styles.review_container}>
+          <HStack className={styles.review_meta_container} alignItems="left">
+            <Heading as="h2" className="noOfLines-1">Top Reviews</Heading>
+            <HStack justifyContent="left">
               <Select
+                className="select"
                 placeholder="Filter By"
                 value={params.review_filter}
-                onChange={(e) =>
-                  handleChangeFilter(parseInt(e.target.value || ""))
-                }
-                fontSize="sm"
+                onChange={(e) => handleChangeFilter(parseInt(e.target.value || ""))}
+                w="200px"
               >
-                <option value={ReviewFilter.SCORE_LOW_TO_HIGH}>
-                  Score: Low - High
-                </option>
-                <option value={ReviewFilter.SCORE_HIGH_TO_LOW}>
-                  Score: High - Low
-                </option>
+                <option value={ReviewFilter.SCORE_LOW_TO_HIGH}>Score: Low - High</option>
+                <option value={ReviewFilter.SCORE_HIGH_TO_LOW}>Score: High - Low</option>
                 <option value={ReviewFilter.DATE_NEW_TO_OLD}>Recent</option>
                 <option value={ReviewFilter.DATE_OLD_TO_NEW}>Oldest</option>
               </Select>
+              <RenderComponentIfLoggedIn>
+                <Button
+                  className="primary-button"
+                  onClick={handleClickButton}
+                  minW="fit-content"
+                  gap={2}
+                  >
+                  <PlusOutlined /> Add Review
+                </Button>
+              </RenderComponentIfLoggedIn>
             </HStack>
-            <RenderComponentIfLoggedIn>
-              <Button
-                onClick={handleClickButton}
-                minW="fit-content"
-                gap={2}
-                bgColor={theme.colors.accent.primary}
-              >
-                <PlusOutlined />{" "}
-                <p className={styles.review_text}>Add Review</p>
-              </Button>
-            </RenderComponentIfLoggedIn>
           </HStack>
-          <Box className={styles.grid_container}>
-            {isLoading ? (
-              <Spinner />
-            ) : reviews?.length ? (
-              reviews.map((review: ReviewWithUser, index: number) => (
-                <ReviewCard {...review} key={index} />
-              ))
-            ) : (
-              <Card>
-                <CardHeader gap="1em" maxW="2xl">
-                  <Heading fontWeight="semibold" fontSize="md">
-                    No reviews found
-                  </Heading>
-                </CardHeader>
-              </Card>
-            )}
-            {PageNumberGrid({
+
+
+          <Stack gap="1em" w="full">
+            {isLoading 
+            ? <Spinner />
+            : reviews?.length 
+              ? 
+                reviews.map((review: ReviewWithUser, index: number) => (
+                  <ReviewCard {...review} key={index} />
+                ))
+              : (
+                <Card>
+                  <CardHeader gap="1em" maxW="2xl">
+                    <Heading as="h2">No reviews found</Heading>
+                  </CardHeader>
+                </Card>
+              )
+            }
+            {isLoading 
+            ? <></>
+            : PageNumberGrid({
               params: {
                 pageNumber: pageNumber,
                 onClickPageNumber: updatePageNumber,
                 maxPages: maxPages,
               },
             })}
-          </Box>
-        </Box>
+          </Stack>
+        </Stack>
       </Box>
       <ReviewForm
         id={id}

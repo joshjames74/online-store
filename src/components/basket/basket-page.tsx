@@ -9,20 +9,19 @@ import {
   Heading,
   HStack,
   Link,
-  Spinner,
   Stack,
   Text,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { useContext, useEffect } from "react";
 import BasketProductCard from "./basket-product-card";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
-import styles from "./basket-page.module.css";
-import { ArrowRightOutlined } from "@ant-design/icons";
 import { useBasketState, useUserState } from "@/zustand/store";
-import { userAgent } from "next/server";
+
 
 export default function BasketPage(): JSX.Element {
   const { theme } = useContext(ThemeContext);
+  const [isLessThan500px] = useMediaQuery("(max-width: 500px)");
 
   const currency = useUserState((state) => state.currency);
   const user = useUserState((state) => state.user);
@@ -42,20 +41,19 @@ export default function BasketPage(): JSX.Element {
   if (!basket || !basket?.items?.length) {
     return (
       <Card
-        minW={theme.sizes.minWidth}
-        className={styles.container}
         marginY="20px"
         flexGrow={1}
         maxW="xl"
+        shadow="none"
       >
         <CardHeader paddingBottom={0}>
-          <Heading fontSize="3xl" fontWeight="semibold">
+          <Heading as="h1">
             Basket is empty
           </Heading>
         </CardHeader>
         <CardBody>
           <Link href="/">
-            <Text>Click here to shop for products</Text>
+            <Text as="h4">Click here to shop for products</Text>
           </Link>
         </CardBody>
       </Card>
@@ -65,62 +63,53 @@ export default function BasketPage(): JSX.Element {
   return (
     <>
       <Card
-        minW={theme.sizes.minWidth}
-        className={styles.container}
-        marginY="20px"
+        w="max-content"
+        shadow="none"
       >
         <CardHeader paddingBottom={0}>
-          <Heading fontWeight="semibold" fontSize="3xl">
-            Shopping Basket
-          </Heading>
-          <Text
-            color={theme.colors.accent.tertiary}
+          <Heading as="h1">Basket</Heading>
+          <Heading
             cursor="pointer"
             fontWeight="semibold"
             _hover={{ textDecoration: "underline" }}
             onClick={handleDelete}
+            as="h3"
+            className="muted-heading"
           >
             Clear basket
-          </Text>
+          </Heading>
         </CardHeader>
 
         <CardBody paddingBottom={0}>
-          <Stack>
+          <Stack gap="1em">
             {basket.items &&
               basket.items.map((basketItem, index: number) => (
                 <BasketProductCard key={index} basketItem={basketItem} />
               ))}
           </Stack>
 
-          <HStack justifyContent="right" marginTop="1em">
-            <Heading
-              fontWeight="bold"
-              fontSize="xl"
-              display="flex"
-              flexDirection="row"
-            >
-              Subtotal ({basket.metadata && basket.metadata.total.quantity}{" "}
-              items):
+          <HStack 
+          alignItems="flex-start"
+          justifyContent={isLessThan500px ? "flex-start" : "right"} 
+          w="full" 
+          marginTop="1em"
+          flexDirection={isLessThan500px ? "column" : "row"}>
+            <Heading as="h3" className="muted-heading noOfLines-1">
+              Subtotal ({basket.metadata && basket.metadata.total.quantity} items):
             </Heading>
-            <Text
-              fontWeight="bold"
-              fontSize="xl"
-              color={theme.colors.accent.tertiary}
-            >
+            <Heading as="h3">
               {basket.metadata &&
                 convertAndFormatToUserCurrency(
                   basket.metadata.total.price,
                   currency,
                 )}
-            </Text>
+            </Heading>
           </HStack>
         </CardBody>
 
         <CardFooter marginRight={0} marginLeft="auto">
           <Link href="/user/basket/checkout">
-            <Button bgColor={theme.colors.accent.primary}>
-              Checkout <ArrowRightOutlined />
-            </Button>
+            <Button className="primary-button" bgColor={`${theme.colors.accent.primary} !important`}>Checkout</Button>
           </Link>
         </CardFooter>
       </Card>

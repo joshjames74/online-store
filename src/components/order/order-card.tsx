@@ -42,22 +42,22 @@ export default function OrderCard({
   }
 
   return (
-    <Card className={styles.container} borderRadius="0.4em">
+    <Card className={styles.container} borderRadius="0" shadow="0">
       <CardHeader bgColor={theme.colors.background.secondary} padding="1em">
         <HStack className={styles.header_container}>
           <Stack className={styles.info_container}>
-            <Heading className={styles.label} fontSize="sm">
+            <Heading className={styles.label} as="h4">
               ORDER PLACED
             </Heading>
-            <Heading className={styles.value} fontSize="sm">
+            <Heading className={styles.value} as="h5">
               {formatDate(orderView.order.created_at.toString())}
             </Heading>
           </Stack>
           <Stack className={styles.info_container}>
-            <Heading className={styles.label} fontSize="sm">
+            <Heading className={styles.label} as="h4">
               TOTAL
             </Heading>
-            <Heading className={styles.value} fontSize="sm">
+            <Heading className={styles.value} as="h5">
               {convertAndFormatToUserCurrency(
                 orderView.metadata.total.price,
                 currency,
@@ -65,14 +65,14 @@ export default function OrderCard({
             </Heading>
           </Stack>
           <Stack className={styles.info_container}>
-            <Heading className={styles.label} fontSize="sm">
+            <Heading className={styles.label} as="h4">
               DISPATCHED TO
             </Heading>
             <Popover>
               <PopoverTrigger>
                 <Heading
                   className={styles.value}
-                  fontSize="sm"
+                  as="h5"
                   color={theme.colors.accent.primary}
                   cursor="pointer"
                   _hover={{ textDecoration: "underline" }}

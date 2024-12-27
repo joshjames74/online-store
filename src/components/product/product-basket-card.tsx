@@ -6,6 +6,7 @@ import {
   Button,
   CircularProgress,
   Box,
+  HStack,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
@@ -26,7 +27,7 @@ export default function ProductBasketCard({
   const { id } = props;
   const maxQuantity = 30;
 
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccessful, setIsSuccessful] = useState<boolean>(true);
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
@@ -64,38 +65,36 @@ export default function ProductBasketCard({
   };
 
   return (
-    <Card minW="2xs" maxW="2xl" h="fit-content" shadow="none">
-      <CardFooter>
-        <Stack w="full">
-          <Select
-            placeholder="Select quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value))}
-          >
-            {Array.from({ length: maxQuantity }).map((_, index: number) => (
-              <option value={index + 1} key={index}>
-                {index + 1}
-              </option>
-            ))}
-          </Select>
-          <Button
-            isDisabled={!user.id}
-            rightIcon={
-              isLoading ? (
-                <CircularProgress size="1em" isIndeterminate />
-              ) : showSuccess ? (
-                renderStatus(isSuccessful)
-              ) : (
-                <></>
-              )
-            }
-            bgColor={theme.colors.accent.primary}
-            onClick={handleClick}
-          >
-            {!user.id ? "Sign in to add to basket" : "Add to basket"}
-          </Button>
-        </Stack>
-      </CardFooter>
-    </Card>
+    <HStack w="240px" h="fit-content">
+        <Select 
+          w="30%"
+          className="select"
+          value={quantity}
+          onChange={(e) => setQuantity(parseInt(e.target.value))}
+        >
+          {Array.from({ length: maxQuantity }).map((_, index: number) => (
+            <option value={index + 1} key={index}>
+              {index + 1}
+            </option>
+          ))}
+        </Select>
+        <Button
+          w="70%"
+          isDisabled={!user.id}
+          className="primary-button"
+          rightIcon={
+            isLoading ? (
+              <CircularProgress size="1em" isIndeterminate />
+            ) : showSuccess ? (
+              renderStatus(isSuccessful)
+            ) : (
+              <></>
+            )
+          }
+          onClick={handleClick}
+        >
+          {!user.id ? "Sign in to add to basket" : "Add to basket"}
+        </Button>
+    </HStack>
   );
 }

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -63,29 +64,27 @@ export default function ReviewSummary({
   };
 
   return (
-    <Card h="fit-content" minW="xs" maxW="2xl" shadow="0" padding="0">
+    <Card h="fit-content" w="300px" shadow="0">
       <CardHeader padding="0">
         <Stack gap={1}>
           <Heading fontSize="2xl">Customer Reviews</Heading>
-          {isLoading ? (
-            <SkeletonText noOfLines={1} />
-          ) : (
+          {isLoading 
+          ? <SkeletonText noOfLines={1} />
+          : (
             <>
+              <Heading as="h3" className="muted-heading">{total} global reviews</Heading>
               <HStack>
                 <ReviewStars value={score} fontSize="xl" />
-                <Heading fontSize="md" fontWeight="semibold">
+                <Heading as="h3">
                   {formatReviewScore(score)} out of 5
                 </Heading>
               </HStack>
-              <Heading fontSize="md" fontWeight="semibold">
-                {total} global reviews
-              </Heading>
             </>
           )}
         </Stack>
       </CardHeader>
 
-      <CardBody className={styles.body} paddingBottom={0} paddingTop="0.4em" paddingX="0">
+      <CardBody paddingBottom={0} paddingTop="0.4em" paddingX="0">
         {isLoading ? (
           <SkeletonText noOfLines={5} />
         ) : (
@@ -103,24 +102,19 @@ export default function ReviewSummary({
                   }
                   key={index}
                   onClick={() => handleClickReviewScore(index)}
+                  cursor="pointer"
                 >
-                  <Text
-                    className={styles.star_text}
-                    color={theme.colors.accent.tertiary}
-                  >
-                    {index} star
-                  </Text>
+                  <Text className={styles.star_text} as="h5" w="10px" marginRight="1em">{index} star</Text>
                   <Box
                     style={{
                       gridTemplateColumns: `${percentages[index]}fr ${1 - percentages[index]}fr`,
                     }}
                     className={styles.star_content}
-                    bgColor={theme.colors.border.primary}
                   >
                     <Box bgColor={theme.colors.accent.primary}></Box>
                     <Box bgColor={theme.colors.background.primary}></Box>
                   </Box>
-                  <Text color={theme.colors.accent.tertiary}>
+                  <Text as="h5">
                     {Math.round(percentages[index] * 100)}%
                   </Text>
                 </Box>
@@ -130,13 +124,7 @@ export default function ReviewSummary({
       </CardBody>
 
       <CardFooter paddingTop="0.4em" paddingX="0">
-        <Text
-          _hover={{ textDecoration: "underline" }}
-          fontSize="sm"
-          onClick={() => handleClearFilters()}
-        >
-          Clear Filters
-        </Text>
+        <Button onClick={() => handleClearFilters()} className="primary-button">Clear Filters</Button>
       </CardFooter>
     </Card>
   );

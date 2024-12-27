@@ -1,5 +1,5 @@
 import { AddressWithCountry } from "@/api/services/addressService";
-import { Avatar, Card, HStack, Stack, Text } from "@chakra-ui/react";
+import { Avatar, Card, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 
 export default function AddressCard({
   params,
@@ -12,16 +12,17 @@ export default function AddressCard({
     <Card
       cursor="pointer"
       boxSizing="border-box"
-      border={isSelected ? "2px solid blue" : ""}
+      shadow="none"
       padding="0.4em"
+      className={isSelected ? "primary-border" : ""}
     >
       <HStack>
         <Avatar src={address.country.image_url} />
         <Stack gap="0">
-          <Text noOfLines={1} textOverflow="ellipsis" fontWeight="bold">
+          <Heading className="noOfLines-1" as="h5">
             {address.name}
-          </Text>
-          <Text>{address.address_line_1}</Text>
+          </Heading>
+          <Heading as="h6">{address.address_line_1}</Heading>
         </Stack>
       </HStack>
     </Card>

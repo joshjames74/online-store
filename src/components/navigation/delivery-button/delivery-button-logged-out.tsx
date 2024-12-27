@@ -1,13 +1,16 @@
 import { Button, Stack, Text } from "@chakra-ui/react";
-import styles from "./index.module.css";
+import Link from "next/link";
+
 
 export default function DeliveryButtonLoggedOut(): JSX.Element {
   return (
-    <Button className={styles.text_button} maxW="100px">
-      <Stack fontSize="xs" gap={0} textAlign="left">
-        <Text>Sign in to</Text>
-        <Text>set an address</Text>
-      </Stack>
-    </Button>
+    <Link href="/auth/signin">
+      <Button className="secondary-button" maxW="100px">
+        <Stack gap={0} textAlign="left">
+          <Text as="h6" fontFamily="inherit" color="inherit">Sign in to</Text>
+          <Text as="h6" fontFamily="inherit" color="inherit">set an address</Text>
+        </Stack>
+      </Button>
+    </Link>
   );
 }

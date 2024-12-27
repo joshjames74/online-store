@@ -1,18 +1,19 @@
 .container {
   display: flex;
-  flex-direction: column;
-}
-
-.product_area_container {
-  display: grid;
-  grid-template-columns: 1fr 4fr 2fr;
-  padding: 1em;
-  gap: 0.4em;
+  flex-direction: row;
 }
 
 @media screen and (max-width: 800px) {
-  .product_area_container {
+  .container {
     display: flex;
-    flex-direction: column;
+    flex-direction: column !important;
+    align-items: normal !important;
+  }
+}
+
+
+@media screen and (min-width: 800px) {
+  .container {
+    align-items: stretch !important;
   }
 }

@@ -1,4 +1,4 @@
-import { Box, Checkbox, SkeletonText, Text } from "@chakra-ui/react";
+import { Box, Checkbox, Heading, SkeletonText, Stack, Text } from "@chakra-ui/react";
 import styles from "./category-filter.module.css";
 import { Category } from "@prisma/client";
 import { useEffect, useState } from "react";
@@ -39,34 +39,37 @@ export default function CategoryFilter(): JSX.Element {
     updateCategories([...selectedCategories, id]);
   };
 
-  const isSelected = (id: number) =>
-    selectedCategories ? selectedCategories.includes(id) : false;
+  const isSelected = (id: number) => selectedCategories ? selectedCategories.includes(id) : false;
+  const SquareIcon = () => <Box className="checkbox-icon"></Box>
 
   return (
-    <Box className={styles.container}>
-      <Text fontWeight="bold">Categories</Text>
-      {isLoading ? (
-        <SkeletonText noOfLines={10} />
-      ) : (
-        <Box className={styles.checkbox_container}>
-          {!categories.length ? (
-            <></>
-          ) : (
+    <Stack>
+      <Heading as="h3" className="upper">Categories</Heading>
+      {isLoading 
+      ? <SkeletonText noOfLines={10} />
+      : (
+        <Stack gap="0.2em">
+          {!categories.length 
+          ? <></>
+          : (
             categories.map((category: Category, index: number) => {
               return (
                 <Checkbox
+                  iconColor="var(--primary-text)"
+                  colorScheme="var(--primary-text)"
                   key={index}
                   isChecked={isSelected(category.id)}
                   onChange={() => handleCategoryChange(category.id)}
-                  fontWeight="semibold"
                 >
-                  {category.name}
+                  <Text as="h5">
+                    {category.name}
+                  </Text>
                 </Checkbox>
               );
             })
           )}
-        </Box>
+        </Stack>
       )}
-    </Box>
+    </Stack>
   );
 }

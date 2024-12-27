@@ -1,7 +1,6 @@
 "use client";
-// import type { Metadata, Viewport } from "next";
-// import localFont from "next/font/local";
-// import "./globals.css";
+import '@fontsource-variable/lora';
+import '@fontsource-variable/inter';
 import { Provider } from "@/contexts";
 import NavBar from "@/components/navigation";
 import { SessionProvider } from "next-auth/react";
@@ -16,7 +15,8 @@ import "./globals.css";
 //   src: "./fonts/GeistMonoVF.woff",
 //   variable: "--font-geist-mono",
 //   weight: "100 900",
-// });
+// });]
+
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",

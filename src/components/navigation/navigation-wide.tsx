@@ -21,7 +21,7 @@ export default function NavigationWide(): JSX.Element {
   const renderLoading = (): JSX.Element => {
     return (
       <HStack
-        bgColor={theme.colors.background.accent}
+        bgColor="black"
         padding="1em"
         alignContent="center"
       >
@@ -35,7 +35,7 @@ export default function NavigationWide(): JSX.Element {
   const renderLoggedOut = (): JSX.Element => {
     return (
       <HStack
-        bgColor={theme.colors.background.accent}
+        bgColor="black"
         padding="1em"
         alignContent="center"
       >
@@ -50,7 +50,7 @@ export default function NavigationWide(): JSX.Element {
   const renderLoggedIn = (): JSX.Element => {
     return (
       <HStack
-        bgColor={theme.colors.background.accent}
+        bgColor="black"
         padding="1em"
         alignContent="center"
         w="full"
@@ -69,9 +69,7 @@ export default function NavigationWide(): JSX.Element {
     <>
       <RenderComponentIfLoading>{renderLoading()}</RenderComponentIfLoading>
       <RenderComponentIfLoggedIn>{renderLoggedIn()}</RenderComponentIfLoggedIn>
-      <RenderComponentIfLoggedOut>
-        {renderLoggedOut()}
-      </RenderComponentIfLoggedOut>
+      <RenderComponentIfLoggedOut>{renderLoggedOut()}</RenderComponentIfLoggedOut>
     </>
   );
 }

@@ -13,7 +13,6 @@ import {
 import { useContext } from "react";
 import ReviewStars from "../review/review-stars";
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
-import { SettingsContext } from "@/contexts/settings-context";
 import { useUserState } from "@/zustand/store";
 import { ProductWithSeller } from "@/api/services/productService";
 
@@ -22,36 +21,46 @@ export default function ProductCompact({
 }: ProductWithSeller): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const currency = useUserState((state) => state.currency);
+  const url = `/product/${product.id}`;
+  const reviewUrl = `${url}#reviews`;
 
   return (
-    <Link href={`/product/${product.id}`}>
-      <Card w="150px" padding={0} shadow="none">
-        <CardBody padding={0}>
-          <Stack>
+    <Card w="220px" padding={0} shadow="none">
+      <CardBody padding={0}>
+        <Stack>
+
+          <Link href={url}>
             <Image
               w="100%"
-              h="150px"
-              objectFit="cover"
+              h="250px"
+              objectFit="contain"
               borderRadius="md"
               src={product.image_url}
-            />
-            <Heading noOfLines={1} fontSize="lg">
+              />
+          </Link>
+          
+          <Link href={url}>
+            <Heading as="h3" className="noOfLines-2" h="45px">
               {product.title}
             </Heading>
-            <Heading fontSize="md" color={theme.colors.accent.tertiary}>
-              {convertAndFormatToUserCurrency(product.price, currency)}
-            </Heading>
-            <HStack gap={1}>
-              <Avatar name={product.seller?.name} size="2xs" />
-              <ReviewStars value={product.review_score}></ReviewStars>
-              <Text fontSize="xs" fontWeight="bold">
-                {product.review_score.toPrecision(2).toString()}
-              </Text>
-              <Text fontSize="sm">({product.review_count})</Text>
+          </Link>
+
+          <Heading as="h4" className="noOfLines-2 muted-heading">{product.seller.name}</Heading>
+
+          <Heading as="h4">
+            {convertAndFormatToUserCurrency(product.price, currency)}
+          </Heading>
+
+
+          <Link href={reviewUrl}>
+            <HStack alignItems="center">
+              <ReviewStars value={product.review_score} fontSize="md"/>
+              <Heading as="h4">{product.review_count} Reviews</Heading>
             </HStack>
-          </Stack>
-        </CardBody>
-      </Card>
-    </Link>
+          </Link>
+          
+        </Stack>
+      </CardBody>
+    </Card>
   );
 }

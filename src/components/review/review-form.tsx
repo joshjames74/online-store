@@ -126,20 +126,15 @@ export default function ReviewForm({
   return (
     <Modal isOpen={isVisible} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent margin="1em">
+      <ModalContent marginX="1em" paddingBottom="0">
         <ModalHeader>
-          <Heading fontSize="2xl" fontWeight="semibold">
-            Create Review
-          </Heading>
+          <Heading as="h2">Create Review</Heading>
         </ModalHeader>
-
-        <Divider />
-
         <form onSubmit={(event) => handleFormSubmit(event)}>
-          <ModalBody>
+          <ModalBody paddingTop="0">
             <Stack>
-              <Stack fontSize="xl" fontWeight="semibold">
-                <label>Overall rating</label>
+              <Stack>
+                <Heading as="h4">Overall rating</Heading>
                 <HStack gap="1px">
                   {Array.from({ length: 5 }).map((_, index: number) => (
                     <StarFilled
@@ -160,9 +155,9 @@ export default function ReviewForm({
                   ))}
                   <Text
                     marginLeft="0.4em"
-                    fontSize="sm"
                     _hover={{ textDecoration: "underline" }}
                     onClick={() => setRating(0)}
+                    as="h5"
                   >
                     Set to zero
                   </Text>
@@ -174,17 +169,19 @@ export default function ReviewForm({
                 />
                 {errors.score && errorMessage(errors.score.message?.toString())}
               </Stack>
-              <Stack fontWeight="semibold">
-                <label>Add a title</label>
+              <Stack>
+                <Heading as="h4">Add a title</Heading>
                 <Input
+                  className="primary-border"
                   type="text"
                   {...register("title", { required: "Title is required" })}
                 />
                 {errors.title && errorMessage(errors.title.message?.toString())}
               </Stack>
-              <Stack fontWeight="semibold">
-                <label>Add a written review</label>
+              <Stack>
+                <Heading as="h4">Add a written review</Heading>
                 <Input
+                  className="primary-border"
                   type="textarea"
                   {...register("content", { required: "Content is required" })}
                 />
@@ -200,14 +197,14 @@ export default function ReviewForm({
 
           <ModalFooter>
             <HStack justifyContent="space-between" w="100%">
-              <Button onClick={onClose} color={theme.colors.semantic.error}>
+              <Button onClick={onClose} bgColor={`${theme.colors.background.secondary} !important`} className="primary-button">
                 Cancel
               </Button>
               <Button
-                as={Button}
                 maxW="fit-content"
                 type="submit"
-                bgColor={theme.colors.accent.primary}
+                bgColor={`${theme.colors.accent.primary} !important`}
+                className="primary-button"
               >
                 Submit
               </Button>

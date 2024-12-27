@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Button,
   Card,
   CardHeader,
   Heading,
@@ -14,9 +15,6 @@ import { signIn } from "next-auth/react";
 export default function Page() {
   const googleUrl =
     "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA";
-  const githubUrl =
-    "https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png";
-
   const handleGoogleSignIn = () => {
     signIn("google", { callbackUrl: "/" });
   };
@@ -32,24 +30,15 @@ export default function Page() {
       }}
     >
       <Stack alignItems="center">
-        <Heading>Sign In</Heading>
-        <Text>Select a method of sign in</Text>
+        <Heading as="h3">Sign In</Heading>
+        <Text as="h5">Select a method of sign in</Text>
       </Stack>
       <Stack maxW="xl" minW="xs" w="100vw">
-        <Card>
+        <Card marginX="1em" shadow="none">
           <CardHeader>
-            <HStack>
-              <Image src={googleUrl} h="50px" w="auto" />
-              <button onClick={handleGoogleSignIn}>Sign in with Google</button>
-            </HStack>
-          </CardHeader>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <HStack>
-              <Image src={githubUrl} h="50px" w="auto" />
-              <button>Sign in with Google</button>
+            <HStack as="a" gap="1em" justifyContent="center">
+              <Image src={googleUrl} h="30px" w="auto" />
+              <Button onClick={handleGoogleSignIn} className="primary-button">Sign in with Google</Button>
             </HStack>
           </CardHeader>
         </Card>

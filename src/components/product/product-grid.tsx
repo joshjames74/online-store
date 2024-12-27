@@ -1,6 +1,6 @@
 "use client";
 import ProductWide from "@/components/product/product-wide";
-import { Box, Card, CardBody, Heading, Spinner } from "@chakra-ui/react";
+import { Box, Card, CardBody, Heading, Spinner, Stack } from "@chakra-ui/react";
 import ProductCompact from "./product-compact";
 import styles from "./product-grid.module.css";
 import { useSearchParamsState, useSearchResultsState } from "@/zustand/store";
@@ -40,9 +40,9 @@ export default function ProductGrid(): JSX.Element {
 
   if (!results.data?.length) {
     return (
-      <Card className={styles.wrapper} h="fit-content">
+      <Card shadow="none">
         <CardBody>
-          <Heading fontSize="md">No products found</Heading>
+          <Heading as="h3">No products found</Heading>
         </CardBody>
       </Card>
     );
@@ -50,12 +50,12 @@ export default function ProductGrid(): JSX.Element {
 
   if (params.perPage === Width.WIDE) {
     return (
-      <Box className={styles.wrapper}>
-        <Box className={styles.container_wide}>
+      <Stack w="full">
+        <Stack>
           {results.data.map((product: ProductWithSeller) => (
             <ProductWide key={product.id} {...product} />
           ))}
-        </Box>
+        </Stack>
         <PageNumberGrid
           params={{
             pageNumber: params.pageNumber || 0,
@@ -63,13 +63,13 @@ export default function ProductGrid(): JSX.Element {
             maxPages: maxPages,
           }}
         />
-      </Box>
+      </Stack>
     );
   }
 
   return (
-    <Box className={styles.wrapper}>
-      <Box className={styles.container_compact}>
+    <Stack w="100%" maxW="2000px">
+      <Box className={styles.container_compact} alignItems="flex-start">
         {results.data.map((product: ProductWithSeller) => (
           <ProductCompact key={product.id} {...product} />
         ))}
@@ -81,6 +81,6 @@ export default function ProductGrid(): JSX.Element {
           maxPages: maxPages,
         }}
       />
-    </Box>
+    </Stack>
   );
 }

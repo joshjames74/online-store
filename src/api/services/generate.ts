@@ -109,10 +109,6 @@ export const generateMockUser = (): Usr => {
     firstName: firstName,
     lastName: lastName,
   });
-  user.email = faker.internet.email({
-    firstName: firstName,
-    lastName: lastName,
-  });
   user.image_url = faker.image.avatar();
   user.currencyId = null;
   user.countryId = null;

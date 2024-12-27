@@ -80,8 +80,8 @@ export default function Page({
         <title>Country</title>
         <Box w="full" justifyItems="center" marginTop="1em">
           <Stack w="fit-content">
-            <Heading>Change country</Heading>
-            <Text>Select the country you want.</Text>
+            <Heading as="h2">Change country</Heading>
+            <Text as="h4">Select the country you want.</Text>
 
             {isLoading || !countries || !countries.length ? (
               <></>
@@ -104,15 +104,17 @@ export default function Page({
 
                 <Box display="flex" gap="1em">
                   <Button
-                    bgColor={theme.colors.background.secondary}
+                    bgColor={`${theme.colors.background.secondary} !important`}
                     onClick={handleCancel}
+                    className="primary-button"
                   >
                     Cancel
                   </Button>
                   <Button
-                    bgColor={theme.colors.accent.primary}
+                    bgColor={`${theme.colors.accent.primary} !important`}
                     isDisabled={!!!selectedCountry}
                     onClick={handleSubmit}
+                    className="primary-button"
                   >
                     Save changes
                   </Button>

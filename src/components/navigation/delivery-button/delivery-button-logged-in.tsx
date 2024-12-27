@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  Heading,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -9,9 +11,7 @@ import {
   ModalHeader,
   Spinner,
   Stack,
-  Text,
 } from "@chakra-ui/react";
-import styles from "./index.module.css";
 import { EnvironmentOutlined } from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
@@ -71,7 +71,7 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
 
   if (isLoading || isLoadingDefaultAddress) {
     return (
-      <Button className={styles.text_button}>
+      <Button className="secondary-button">
         <Spinner />
       </Button>
     );
@@ -80,43 +80,30 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
   if (!addresses.length) {
     return (
       <Link href="/user/addresses/add">
-        <Button className={styles.text_button}>Create address</Button>
+        <Button className="secondary-button">Create address</Button>
       </Link>
     );
   }
 
   return (
-    <>
+    <Box display="flex" flexGrow={"1"}>
       <Button
-        className={styles.container}
+        className="secondary-button noOfLines-1"
         onClick={() => setIsOpen(true)}
-        bgColor="transparent"
-        fontSize="2xl"
+        fontSize="sm"
+        gap="1em"
+        display="block !important"
+        w="max-content"
+        maxW="20vw"
       >
-        <EnvironmentOutlined />
-        <Box className={styles.text_container} fontSize="xs" overflow="hidden">
-          {defaultAddress && defaultAddress.id && !defaultAddress.isDeleted ? (
-            <>
-              <Text fontWeight="normal" className={styles.text_wrap}>
-                Deliver to {defaultAddress.address_line_1}
-              </Text>
-              <Text fontWeight="semibold" className={styles.text_wrap}>
-                {defaultAddress?.country?.name} {defaultAddress.area_code}
-              </Text>
-            </>
-          ) : (
-            <Text
-              fontWeight="semibold"
-              fontSize="sm"
-              className={styles.text_wrap}
-            >
-              Set default address
-            </Text>
-          )}
-        </Box>
+        <EnvironmentOutlined style={{ marginRight: "0.5em" }}/>
+          {defaultAddress && defaultAddress.id && !defaultAddress.isDeleted 
+          ? `${defaultAddress.country.name} ${defaultAddress.area_code}`
+          : `Set default address`
+        }
       </Button>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <ModalContent>
+        <ModalContent minH="400px">
           <ModalHeader>Addresses</ModalHeader>
           <ModalBody maxH="70vh" overflowY="scroll">
             <Stack>
@@ -138,18 +125,24 @@ export default function DeliveryButtonLoggedIn(): JSX.Element {
                 );
               })}
             </Stack>
-            <Link href="/user/addresses" onClick={() => setIsOpen(false)}>
-              Manage Addresses
-            </Link>
           </ModalBody>
           <ModalFooter justifyContent="space-between">
-            <Button onClick={() => setIsOpen(false)}>Close</Button>
-            <Button onClick={onClick} bgColor={theme.colors.accent.primary}>
-              Set as default
-            </Button>
+            <Stack>
+              <Link href="/user/addresses" onClick={() => setIsOpen(false)}>
+                <Heading as="h4" className="muted-heading" paddingBottom="0">
+                  Manage Addresses
+                </Heading>
+              </Link>
+              <HStack>
+                <Button onClick={() => setIsOpen(false)} bgColor={`${theme.colors.background.secondary} !important`} className="primary-button">Close</Button>
+                <Button onClick={onClick} bgColor={`${theme.colors.accent.primary} !important`} className="primary-button">
+                  Set as default
+                </Button>
+              </HStack>
+            </Stack>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Box>
   );
 }

@@ -36,29 +36,30 @@ export default function SearchResultsInfo(): JSX.Element {
 
   return (
     <HStack
-      bgColor={theme.colors.accent.tertiary}
+      bgColor="var(--muted-text)"
       justify="space-between"
       padding="1em"
     >
-      <Heading className={styles.heading}>
+      <Heading as="h5">
         {resultsCount > 0
           ? `Showing ${lowerBound} - ${upperBound} of ${resultsCount} results`
           : `No results found`}
       </Heading>
       <HStack gap={2}>
-        <HStack fontSize="lg">
-          <Heading className={styles.heading}>Results per page</Heading>
-          <Heading
-            className={styles.heading}
+        <HStack>
+          <Heading as="h5">Results per page</Heading>
+          <Heading 
+            as="h5"
             onClick={() => handleChangeWidth(Width.WIDE)}
             textDecoration={perPage === Width.WIDE ? "underline" : ""}
-          >
+            className="underline_hover">
             {Width.WIDE}
           </Heading>
-          <Heading
-            className={styles.heading}
+          <Heading 
+            as="h5"
             onClick={() => handleChangeWidth(Width.COMPACT)}
             textDecoration={perPage === Width.COMPACT ? "underline" : ""}
+            className="underline_hover"
           >
             {Width.COMPACT}
           </Heading>

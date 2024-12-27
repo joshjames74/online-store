@@ -106,7 +106,6 @@ export default function OrderPage(): JSX.Element {
       alignItems="center"
       padding="1em"
       maxWidth="4xl"
-      w="100vw"
       minW="300px"
       mx="auto"
     >
@@ -119,12 +118,11 @@ export default function OrderPage(): JSX.Element {
             <BreadcrumbLink>Orders</BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Heading fontSize="4xl" marginY="0.4em">
+        <Heading as="h1" marginY="0.4em">
           Your Orders
         </Heading>
 
         <HStack
-          w="full"
           display="flex"
           flexDirection={isLessThan900px ? "column" : "row"}
           alignItems="left !important"
@@ -132,7 +130,7 @@ export default function OrderPage(): JSX.Element {
           <Select
             placeholder="Order By"
             onChange={(event) => handleChangeFilter(event)}
-            w="2xs"
+            w="200px"
           >
             <option value={1}>Date: Recent - Old</option>
             <option value={2}>Date: Old - Recent</option>
@@ -140,7 +138,7 @@ export default function OrderPage(): JSX.Element {
           <Select
             placeholder="Date range"
             onChange={(event) => handleDateChange(event)}
-            w="2xs"
+            w="200px"
           >
             <option value={30}>Last 30 days</option>
             <option value={60}>Last 60 days</option>
@@ -149,19 +147,22 @@ export default function OrderPage(): JSX.Element {
           </Select>
           <HStack
             visibility={showCustom ? "visible" : "hidden"}
+            display={showCustom ? "flex" : "none"}
             flexDirection={isLessThan900px ? "column" : "row"}
             alignItems="left !important"
           >
             <Input
               type="datetime-local"
               onChange={(event) => handleChangeMinDate(event)}
-              w="2xs"
+              w="200px"
+              className="primary-border"
             />
             {isLessThan900px ? <></> : <span>-</span>}
             <Input
               type="datetime-local"
               onChange={(event) => handleChangeMaxDate(event)}
-              w="2xs"
+              w="200px"
+              className="primary-border"
             />
           </HStack>
         </HStack>

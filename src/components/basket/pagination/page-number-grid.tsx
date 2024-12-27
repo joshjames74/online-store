@@ -1,6 +1,6 @@
-import { ThemeContext } from "@/contexts/theme-context";
 import { Box, Button, HStack } from "@chakra-ui/react";
-import { useContext } from "react";
+import "./../../../app/globals.css";
+
 
 export type PageNumberParams = {
   pageNumber: number;
@@ -14,17 +14,12 @@ export default function PageNumberGrid({
   params: PageNumberParams;
 }): JSX.Element {
   const { pageNumber, onClickPageNumber, maxPages } = params;
-  const { theme } = useContext(ThemeContext);
 
   const PageBox = (value: number, isSelected: boolean, key: number) => {
     return (
       <Button
         key={key}
-        bgColor={
-          isSelected
-            ? theme.colors.accent.primary
-            : theme.colors.background.secondary
-        }
+        className={isSelected ? "secondary-button" : "primary-button"}
         onClick={() => onClickPageNumber(value)}
       >
         {value}

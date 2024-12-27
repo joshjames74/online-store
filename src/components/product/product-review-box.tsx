@@ -1,5 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
-import styles from "./product-review-box.module.css";
+import { Heading, HStack } from "@chakra-ui/react";
 import ReviewStars from "../review/review-stars";
 
 export default function ProductReviewBox({
@@ -10,14 +9,9 @@ export default function ProductReviewBox({
   review_count: number;
 }): JSX.Element {
   return (
-    <Box className={styles.container}>
-      <ReviewStars value={review_score}></ReviewStars>
-      <Text fontSize="xs" fontWeight="bold">
-        {review_score.toPrecision(2).toString()}
-      </Text>
-      <Text className={styles.review_score} fontSize="xs">
-        ({review_count.toString()})
-      </Text>
-    </Box>
+    <HStack gap="0.5em" alignItems="center">
+      <ReviewStars value={review_score} fontSize="1rem"></ReviewStars>
+      <Heading as="h6" fontSize="inherit">{review_count.toString()} Reviews</Heading>
+    </HStack>
   );
 }

@@ -639,6 +639,7 @@ export const useUserState = create<UserState>((set, get) => ({
       return;
     }
     await get().getUserBySub(session.user.sub || "");
+    await get().getCurrency();
     await get().getCountry();
     await get().getDefaultAddress();
   },

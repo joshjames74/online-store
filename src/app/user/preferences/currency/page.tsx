@@ -81,8 +81,8 @@ export default function Page({
         <title>Currency</title>
         <Box w="full" justifyItems="center" marginTop="1em">
           <Stack w="fit-content">
-            <Heading>Change currency</Heading>
-            <Text>Select the currency you want to shop with.</Text>
+            <Heading as="h2">Change currency</Heading>
+            <Text as="h4">Select the currency you want to shop with.</Text>
 
             {isLoading || !currencies || !currencies.length ? (
               <></>
@@ -105,15 +105,17 @@ export default function Page({
 
                 <Box display="flex" gap="1em">
                   <Button
-                    bgColor={theme.colors.background.secondary}
+                    bgColor={`${theme.colors.background.secondary} !important`}
                     onClick={handleCancel}
+                    className="primary-button"
                   >
                     Cancel
                   </Button>
                   <Button
-                    bgColor={theme.colors.accent.primary}
+                    bgColor={`${theme.colors.accent.primary} !important`}
                     isDisabled={!!!selectedCurrency}
                     onClick={handleSubmit}
+                    className="primary-button"
                   >
                     Save changes
                   </Button>

@@ -1,14 +1,13 @@
 "use client";
 import {
   Box,
+  Button,
+  HStack,
   Input,
-  InputGroup,
-  InputLeftAddon,
-  InputRightElement,
   Select,
   Spinner,
+  useMediaQuery,
 } from "@chakra-ui/react";
-import styles from "./search-bar.module.css";
 import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { SearchOutlined } from "@ant-design/icons";
@@ -21,7 +20,9 @@ export default function SearchBar(): JSX.Element {
   const { theme } = useContext(ThemeContext);
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLessThan1100px] = useMediaQuery("(max-width: 1100px)");
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   const updateQuery = useSearchParamsState((state) => state.updateQuery);
@@ -35,8 +36,6 @@ export default function SearchBar(): JSX.Element {
   const query = useSearchParamsState((state) => state.params.query);
   const params = useSearchParamsState((state) => state.params);
   const executeSearch = useSearchParamsState((state) => state.executeSearch);
-
-  const isLoadingProducts = useSearchResultsState((state) => state.isLoading);
 
   // fetch categories
   useEffect(() => {
@@ -53,53 +52,47 @@ export default function SearchBar(): JSX.Element {
   };
 
   return (
-    <Box className={styles.container}>
-      <InputGroup
-        className={styles.input_container}
+    <Box flexGrow="1" padding="0" w="full">
+      <HStack
+        overflow="hidden"
         bgColor={theme.colors.background.primary}
         color={theme.colors.text.primary}
+        alignItems="stretch"
+        gap={0}
       >
-        <InputLeftAddon
-          className={styles.input_left_addon}
-          maxW="200px"
-          textOverflow="ellipsis"
-        >
+      
           <Select
             onChange={(e) => updateCategories([parseInt(e.target.value || "")])}
-            placeholder="All"
-            className={styles.select_container}
-            variant="unstyled"
-            value={
-              params.categories?.length === 1 ? params.categories[0] : "All"
-            }
+            className="secondary-button"
+            borderRight="none !important"
+            display={isLessThan1100px ? "none" : "block"}
+            maxW="200px"
             textOverflow="ellipsis"
+            placeholder="All"
+            value={params.categories?.length === 1 ? params.categories[0] : "All"}
+            color="white"
           >
-            {isLoading || !categories.length ? (
-              <></>
-            ) : (
+            {isLoading || !categories.length 
+            ? <></>
+            :
               categories.map((category, index) => (
                 <option key={index} value={category.id}>
                   {category.name}
                 </option>
-              ))
+              )
             )}
           </Select>
-        </InputLeftAddon>
         <Input
+          borderRightWidth="0 !important"
           placeholder="Search"
           value={query}
+          className="secondary-button"
           onChange={(e) => updateQuery(e.target.value)}
         />
-        <InputRightElement
-          onClick={() => handleClick()}
-          bgColor={theme.colors.accent.primary}
-          color={theme.colors.text.secondary}
-          maxW="fit-content"
-          paddingX="1em"
-        >
-          {isLoadingProducts ? <Spinner /> : <SearchOutlined />}
-        </InputRightElement>
-      </InputGroup>
+        <Button onClick={() => handleClick()} className="secondary-button" bgColor={`${theme.colors.accent.primary} !important`} color="var(--primary-text) !important">
+          <SearchOutlined  />
+        </Button>
+      </HStack>
     </Box>
   );
 }

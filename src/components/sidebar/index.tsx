@@ -18,7 +18,6 @@ import {
   useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
-import styles from "./index.module.css";
 import ReviewFilter from "./review-filter";
 import PriceFilter from "./price-filter";
 import CategoryFilter from "./category-filter";
@@ -27,6 +26,8 @@ import { useContext, useEffect } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { ControlOutlined } from "@ant-design/icons";
 import SortFilter from "./sort-filter";
+
+
 
 export default function Sidebar(): JSX.Element {
   const { theme } = useContext(ThemeContext);
@@ -44,34 +45,26 @@ export default function Sidebar(): JSX.Element {
 
   const sidebar = () => {
     return (
-      <Card className={styles.container} h="fit-content" minW="2xs" shadow="none" padding="0">
-        <CardHeader paddingBottom={2} paddingX="0">
-          <Heading fontSize="lg" fontWeight="semibold">
-            Filters
-          </Heading>
+      <Card h="fit-content" minW="250px" shadow="none" padding="0">
+        <CardHeader paddingBottom={2} paddingX="0" paddingTop="0">
+          <Heading as="h2" className="upper">Filters</Heading>
         </CardHeader>
-        <CardBody paddingTop={2} paddingBottom={0} paddingX="0">
-          <Stack gap={2}>
+        <CardBody paddingTop={2} paddingBottom={0} paddingX={0}>
+          <Stack gap="1em">
             <SortFilter />
             <PriceFilter />
             <ReviewFilter />
             <CategoryFilter />
           </Stack>
         </CardBody>
-        <CardFooter paddingTop={1}>
+        <CardFooter paddingTop="1em" paddingX={0}>
           <HStack gap="1em">
-            <Button
-              _hover={{ color: theme.colors.accent.secondary }}
-              onClick={handleDelete}
-            >
-              Clear Filters
-            </Button>
-            <Button
-              bgColor={theme.colors.accent.primary}
-              onClick={executeSearch}
-            >
-              Search
-            </Button>
+          <Button className="primary-button" onClick={handleDelete} bgColor={`${theme.colors.background.secondary} !important`}>
+            Clear Filters
+          </Button>
+          <Button className="primary-button" onClick={executeSearch} bgColor={`${theme.colors.accent.primary} !important`}>
+            Search
+          </Button>
           </HStack>
         </CardFooter>
       </Card>
@@ -85,22 +78,20 @@ export default function Sidebar(): JSX.Element {
           onClick={onOpen}
           w="fit-content"
           bgColor={theme.colors.background.primary}
+          className="primary-button"
+          gap="0.4em"
         >
-          <HStack gap="0.4em">
-            <Text>Filters</Text>
-            <ControlOutlined />
-          </HStack>
+          Filters
+          <ControlOutlined />
         </Button>
         <Drawer isOpen={isOpen} onClose={onClose}>
           <DrawerOverlay />
           <DrawerContent>
             <DrawerCloseButton />
             <DrawerHeader>
-              <Heading fontSize="lg" fontWeight="semibold">
-                Filters
-              </Heading>
+              <Heading as="h2" className="upper">Filters</Heading>
             </DrawerHeader>
-            <DrawerBody>
+            <DrawerBody className="sans-serif">
               <Stack gap={2}>
                 <SortFilter />
                 <PriceFilter />
@@ -110,16 +101,10 @@ export default function Sidebar(): JSX.Element {
             </DrawerBody>
             <DrawerFooter>
               <HStack gap="1em">
-                <Button
-                  _hover={{ color: theme.colors.accent.secondary }}
-                  onClick={handleDelete}
-                >
+                <Button className="primary-button" onClick={handleDelete} bgColor={`${theme.colors.background.secondary} !important`}>
                   Clear Filters
                 </Button>
-                <Button
-                  bgColor={theme.colors.accent.primary}
-                  onClick={executeSearch}
-                >
+                <Button className="primary-button" onClick={executeSearch} bgColor={`${theme.colors.accent.primary} !important`}>
                   Search
                 </Button>
               </HStack>

@@ -142,6 +142,7 @@ export default function AddressForm(): JSX.Element {
             <Stack>
               <label htmlFor="name">Address name</label>
               <input
+                className="primary-border"
                 id="name"
                 type="text"
                 {...register("name", { required: "Name is required" })}
@@ -151,6 +152,7 @@ export default function AddressForm(): JSX.Element {
             <Stack>
               <label htmlFor="name">Address line 1</label>
               <input
+                className="primary-border"
                 id="number"
                 type="text"
                 {...register("address_line_1", {
@@ -164,6 +166,7 @@ export default function AddressForm(): JSX.Element {
               <input
                 id="street"
                 type="text"
+                className="primary-border"
                 {...register("address_line_2", {
                   required: "Address line 2 is required",
                 })}
@@ -173,6 +176,7 @@ export default function AddressForm(): JSX.Element {
             <Stack>
               <label htmlFor="area_code">Postcode</label>
               <input
+                className="primary-border"
                 id="area_code"
                 type="text"
                 {...register("area_code", { required: "Postcode is required" })}
@@ -184,7 +188,8 @@ export default function AddressForm(): JSX.Element {
             <Button
               type="submit"
               w="fit-content"
-              bgColor={theme.colors.accent.primary}
+              className="primary-button"
+              bgColor={`${theme.colors.accent.primary} !important`}
             >
               Add address
             </Button>

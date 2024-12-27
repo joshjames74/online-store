@@ -28,11 +28,6 @@ export default function NavBar(): JSX.Element {
     updateBasketUserId(user.id);
   }, [user.id]);
 
-  useEffect(() => {
-    console.log("USER AT STATE LEVEL");
-    console.log(user);
-  }, [user]);
-
   const [isSmallerThan800px] = useMediaQuery("(max-width: 800px)");
   const { theme } = useContext(ThemeContext);
 
