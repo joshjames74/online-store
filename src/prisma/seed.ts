@@ -8,6 +8,7 @@ import {
   generateMockReview,
   generateMockUser,
 } from "@/tests/generate";
+import { faker } from "@faker-js/faker";
 import { PrismaClient } from "@prisma/client";
 import { readFile } from "fs/promises";
 
@@ -15,8 +16,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   const userCount = 20;
-  const productCount = 20;
-  const reviewCount = 300;
+  const productCount = 5;
+  const reviewCount = 5;
   const addressCount = 20;
   const orderCount = 20;
   const orderItemCount = 100;
@@ -53,29 +54,13 @@ async function main() {
   const currencyIds = Array.from({ length: 100 }, (_, i) => i + 1);
   const categoryIds = Array.from({ length: 20 }, (_, i) => i + 1);
 
+  // Create users
   const mockUsers = Array.from({ length: userCount }, generateMockUser);
   const users = await prisma.usr.createManyAndReturn({ data: mockUsers });
   const userIds = users.map((user) => user.id);
   console.log("Created users");
 
-  const mockProducts = Array.from({ length: productCount }, () =>
-    generateMockProduct(userIds),
-  );
-  const products = await prisma.product.createManyAndReturn({
-    data: mockProducts,
-  });
-  const productIds = products.map((product) => product.id);
-  console.log("Created products");
-
-  const mockReviews = Array.from({ length: reviewCount }, () =>
-    generateMockReview(productIds, userIds),
-  );
-  const reviews = await prisma.review.createManyAndReturn({
-    data: mockReviews,
-  });
-  const reviewIds = reviews.map((review) => review.id);
-  console.log("Created reviews");
-
+  // Create addresses
   const mockAddresses = Array.from({ length: addressCount }, () =>
     generateMockAddress(userIds, countryIds),
   );
@@ -85,6 +70,41 @@ async function main() {
   const addressIds = addresses.map((address) => address.id);
   console.log("Created addresses");
 
+
+  // create products
+  let productIds: number[] = [];
+  for (let i = 0; i < productCount; i++) {
+
+    const productReviewCount = faker.number.int({ min: 1, max: reviewCount });
+
+    // mock product and reviews
+    const mockProduct = generateMockProduct(userIds);
+    const mockReviews = Array.from({ length: productReviewCount }, () => generateMockReview([1], userIds));
+
+    // compute average score
+    const total = mockReviews.reduce((prev, curr) => prev + curr.score, 0);
+    const average = Math.round(total / productReviewCount * 100) / 100;
+
+    // update product
+    mockProduct.review_score = average;
+    mockProduct.review_count = productReviewCount;
+
+    // save product
+    const product = await prisma.product.createManyAndReturn({ data: mockProduct });
+    const productId = product[0].id;
+
+    productIds.push(productId);
+
+    // create reviews
+    const updatedMockReviews = mockReviews.map(review => {
+      review.productId = productId;
+      return review;
+    });
+    const reviews = await prisma.review.createManyAndReturn({ data: updatedMockReviews });
+  };
+  
+
+  // create product category relations 
   const mockProductCategories = generateMockProductCategories(
     productIds,
     categoryIds,
@@ -94,6 +114,8 @@ async function main() {
   });
   console.log("Created product categories");
 
+
+  // create orders
   const mockOrders = Array.from({ length: orderCount }, () =>
     generateMockOrder(userIds, addressIds, currencyIds),
   );
@@ -101,15 +123,40 @@ async function main() {
   const orderIds = orders.map((order) => order.id);
   console.log("Created orders");
 
+
+  // create orderitems
   const mockOrderItems = Array.from({ length: orderItemCount }, () =>
     generateMockOrderItem(orderIds, productIds),
   );
-  const orderItems = await prisma.orderItem.createManyAndReturn({
-    data: mockOrderItems,
+  const orderItems = await prisma.$transaction(async (tx) => {
+
+    // save orderItems
+    const orderItems = await tx.orderItem.createManyAndReturn({
+      data: mockOrderItems
+    });
+
+    const quantityMap = new Map<number, number>();
+    for (const { productId, quantity } of orderItems) {
+      quantityMap.set(
+        productId,
+        (quantityMap.get(productId) || 0) + quantity
+      );
+    };
+
+    // update product quantities
+    for (const [productId, quantity] of quantityMap) {
+      const updatedProduct = await tx.product.update({
+        where: { id: productId },
+        data: { order_count: { increment: quantity } }
+      });
+    };
+
+    return orderItems;
   });
   const orderItemIds = orderItems.map((orderItem) => orderItem.id);
   console.log("Created order items");
 
+  // create basketItems
   const mockBasketItems = Array.from({ length: basketItemCount }, () =>
     generateMockBasketItem(productIds, userIds),
   );

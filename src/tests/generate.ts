@@ -49,11 +49,11 @@ export const generateMockProduct = (ids?: string[]): Product => {
   product.title = faker.commerce.productName();
   product.description = faker.lorem.paragraphs({ min: 1, max: 10 });
   product.price = faker.number.float({ fractionDigits: 2, max: 10000 });
-  product.review_count = faker.number.int({ min: 0, max: 10000 });
-  product.review_score = faker.number.float({ min: 0, max: 5 });
+  product.review_count = 0;
+  product.review_score = 0;
   product.image_url = faker.image.urlPicsumPhotos();
   product.image_alt = faker.image.urlPicsumPhotos();
-  product.order_count = faker.number.int({ min: 0, max: 10000 });
+  product.order_count = 0;
   product.url = faker.internet.url();
   return product;
 };
