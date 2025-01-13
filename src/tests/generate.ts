@@ -39,6 +39,7 @@ export function generateMany<M extends Model>(
   return Array.from({ length: count }, func);
 }
 
+
 export const generateMockProduct = (ids?: string[]): Product => {
   const product: Product = {} as Product;
   product.sellerId = randomUUID();
@@ -51,8 +52,8 @@ export const generateMockProduct = (ids?: string[]): Product => {
   product.price = faker.number.float({ fractionDigits: 2, max: 10000 });
   product.review_count = 0;
   product.review_score = 0;
-  product.image_url = faker.image.urlPicsumPhotos();
-  product.image_alt = faker.image.urlPicsumPhotos();
+  product.image_url = faker.image.urlPicsumPhotos({ width: faker.number.int({ min: 500, max: 1200 }), height: faker.number.int({ min: 500, max: 1200 }) });
+  product.image_alt = faker.lorem.sentence();
   product.order_count = 0;
   product.url = faker.internet.url();
   return product;
@@ -100,7 +101,7 @@ export const generateMockProducts = (count: number): Product[] => {
   return Array.from({ length: count }, generateMockProduct);
 };
 
-export const generateMockUser = (): Usr => {
+export const generateMockUser = (countryIds?: number[], currencyIds?: number[]): Usr => {
   const user: Usr = {} as Usr;
   user.id = randomUUID();
   const firstName = faker.person.firstName();
@@ -112,6 +113,12 @@ export const generateMockUser = (): Usr => {
   user.image_url = faker.image.avatar();
   user.currencyId = null;
   user.countryId = null;
+  if (countryIds) {
+    user.countryId = getRandomElement(countryIds);
+  };
+  if (currencyIds) {
+    user.currencyId = getRandomElement(currencyIds);
+  };
   user.defaultAddressId = null;
   return user;
 };
