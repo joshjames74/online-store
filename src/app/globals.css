@@ -5,6 +5,18 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary-text: black;
+  --secondary-text: white;
+  --muted-text: darkcyan;
+  --font-size-3xl: 2rem;
+  --font-size-2xl: 1.8rem;
+  --font-size-xl: 1.6rem;
+  --font-size-lg: 1.4rem;
+  --font-size-md: 1.2rem;
+  --font-size-sm: 1rem;
+  --font-size-xs: 0.8rem;
+  --font-size-2xs: 0.6rem;
+  --font-size-3xs: 0.4rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -14,14 +26,237 @@
   }
 }
 
+/* lora-latin-wght-normal */
+@font-face {
+  font-family: "Lora Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 700;
+  src: "@fontsource-variable/lora/files/lora-latin-wght-normal.woff2"
+    format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* inter-latin-wght-normal */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2"
+    format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter Variable", sans-serif !important;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+::selection {
+  background-color: red; /* Custom background color */
+  color: white; /* Custom text color */
+}
+
+a {
+  text-decoration: none; /* Default - no underline */
+  transition: text-decoration 0.2s ease;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* Text styles */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Inter Variable", sans-serif !important;
+  color: var(--primary-text);
+}
+
+.muted-heading {
+  color: var(--muted-text);
+}
+
+.upper {
+  text-transform: uppercase;
+}
+
+.serif {
+  font-family: "Lora Variable", serif !important;
+}
+
+.sans-serif {
+  font-family: "Inter Variable", sans-serif !important;
+}
+
+/* Border styles */
+.primary-border {
+  border-radius: 0 !important;
+  border-color: var(--primary-text) !important;
+  border: 2px solid !important;
+}
+
+/* Button styles */
+
+.primary-button {
+  border: 2px solid !important;
+  border-color: var(--primary-text) !important;
+  border-radius: 0 !important;
+  color: var(--primary-text) !important;
+  background: var(--secondary-text) !important;
+  font-family: "Inter Variable", sans-serif !important;
+  font-size: var(--font-size-xs) !important;
+}
+
+.primary-button:hover {
+  border-color: var(--primary-text) !important;
+  color: var(--secondary-text) !important;
+  background: var(--primary-text) !important;
+}
+
+.secondary-button {
+  border: 2px solid !important;
+  border-color: var(--secondary-text) !important;
+  border-radius: 0 !important;
+  color: var(--secondary-text) !important;
+  background: var(--primary-text) !important;
+  font-family: "Inter Variable", sans-serif !important;
+}
+
+.secondary-button:hover {
+  border-color: var(--secondary-text) !important;
+  color: var(--primary-text) !important;
+  background: var(--secondary-text) !important;
+}
+
+/* Select styles */
+
+select {
+  border-radius: 0 !important;
+  border-color: var(--primary-text) !important;
+  border: 2px solid !important;
+}
+
+select:hover {
+  box-shadow: none;
+}
+
+p {
+  font-family: "Lora Variable", sans-serif !important;
+  color: black;
+}
+
+h1 {
+  font-size: var(--font-size-2xl) !important; /* Default size */
+}
+
+h2 {
+  font-size: var(--font-size-xl) !important;
+}
+
+h3 {
+  font-size: var(--font-size-md) !important;
+}
+
+h4 {
+  font-size: var(--font-size-sm) !important;
+}
+
+h5 {
+  font-size: var(--font-size-xs) !important;
+}
+
+h6 {
+  font-size: var(--font-size-2xs) !important;
+}
+
+p {
+  font-size: var(--font-size-2xs) !important;
+}
+
+.noOfLines-1 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1; /* Truncate after 1 line */
+}
+
+.noOfLines-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2 !important; /* Truncate after 1 line */
+}
+
+.noOfLines-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3 !important; /* Truncate after 1 line */
+  font-size: inherit !important;
+}
+
+.noOfLines-4 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 4 !important; /* Truncate after 1 line */
+}
+
+.noOfLines-5 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 5 !important; /* Truncate after 1 line */
+}
+
+.noOfLines-6 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 6 !important; /* Truncate after 1 line */
+}
+
+.noOfLines-15 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 15 !important; /* Truncate after 1 line */
+}
+
+.justify {
+  text-align: justify;
+  font-size: inherit !important;
+}
+
+/* hover styles */
+
+.underline_hover:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }

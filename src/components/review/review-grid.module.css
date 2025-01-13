@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.review_container {
+  width: calc(100% - 300px);
+}
+
+.review_meta_container {
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+@media screen and (max-width: 800px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+  .review_container {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .review_meta_container {
+    flex-direction: column !important;
+    align-items: left !important;
+    justify-content: left !important;
+  }
+}

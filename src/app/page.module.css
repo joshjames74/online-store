@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+@media screen and (max-width: 800px) {
+  .container {
+    display: flex;
+    flex-direction: column !important;
+    align-items: normal !important;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .container {
+    align-items: stretch !important;
+  }
+}
