@@ -27,7 +27,7 @@ export default function Page(): JSX.Element {
     return <Spinner />;
   }
 
-  if (!basket || !basket.items?.length) {
+  if (!basket?.items?.length) {
     return (
       <>
         <title>Checkout</title>

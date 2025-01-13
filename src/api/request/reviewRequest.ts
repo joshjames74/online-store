@@ -50,6 +50,5 @@ export async function postReview(review: Partial<Review>): Promise<Review> {
 // DELETE methods
 
 export async function deleteReviewById(id: string): Promise<void> {
-  const response = await axios.delete(`/api/review/${id}`);
-  return;
+  await axios.delete(`/api/review/${id}`);
 }

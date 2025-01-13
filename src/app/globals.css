@@ -162,6 +162,7 @@ select:hover {
 p {
   font-family: "Lora Variable", sans-serif !important;
   color: black;
+  font-size: var(--font-size-2xs) !important;
 }
 
 h1 {
@@ -185,10 +186,6 @@ h5 {
 }
 
 h6 {
-  font-size: var(--font-size-2xs) !important;
-}
-
-p {
   font-size: var(--font-size-2xs) !important;
 }
 

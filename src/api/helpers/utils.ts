@@ -33,11 +33,11 @@ export const parseQueryParams = (
   searchParams: URLSearchParams,
 ): ProductParams => {
   // to do: only add to params if truthy, change away from wide
-  const query = searchParams.get("query") || "";
-  const max_price = parseFloat(searchParams.get("max_price") || "0");
-  const min_review = parseFloat(searchParams.get("min_review") || "0");
-  const perPage = parseInt(searchParams.get("perPage") || "");
-  const pageNumber = parseInt(searchParams.get("pageNumber") || "");
+  const query = searchParams.get("query") ?? "";
+  const max_price = parseFloat(searchParams.get("max_price") ?? "0");
+  const min_review = parseFloat(searchParams.get("min_review") ?? "0");
+  const perPage = parseInt(searchParams.get("perPage") ?? "");
+  const pageNumber = parseInt(searchParams.get("pageNumber") ?? "");
   const categories = searchParams.getAll("categories").length
     ? searchParams
         .getAll("categories")[0]
@@ -45,7 +45,7 @@ export const parseQueryParams = (
         .filter((val) => !isNaN(parseInt(val)))
         .map((val) => parseInt(val))
     : [];
-  const product_filter = parseInt(searchParams.get("product_filter") || "");
+  const product_filter = parseInt(searchParams.get("product_filter") ?? "");
   return {
     query,
     max_price,
@@ -63,10 +63,10 @@ export const parseOrderSearchParams = (
 ): Omit<OrderParams, "usrId"> => {
   const min_date = parseDate(searchParams, "min_date");
   const max_date = parseDate(searchParams, "max_date");
-  const skip = parseInt(searchParams.get("skip") || "");
-  const take = parseInt(searchParams.get("take") || "");
-  const perPage = parseInt(searchParams.get("perPage") || "");
-  const pageNumber = parseInt(searchParams.get("pageNumber") || "");
+  const skip = parseInt(searchParams.get("skip") ?? "");
+  const take = parseInt(searchParams.get("take") ?? "");
+  const perPage = parseInt(searchParams.get("perPage") ?? "");
+  const pageNumber = parseInt(searchParams.get("pageNumber") ?? "");
 
   const params = {};
   if (min_date) {
@@ -88,7 +88,7 @@ export const parseOrderSearchParams = (
     Object.assign(params, { perPage });
   }
 
-  const order_filter_raw = parseInt(searchParams.get("order_filter") || "");
+  const order_filter_raw = parseInt(searchParams.get("order_filter") ?? "");
   let order_filter: OrderFilter;
 
   if (
@@ -128,7 +128,7 @@ export function convertAndFormatToUserCurrency(
   currency: Currency,
 ): string {
   const safeCurrency =
-    currency && currency.code
+    currency?.code
       ? currency
       : { symbol: "£", code: "GBP", id: "1", gbp_exchange_rate: 1 };
   const userPrice = convertPrice(price, safeCurrency.gbp_exchange_rate);

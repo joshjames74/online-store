@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 export default function Page({
   params,
 }: {
-  params: { id: string };
+  params: { id: Readonly<string> };
 }): JSX.Element {
   const { id } = params;
 

@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } },
-) {
+): Promise<NextResponse> {
   const { id } = params;
   return await getHelper(getProductsByUserId, id);
 }

@@ -1,6 +1,5 @@
 import { getHelper } from "@/api/helpers/request";
 import {
-  getReviewsByProductId,
   getReviewsBySearch,
 } from "@/api/services/reviewService";
 import { ReviewParams } from "@/api/transformers/reviewSearchTransformer";
@@ -19,10 +18,10 @@ export async function GET(
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  const score = parseInt(searchParams.get("score") || "");
-  const review_filter = parseInt(searchParams.get("review_filter") || "");
-  const perPage = parseInt(searchParams.get("perPage") || "");
-  const pageNumber = parseInt(searchParams.get("pageNumber") || "");
+  const score = parseInt(searchParams.get("score") ?? "");
+  const review_filter = parseInt(searchParams.get("review_filter") ?? "");
+  const perPage = parseInt(searchParams.get("perPage") ?? "");
+  const pageNumber = parseInt(searchParams.get("pageNumber") ?? "");
 
   const reviewParams: Partial<ReviewParams> = {
     review_filter,
