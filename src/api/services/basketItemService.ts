@@ -82,7 +82,7 @@ export async function deleteBasketItemById(
 
 export async function deleteAllBasketItemByUserId(
   id: string,
-): Promise<any | void> {
+): Promise<any> {
   return await prisma.basketItem.deleteMany({
     where: { usrId: id },
   });

@@ -1,7 +1,7 @@
 "use client";
 import ProductGrid from "@/components/product/product-grid";
 import Sidebar from "@/components/sidebar";
-import { Box, HStack, Stack, useMediaQuery } from "@chakra-ui/react";
+import { HStack, Stack, useMediaQuery } from "@chakra-ui/react";
 import SearchResultsInfo from "@/components/product/search-results-info";
 import "@fontsource-variable/lora";
 import "@fontsource-variable/inter";

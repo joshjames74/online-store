@@ -115,9 +115,9 @@ export default function ReviewGrid({
                 <ReviewCard {...review} key={index} />
               ))
             ) : (
-              <Card>
+              <Card shadow="none" padding="0" margin="0">
                 <CardHeader gap="1em" maxW="2xl">
-                  <Heading as="h2">No reviews found</Heading>
+                  <Heading as="h4">No reviews found</Heading>
                 </CardHeader>
               </Card>
             )}

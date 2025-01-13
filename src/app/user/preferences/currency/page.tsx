@@ -20,7 +20,7 @@ import { useState, useEffect, useContext } from "react";
 export default function Page({
   params,
 }: {
-  params: { redirectUrl: string };
+  params: { redirectUrl: Readonly<string> };
 }): JSX.Element {
   const redirectUrl = params.redirectUrl || "/";
 

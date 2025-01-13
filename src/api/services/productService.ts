@@ -61,7 +61,7 @@ export function createWhereQuery(params: Partial<ProductParams>) {
     ];
   }
 
-  if (params.categories && params.categories.length) {
+  if (params.categories?.length) {
     whereQuery.categories = {
       some: {
         categoryId: {
