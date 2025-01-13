@@ -27,13 +27,17 @@ const config: Config = {
   // moduleNameMapper: {
   //   '\\.(css|less|scss)$': 'identity-obj-proxy',
   //   "\\.(ttf|woff|woff2|eot|svg|png|jpg|jpeg|gif)$": "./src/tests/__mocks__/fileMock.ts",},
+  silent: false,
   projects: [
     {
       displayName: "api",
       testEnvironment: "node",
       preset: "ts-jest",
       setupFilesAfterEnv: ["./src/tests/setup/apiSetup.ts"],
-      testMatch: ["**/tests/api/**/*.test.ts"],
+      testMatch: [
+        "**/tests/api/**/*.test.ts",
+        //"**/tests/api/order/post/index.test.ts"
+      ],
       moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
         prefix: "<rootDir>/",
       }),
@@ -46,6 +50,30 @@ const config: Config = {
       testMatch: [
         "**/tests/components/**/*.test.ts",
         "**/tests/components/**/*.test.tsx",
+      ],
+      moduleNameMapper: {
+        // Custom mappings
+        "\\.(css|less|scss)$": "identity-obj-proxy",
+        "\\.(ttf|woff|woff2|eot|svg|png|jpg|jpeg|gif)$":
+          "<rootDir>/src/tests/__mocks__/fileMock.ts",
+
+        // Add TypeScript path aliases
+        ...pathsToModuleNameMapper(compilerOptions.paths, {
+          prefix: "<rootDir>/",
+        }),
+      },
+      transform: {
+        "^.+\\.(js|ts)x?$": ["ts-jest", { tsconfig: "./tsconfig.test.json" }], // Transform TypeScript files
+      },
+    },
+    {
+      displayName: "contexts",
+      testEnvironment: "jsdom",
+      preset: "ts-jest",
+      setupFilesAfterEnv: ["./src/tests/setup/componentSetup.ts"],
+      testMatch: [
+        "**/tests/contexts/**/*.test.ts",
+        "**/tests/contexts/**/*.test.tsx",
       ],
       moduleNameMapper: {
         // Custom mappings
