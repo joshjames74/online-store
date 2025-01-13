@@ -30,14 +30,14 @@ export function getProductFilterOrder(
   }
 }
 
-export function getProductFilterColumn(product_filter: ProductFilter): "price" {
+export function getProductFilterColumn(product_filter: ProductFilter): "price" | "" {
   switch (product_filter) {
     case ProductFilter.PRICE_HIGH_TO_LOW:
       return "price";
     case ProductFilter.PRICE_LOW_TO_HIGH:
       return "price";
     default:
-      return "price";
+      return "";
   }
 }
 
