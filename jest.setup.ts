@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 require("dotenv").config();
 import "@testing-library/jest-dom";
 
