@@ -76,7 +76,7 @@ export function RenderPageIfLoading({
 }): JSX.Element {
   const { status } = useSession();
   if (status !== "loading") {
-    <></>;
+    return <></>;
   }
   return <>{children}</>;
 }
