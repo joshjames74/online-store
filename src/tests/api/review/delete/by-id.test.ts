@@ -13,7 +13,7 @@ import { Product, Review, Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 export const normaliseReviewDate = (review: Review) => {
-  return { ...review, date: new Date(review.date).toISOString() };
+  return { ...review, date: new Date(review.created_at).toISOString() };
 };
 
 describe("DELETE /api/review/[id]", () => {

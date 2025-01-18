@@ -20,23 +20,17 @@ global.matchMedia =
 
 const config: Config = {
   coverageProvider: "v8",
-  //testEnvironment: 'jsdom',
-  // setupFilesAfterEnv: ['./jest.setup.ts'],
   maxWorkers: 1,
-  //testMatch: ["**/*.test.ts", "**/test/*.test.tsx"],
-  // moduleNameMapper: {
-  //   '\\.(css|less|scss)$': 'identity-obj-proxy',
-  //   "\\.(ttf|woff|woff2|eot|svg|png|jpg|jpeg|gif)$": "./src/tests/__mocks__/fileMock.ts",},
   silent: false,
   projects: [
     {
       displayName: "api",
+      globalSetup: "./jestGlobalSetup.js",
       testEnvironment: "node",
       preset: "ts-jest",
       setupFilesAfterEnv: ["./src/tests/setup/apiSetup.ts"],
       testMatch: [
         "**/tests/api/**/*.test.ts",
-        //"**/tests/api/order/post/index.test.ts"
       ],
       moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
         prefix: "<rootDir>/",

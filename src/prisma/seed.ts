@@ -1,3 +1,4 @@
+import { ProductWithSeller } from "@/api/services/productService";
 import {
   generateMockAddress,
   generateMockBasketItem,
@@ -13,7 +14,7 @@ import { readFile } from "fs/promises";
 
 const prisma = new PrismaClient();
 
-interface SeedConfig {
+export interface SeedConfig {
   userCount: number;
   productCount: number;
   reviewCount: number;
@@ -25,7 +26,7 @@ interface SeedConfig {
 };
 
 
-class Seed {
+export default class Seed {
 
   private prisma: PrismaClient;
 
@@ -40,21 +41,21 @@ class Seed {
   private productCategoriesCount: number;
 
   // entity parameters
-  private currencyIds: number[] = [];
-  private countryIds: number[] = [];
-  private categoryIds: number[] = [];
-  private usrIds: string[] = [];
-  private productIds: number[] = [];
-  private reviewIds: string[] = [];
-  private orderIds: string[] = [];
-  private orderItemIds: string[] = [];
-  private basketItemIds: string[] = [];
-  private addressIds: string[] = [];
+  public currencyIds: number[] = [];
+  public countryIds: number[] = [];
+  public categoryIds: number[] = [];
+  public usrIds: string[] = [];
+  public productIds: number[] = [];
+  public reviewIds: string[] = [];
+  public orderIds: string[] = [];
+  public orderItemIds: string[] = [];
+  public basketItemIds: string[] = [];
+  public addressIds: string[] = [];
 
 
   constructor(config: SeedConfig) {
     this.prisma = new PrismaClient();
-
+    this.prisma.$connect();
     // generation parameters
     this.userCount = config.userCount;
     this.productCount = config.productCount;
@@ -69,51 +70,51 @@ class Seed {
 
   // Methods to clear data
 
-  private async deleteCountries(): Promise<void> {
+  public async deleteCountries(): Promise<void> {
     await this.prisma.country.deleteMany();
   };
 
-  private async deleteCurrencies(): Promise<void> {
+  public async deleteCurrencies(): Promise<void> {
     await this.prisma.currency.deleteMany();
   };
 
-  private async deleteCategories(): Promise<void> {
+  public async deleteCategories(): Promise<void> {
     await this.prisma.category.deleteMany();
   };
 
-  private async deleteProducts(): Promise<void> {
+  public async deleteProducts(): Promise<void> {
     await this.prisma.product.deleteMany();
   };
 
-  private async deleteReviews(): Promise<void> {
+  public async deleteReviews(): Promise<void> {
     await this.prisma.review.deleteMany();
   };
 
-  private async deleteUsrAuths(): Promise<void> {
+  public async deleteUsrAuths(): Promise<void> {
     await this.prisma.usrAuth.deleteMany();
   };
 
-  private async deleteUsrs(): Promise<void> {
+  public async deleteUsrs(): Promise<void> {
     await this.prisma.usr.deleteMany();
   };
 
-  private async deleteAddresses(): Promise<void> {
+  public async deleteAddresses(): Promise<void> {
     await this.prisma.address.deleteMany();
   };
 
-  private async deleteOrders(): Promise<void> {
+  public async deleteOrders(): Promise<void> {
     await this.prisma.order.deleteMany();
   };
 
-  private async deleteOrderItems(): Promise<void> {
+  public async deleteOrderItems(): Promise<void> {
     await this.prisma.orderItem.deleteMany();
   };
 
-  private async deleteBasketItems(): Promise<void> {
+  public async deleteBasketItems(): Promise<void> {
     await this.prisma.basketItem.deleteMany();
   };
 
-  private async deleteProductCategories(): Promise<void> {
+  public async deleteProductCategories(): Promise<void> {
     await this.prisma.productCategory.deleteMany();
   };
 
@@ -135,30 +136,33 @@ class Seed {
   }
 
 
-  
   // Get methods
   
-  private async getCountryIds(): Promise<void> {
+  public async getCountryIds(): Promise<void> {
     const response = await this.prisma.country.findMany({ select: { id: true }});
     this.countryIds = response.map(res => res.id);
   };
   
-  private async getCurrencyIds(): Promise<void> {
+
+  public async getCurrencyIds(): Promise<void> {
     const response = await this.prisma.currency.findMany({ select: { id: true }});
     this.currencyIds = response.map(res => res.id);
   };
   
-  private async getCategoryIds(): Promise<void> {
+
+  public async getCategoryIds(): Promise<void> {
     const response = await this.prisma.category.findMany({ select: { id: true }});
     this.categoryIds = response.map(res => res.id);
   };
 
-  private async getProductIds(): Promise<void> {
+
+  public async getProductIds(): Promise<void> {
     const response = await this.prisma.product.findMany({ select: { id: true }});
     this.productIds = response.map(res => res.id);
   };
 
-  private async getUserIds(): Promise<void> {
+
+  public async getUserIds(): Promise<void> {
     const response = await this.prisma.usr.findMany({ select: { id: true }});
     this.usrIds = response.map(res => res.id);
   };
@@ -166,7 +170,7 @@ class Seed {
 
   // Map methods
 
-  private static getReviewMap(mockReviews: Review[]): Map<number, { score: number, count: number }> {
+  public static getReviewMap(mockReviews: Review[]): Map<number, { score: number, count: number }> {
     const reviewMap = new Map<number, { score: number, count: number }>();
     for (const { productId, score } of mockReviews) {
 
@@ -184,7 +188,8 @@ class Seed {
     return reviewMap;
   };
 
-  private static getQuantityMap(mockOrderItems: OrderItem[]): Map<number, number> {
+
+  public static getQuantityMap(mockOrderItems: OrderItem[]): Map<number, number> {
     const quantityMap = new Map<number, number>();
     for (const { productId, quantity } of mockOrderItems) {
       quantityMap.set(
@@ -195,28 +200,42 @@ class Seed {
     return quantityMap;
   };
 
+
+  // Fetch from database
+
+  public async getUsers(): Promise<Usr[]> {
+    const response = await this.prisma.usr.findMany({});
+    return response;
+  };
+
+
+  public async getProductsWithSellers(): Promise<ProductWithSeller[]> {
+    const response = await this.prisma.product.findMany({ where: {}, include: { seller: true } });
+    return response;
+  };
+
   
   // Save methods
 
-  private async saveUsers(mockUsers: Usr[]): Promise<string[]> {
+  public async saveUsers(mockUsers: Usr[]): Promise<string[]> {
     const users = await this.prisma.usr.createManyAndReturn({ data: mockUsers });
     const userIds = users.map(user => user.id);
     return userIds;
   };
 
-  private async saveAddresses(mockAddresses: Address[]): Promise<string[]> {
+  public async saveAddresses(mockAddresses: Address[]): Promise<string[]> {
     const addresses = await this.prisma.address.createManyAndReturn({ data: mockAddresses });
     const addressIds = addresses.map(address => address.id);
     return addressIds;
   };
 
-  private async saveProducts(mockProducts: Product[]): Promise<number[]> {
+  public async saveProducts(mockProducts: Product[]): Promise<number[]> {
     const products = await this.prisma.product.createManyAndReturn({ data: mockProducts });
     const productIds = products.map(product => product.id);
     return productIds;
   };
 
-  private async saveReviews(mockReviews: Review[]): Promise<string[]> {
+  public async saveReviews(mockReviews: Review[]): Promise<string[]> {
     const reviewMap = Seed.getReviewMap(mockReviews);  
     const reviews = await this.prisma.$transaction(async (tx) => {
 
@@ -249,13 +268,13 @@ class Seed {
     return reviewIds;
   };
 
-  private async saveOrders(mockOrders: Order[]): Promise<string[]> {
+  public async saveOrders(mockOrders: Order[]): Promise<string[]> {
     const orders = await this.prisma.order.createManyAndReturn({ data: mockOrders });
     const orderIds = orders.map(order => order.id);
     return orderIds;
   };
 
-  private async saveOrderItems(mockOrderItems: OrderItem[]): Promise<string[]> {
+  public async saveOrderItems(mockOrderItems: OrderItem[]): Promise<string[]> {
 
     const quantityMap = Seed.getQuantityMap(mockOrderItems);
     const orderItems = await this.prisma.$transaction(async (tx) => {
@@ -280,13 +299,13 @@ class Seed {
     return orderItemIds;
   };
 
-  private async saveBasketItems(mockBasketItems: BasketItem[]): Promise<string[]> {
+  public async saveBasketItems(mockBasketItems: BasketItem[]): Promise<string[]> {
     const basketItems = await this.prisma.basketItem.createManyAndReturn({ data: mockBasketItems });
     const basketItemIds = basketItems.map(basketItem => basketItem.id);
     return basketItemIds;
   };
 
-  private async saveProductCategories(mockProductCategories: ProductCategory[]): Promise<void> {
+  public async saveProductCategories(mockProductCategories: ProductCategory[]): Promise<void> {
     const productCategories = await this.prisma.productCategory.createManyAndReturn({ data: mockProductCategories });
     return;
   };
@@ -294,64 +313,64 @@ class Seed {
 
   // Create methods
 
-  private async createCountries(): Promise<void> {
+  public async createCountries(): Promise<void> {
     const sql = await readFile("../database/country.sql", { encoding: "utf-8" });
     await this.prisma.$executeRawUnsafe(sql);
   };
 
-  private async createCurrencies(): Promise<void> {
+  public async createCurrencies(): Promise<void> {
     const sql = await readFile("../database/currency.sql", { encoding: "utf-8" });
     await this.prisma.$executeRawUnsafe(sql);
   };
 
-  private async createCategories(): Promise<void> {
+  public async createCategories(): Promise<void> {
     const sql = await readFile("../database/category.sql", { encoding: "utf-8" });
     await this.prisma.$executeRawUnsafe(sql);
   };
 
-  private async createUsers(count: number, countryIds: number[], currencyIds: number[]): Promise<string[]> {
+  public async createUsers(count: number, countryIds: number[], currencyIds: number[]): Promise<string[]> {
     const mockUsers = Array.from({ length: count }, () => generateMockUser(countryIds, currencyIds));
     const ids = await this.saveUsers(mockUsers);
     return ids;
   };
 
-  private async createAddresses(count: number, userIds: string[], countryIds: number[]): Promise<string[]> {
+  public async createAddresses(count: number, userIds: string[], countryIds: number[]): Promise<string[]> {
     const mockAddresses = Array.from({ length: count }, () => generateMockAddress(userIds, countryIds));
     const ids = await this.saveAddresses(mockAddresses);
     return ids;
   };
 
-  private async createProducts(count: number, userIds: string[]): Promise<number[]> {
+  public async createProducts(count: number, userIds: string[]): Promise<number[]> {
     const mockProducts = Array.from({ length: count }, () => generateMockProduct(userIds));
     const ids = await this.saveProducts(mockProducts);
     return ids;
   };
 
-  private async createReviews(count: number, productIds: number[], userIds: string[]): Promise<string[]> {
+  public async createReviews(count: number, productIds: number[], userIds: string[]): Promise<string[]> {
     const mockReviews = Array.from({ length: count }, () => generateMockReview(productIds, userIds));
     const ids = await this.saveReviews(mockReviews);
     return ids;
   };
 
-  private async createOrders(count: number, usrIds: string[], addressIds: string[], currencyIds: number[]): Promise<string[]> {
+  public async createOrders(count: number, usrIds: string[], addressIds: string[], currencyIds: number[]): Promise<string[]> {
     const mockOrders = Array.from({ length: count }, () => generateMockOrder(usrIds, addressIds, currencyIds));
     const ids = this.saveOrders(mockOrders);
     return ids;
   };
 
-  private async createOrderItems(count: number, orderIds: string[], productIds: number[]): Promise<string[]> {
+  public async createOrderItems(count: number, orderIds: string[], productIds: number[]): Promise<string[]> {
     const mockOrderItems = Array.from({ length: count }, () => generateMockOrderItem(orderIds, productIds));
     const ids = this.saveOrderItems(mockOrderItems);
     return ids;
   };
 
-  private async createBasketItems(count: number, userIds: string[], productIds: number[]): Promise<string[]> {
+  public async createBasketItems(count: number, userIds: string[], productIds: number[]): Promise<string[]> {
     const mockBasketItems = Array.from({ length: count }, () => generateMockBasketItem(productIds, userIds));
     const ids = this.saveBasketItems(mockBasketItems);
     return ids;
   };
 
-  private async createProductCategories(count: number, productIds: number[], categoryIds: number[]): Promise<void> {
+  public async createProductCategories(count: number, productIds: number[], categoryIds: number[]): Promise<void> {
     const mockProductCategories = generateMockProductCategories(productIds, categoryIds);
     await this.saveProductCategories(mockProductCategories);
     return;
@@ -360,57 +379,57 @@ class Seed {
 
   // Seeding methods
 
-  private async seedCountries(): Promise<void> {
+  public async seedCountries(): Promise<void> {
     await this.createCountries();
     await this.getCountryIds();
   };
 
-  private async seedCurrencies(): Promise<void> {
+  public async seedCurrencies(): Promise<void> {
     await this.createCurrencies();
     await this.getCurrencyIds();
   };
 
-  private async seedCategories(): Promise<void> {
+  public async seedCategories(): Promise<void> {
     await this.createCategories();
     await this.getCategoryIds();
   };
 
-  private async seedUsers(): Promise<void> {
+  public async seedUsers(): Promise<void> {
     const ids = await this.createUsers(this.userCount, this.countryIds, this.currencyIds);
     this.usrIds = ids;
   };
 
-  private async seedAddresses(): Promise<void> {
+  public async seedAddresses(): Promise<void> {
     const ids = await this.createAddresses(this.addressCount, this.usrIds, this.countryIds);
     this.addressIds = ids;
   };
 
-  private async seedProducts(): Promise<void> {
+  public async seedProducts(): Promise<void> {
     const ids = await this.createProducts(this.productCount, this.usrIds);
     this.productIds = ids;
   }
 
-  private async seedReviews(): Promise<void> {
+  public async seedReviews(): Promise<void> {
     const ids = await this.createReviews(this.reviewCount, this.productIds, this.usrIds);
     this.reviewIds = ids;
   };
 
-  private async seedOrders(): Promise<void> {
+  public async seedOrders(): Promise<void> {
     const ids = await this.createOrders(this.orderCount, this.usrIds, this.addressIds, this.currencyIds);
     this.orderIds = ids;
   };
 
-  private async seedOrderItems(): Promise<void> {
+  public async seedOrderItems(): Promise<void> {
     const ids = await this.createOrderItems(this.orderItemCount, this.orderIds, this.productIds);
     this.orderItemIds = ids;
   };
 
-  private async seedBasketItems(): Promise<void> {
+  public async seedBasketItems(): Promise<void> {
     const ids = await this.createBasketItems(this.basketItemCount, this.usrIds, this.productIds);
     this.basketItemIds = ids;
   };
 
-  private async seedProductCategories(): Promise<void> {
+  public async seedProductCategories(): Promise<void> {
     await this.createProductCategories(this.productCategoriesCount, this.productIds, this.categoryIds);
   };
 
@@ -554,8 +573,8 @@ async function main() {
   const seed = new Seed(config);
   await seed.fullSeed();
 
-  await seed.batchAddProducts(500, 100);
-  await seed.batchAddReviews(5000, 10);
+  // await seed.batchAddProducts(500, 100);
+  // await seed.batchAddReviews(5000, 10);
 };
 
 

@@ -13,7 +13,7 @@ import { Product, Review, Usr } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 export const normaliseReviewDate = (review: Review) => {
-  return { ...review, date: new Date(review.date).toISOString() };
+  return { ...review, date: new Date(review.created_at).toISOString() };
 };
 
 describe("GET /api/review ", () => {
@@ -187,7 +187,7 @@ describe("GET /api/review ", () => {
     const json: Review[] = await res.json();
 
     const sorted = json.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
 
     expect(json).toEqual(sorted);

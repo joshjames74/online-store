@@ -1,27 +1,23 @@
-// require("dotenv").config();
 import prisma from "@/lib/prisma";
+import Seed, { SeedConfig } from "@/prisma/seed";
+
+
+const config: SeedConfig = {
+  userCount: 2,
+  productCount: 10,
+  reviewCount: 2,
+  orderCount: 0,
+  orderItemCount: 0,
+  basketItemCount: 0,
+  productCategoriesCount: 0,
+  addressCount: 0,
+};
 
 const deleteAllData = async () => {
-  await prisma.basketItem.deleteMany({});
+  
+  const seed = new Seed(config);
+  seed.deleteAllEntities();
 
-  // orderItem before order
-  await prisma.orderItem.deleteMany({});
-  await prisma.order.deleteMany({});
-
-  await prisma.address.deleteMany({});
-
-  // productCategory, then category
-  await prisma.productCategory.deleteMany({});
-  await prisma.category.deleteMany({});
-
-  // review before product
-  await prisma.review.deleteMany({});
-  await prisma.product.deleteMany({});
-
-  await prisma.usr.deleteMany({});
-
-  await prisma.currency.deleteMany({});
-  await prisma.country.deleteMany({});
 };
 
 beforeAll(async () => {

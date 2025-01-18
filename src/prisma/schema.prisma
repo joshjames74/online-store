@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["views"]
 }
 
@@ -10,18 +10,18 @@ datasource db {
 }
 
 model Country {
-  id         Int       @id @default(autoincrement())
-  code       String
-  name       String
-  image_url  String    @db.Text
-  Usr        Usr[]
-  Address    Address[]
+  id        Int       @id @default(autoincrement())
+  code      String
+  name      String
+  image_url String    @db.Text
+  Usr       Usr[]
+  Address   Address[]
 
   @@map("country")
 }
 
 model Currency {
-  id                Int       @id @default(autoincrement())
+  id                Int     @id @default(autoincrement())
   code              String
   symbol            String
   gbp_exchange_rate Float
@@ -32,129 +32,131 @@ model Currency {
 }
 
 model UsrAuth {
-  id              String        @id @default(uuid()) @unique
-  email           String        @db.VarChar(100) @default("")
-  sub             String?        
-  created_at      DateTime      @default(now())
-  Usr             Usr?
+  id         String   @id @unique @default(uuid())
+  email      String   @default("") @db.VarChar(100)
+  sub        String?
+  created_at DateTime @default(now())
+  Usr        Usr?
 
-  @@map("usrAuth")
+  @@map("usr_auth")
 }
 
 model Usr {
-  id                String       @id @default(uuid())
-  name              String       @db.VarChar(100) @default("")
-  auth              UsrAuth?     @relation(fields: [authId], references: [id])        
-  authId            String?      @unique
-  country           Country?     @relation(fields: [countryId], references: [id])
-  countryId         Int?
-  currency          Currency?    @relation(fields: [currencyId], references: [id])
-  currencyId        Int?
-  defaultAddress    Address?     @relation("DefaultAddress", fields: [defaultAddressId], references: [id])
-  defaultAddressId  String?
-  image_url         String?
-  created_at        DateTime    @default(now())
-  Product           Product[]
-  Address           Address[]  
-  Order             Order[]
-  Review            Review[]
-  BasketItem        BasketItem[]
+  id               String       @id @default(uuid())
+  name             String       @default("") @db.VarChar(100)
+  auth             UsrAuth?     @relation(fields: [authId], references: [id])
+  authId           String?      @unique
+  country          Country?     @relation(fields: [countryId], references: [id])
+  countryId        Int?
+  currency         Currency?    @relation(fields: [currencyId], references: [id])
+  currencyId       Int?
+  defaultAddress   Address?     @relation("DefaultAddress", fields: [defaultAddressId], references: [id])
+  defaultAddressId String?
+  image_url        String?
+  created_at       DateTime     @default(now())
+  Product          Product[]
+  Address          Address[]
+  Order            Order[]
+  Review           Review[]
+  BasketItem       BasketItem[]
 
   @@map("usr")
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
-  name      String
+  id   Int    @id @default(autoincrement())
+  name String
 
-  products  ProductCategory[]     @relation("CategoryToProduct")
+  products ProductCategory[] @relation("CategoryToProduct")
 
   @@map("category")
 }
 
 model Product {
-  id            Int        @id @default(autoincrement())
-  seller        Usr        @relation(fields: [sellerId], references: [id])
-  sellerId      String 
-  title         String     @db.VarChar(100)
-  url           String?
-  description   String     @db.Text
-  image_url     String     @default("https://webneel.com/daily/sites/default/files/images/daily/08-2018/1-nature-photography-spring-season-mumtazshamsee.jpg")
-  image_alt     String     @db.VarChar(100)
-  price         Float
-  review_score  Float      @default(0)
-  review_count  Int        @default(0)
-  order_count   Int        @default(0)
-  created_at    DateTime   @default(now())
-  categories    ProductCategory[] @relation("ProductToCategory")
-  Review        Review[]
-  OrderItem     OrderItem[]
-  BasketItem    BasketItem[]
+  id           Int               @id @default(autoincrement())
+  seller       Usr               @relation(fields: [sellerId], references: [id])
+  sellerId     String
+  title        String            @db.VarChar(100)
+  url          String?
+  description  String            @db.Text
+  image_url    String            @default("https://webneel.com/daily/sites/default/files/images/daily/08-2018/1-nature-photography-spring-season-mumtazshamsee.jpg")
+  image_alt    String            @db.VarChar(100)
+  price        Float
+  review_score Float             @default(0)
+  review_count Int               @default(0)
+  order_count  Int               @default(0)
+  created_at   DateTime          @default(now())
+  categories   ProductCategory[] @relation("ProductToCategory")
+  Review       Review[]
+  OrderItem    OrderItem[]
+  BasketItem   BasketItem[]
 
   @@map("product")
 }
 
 model ProductCategory {
-  productId   Int
-  categoryId  Int
+  productId  Int
+  categoryId Int
 
-  product     Product       @relation("ProductToCategory", fields: [productId], references: [id])
-  category    Category      @relation("CategoryToProduct", fields: [categoryId], references: [id])
+  product  Product  @relation("ProductToCategory", fields: [productId], references: [id])
+  category Category @relation("CategoryToProduct", fields: [categoryId], references: [id])
 
   @@id([productId, categoryId])
+  @@map("product_category")
 }
 
 model Address {
-  id                  String        @id @default(uuid())
-  usr                 Usr        @relation(fields: [usrId], references: [id])
-  usrId               String
-  name                String     @default("")
-  address_line_1      String     @default("")
-  address_line_2      String     @default("")
-  area_code           String     @default("")
-  country             Country    @relation(fields: [countryId], references: [id])
-  countryId           Int
-  isDeleted           Boolean    @default(false)
-  isDefault           Boolean    @default(false)
-  created_at          DateTime   @default(now())
-  Order               Order[]
-  Usr                 Usr[]      @relation("DefaultAddress")
+  id             String   @id @default(uuid())
+  usr            Usr      @relation(fields: [usrId], references: [id])
+  usrId          String
+  name           String   @default("")
+  address_line_1 String   @default("")
+  address_line_2 String   @default("")
+  area_code      String   @default("")
+  country        Country  @relation(fields: [countryId], references: [id])
+  countryId      Int
+  isDeleted      Boolean  @default(false)
+  isDefault      Boolean  @default(false)
+  created_at     DateTime @default(now())
+  Order          Order[]
+  Usr            Usr[]    @relation("DefaultAddress")
+
   @@map("address")
 }
 
 model Order {
-  id         String         @id @default(uuid())
-  usr        Usr            @relation(fields: [usrId], references: [id])
-  usrId      String 
-  created_at DateTime       @default(now())
-  currency   Currency       @relation(fields: [currencyId], references: [id])
-  currencyId Int 
-  address    Address        @relation(fields: [addressId], references: [id])
-  addressId  String 
+  id         String      @id @default(uuid())
+  usr        Usr         @relation(fields: [usrId], references: [id])
+  usrId      String
+  created_at DateTime    @default(now())
+  currency   Currency    @relation(fields: [currencyId], references: [id])
+  currencyId Int
+  address    Address     @relation(fields: [addressId], references: [id])
+  addressId  String
   orderItem  OrderItem[]
 
   @@map("order")
 }
 
 model OrderItem {
-  id        String      @id @default(uuid())
-  orderId   String 
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
-  price     Float
-  quantity  Int
-  created_at DateTime  @default(now())
-  Order     Order    @relation(fields: [orderId], references: [id])
+  id         String   @id @default(uuid())
+  orderId    String
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  price      Float
+  quantity   Int
+  created_at DateTime @default(now())
+  Order      Order    @relation(fields: [orderId], references: [id])
 
   @@map("order_item")
 }
 
 model Review {
-  id         String      @id @default(uuid())
-  product    Product     @relation(fields: [productId], references: [id])
-  productId  Int 
-  usr        Usr         @relation(fields: [usrId], references: [id])
-  usrId      String 
+  id         String   @id @default(uuid())
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  usr        Usr      @relation(fields: [usrId], references: [id])
+  usrId      String
   score      Int
   title      String
   content    String
@@ -164,7 +166,7 @@ model Review {
 }
 
 model BasketItem {
-  id         String      @id @default(uuid())
+  id         String   @id @default(uuid())
   usr        Usr      @relation(fields: [usrId], references: [id])
   usrId      String
   product    Product  @relation(fields: [productId], references: [id])
