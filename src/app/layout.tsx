@@ -4,6 +4,7 @@ import "@fontsource-variable/inter";
 import { Provider } from "@/contexts";
 import NavBar from "@/components/navigation";
 import { SessionProvider } from "next-auth/react";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export default function RootLayout({
@@ -22,6 +23,7 @@ export default function RootLayout({
             </div>
           </Provider>
         </SessionProvider>
+        <Analytics />
       </body>
     </html>
   );
