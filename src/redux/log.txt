@@ -1,0 +1,64 @@
+Idea: move to redux for better state management
+
+Models:
+
+- Product Filters
+- Order Filters
+- Review Filters
+- User review Filters
+
+- Products:
+    - Search results
+    - Seller product results
+    - My Products
+    - ...
+- Reviews:
+    - Product Reviews
+    - My Reviews
+    - User Reviews
+- Basket
+    - Modify ideas
+    - Remove Basket
+- Orders
+    - Order results / filtering
+- User:
+    - Auth info
+    - Currencies etc
+
+
+
+# States
+
+## Filters
+
+ProductFilter
+Slices:
+- SearchProductFilter
+- SellerProductFilter
+Reducers:
+- setQuery
+- setMaxPrice
+- setMinReview
+- setCategories
+- setPageNumber
+- setPerPage
+
+
+
+ReviewFilter
+Slices:
+- ProductReviewFilter
+- UserReviewFilter
+
+OrderFilter
+Slices:
+- UserOrderFilter
+
+## Models
+
+User Auth
+
+User
+
+Basket
+
