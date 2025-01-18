@@ -23,10 +23,10 @@ const config: SeedConfig = {
 
 describe("GET /api/product/[id]", () => {
 
-  let seed: Seed = new Seed(config);
+  const seed: Seed = new Seed(config);
   let testProducts: ProductWithSeller[];
   let testUsers: Usr[];
-  let baseUrl: string = "http://localhost:3000";
+  const baseUrl: string = "http://localhost:3000";
 
 
   beforeAll(async () => {
@@ -37,15 +37,11 @@ describe("GET /api/product/[id]", () => {
     testProducts = await seed.getProductsWithSellers();
     testUsers = await seed.getUsers();
 
-    console.log("Test products:");
-    console.log(testProducts);
-
   });
 
 
   afterAll(async () => {
 
-    // await seed.deleteProductCategories();
     await seed.deleteProducts();
     await seed.deleteUsrs();
 
