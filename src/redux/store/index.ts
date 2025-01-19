@@ -1,5 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import createProductFilterSlice from "../slices/productFilter";
+import sellerProductsSlice from "../slices/sellerProducts";
+import mainProductsSlice from "../slices/mainProducts";
 
 
 const mainProductFilterSlice = createProductFilterSlice('mainProductFilter');
@@ -7,8 +9,14 @@ const sellerProductFilterSlice = createProductFilterSlice('sellerProductFilterSl
 
 export const store = configureStore({
     reducer: {
+
+        // filters
         mainProductFilter: mainProductFilterSlice.reducer,
         sellerProductFilter: sellerProductFilterSlice.reducer,
+
+        // products
+        sellerProducts: sellerProductsSlice.reducer,
+        mainProducts: mainProductsSlice.reducer,
     },
 });
 

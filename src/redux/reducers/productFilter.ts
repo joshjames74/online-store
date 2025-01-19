@@ -2,6 +2,7 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import { ProductFilterState } from "../slices/productFilter";
 import { ProductFilter } from "@/api/transformers/productSearchTransformer";
 
+
 const setQuery = (state: ProductFilterState, action: PayloadAction<string>) => {
     state.query = action.payload;
 };
@@ -29,5 +30,6 @@ const setPageNumber = (state: ProductFilterState, action: PayloadAction<number>)
 const setPerPage = (state: ProductFilterState, action: PayloadAction<number>) => {
     state.perPage = action.payload;
 };
+
 
 export { setQuery, setMaxPrice, setMinReview, setCategories, setProductFilter, setPageNumber, setPerPage };

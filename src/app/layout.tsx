@@ -6,6 +6,8 @@ import NavBar from "@/components/navigation";
 import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
+import { Provider as ReduxProvider } from "react-redux";
+import { store } from "@/redux/store";
 
 export default function RootLayout({
   children,
@@ -15,14 +17,16 @@ export default function RootLayout({
   return (
     <html lang="en" style={{ margin: 0, padding: 0, boxSizing: "border-box" }}>
       <body style={{ minWidth: "320px" }}>
-        <SessionProvider>
-          <Provider>
-            <div style={{ gridColumn: "1/-1" }}>
-              <NavBar />
-              {children}
-            </div>
-          </Provider>
-        </SessionProvider>
+        <ReduxProvider store={store}>
+          <SessionProvider>
+            <Provider>
+              <div style={{ gridColumn: "1/-1" }}>
+                <NavBar />
+                {children}
+              </div>
+            </Provider>
+          </SessionProvider>
+        </ReduxProvider>
         <Analytics />
       </body>
     </html>
