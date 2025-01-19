@@ -6,19 +6,32 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import styles from "./category-filter.module.css";
+
 import { Category } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useSearchParamsState } from "@/zustand/store";
 import { getAllCategories } from "@/api/request/categoryRequest";
 
-export default function CategoryFilter(): JSX.Element {
-  const updateCategories = useSearchParamsState(
-    (state) => state.updateCategories,
-  );
-  const selectedCategories = useSearchParamsState(
-    (state) => state.params.categories,
-  );
+
+export default function CategoryFilter(
+  {
+    updateCategories,
+    selectedCategories
+  }:
+  {
+    updateCategories: (categories: number[]) => void,
+    selectedCategories: number[] | undefined
+  }
+): JSX.Element {
+
+
+
+  // const updateCategories = useSearchParamsState(
+  //   (state) => state.updateCategories,
+  // );
+  // const selectedCategories = useSearchParamsState(
+  //   (state) => state.params.categories,
+  // );
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -48,7 +61,6 @@ export default function CategoryFilter(): JSX.Element {
 
   const isSelected = (id: number) =>
     selectedCategories ? selectedCategories.includes(id) : false;
-  const SquareIcon = () => <Box className="checkbox-icon"></Box>;
 
   return (
     <Stack>

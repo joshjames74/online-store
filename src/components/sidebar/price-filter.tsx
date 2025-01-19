@@ -17,7 +17,18 @@ import {
 import { convertAndFormatToUserCurrency } from "@/api/helpers/utils";
 import "./index.module.css";
 
-export default function PriceFilter(): JSX.Element {
+export default function PriceFilter(
+  {
+    updateMaxPrice,
+    maxPrice,
+    currPrice
+  }:
+  {
+    updateMaxPrice: (maxPrice: number) => void,
+    maxPrice: number,
+    currPrice: number | undefined
+  }
+): JSX.Element {
   // logic:
   // slider value: on reads from the maxPrice
   // onChange updates the max price only
@@ -26,19 +37,21 @@ export default function PriceFilter(): JSX.Element {
   const currency = useUserState((state) => state.currency);
 
   const min: number = 0;
-  const updateMaxPrice = useSearchParamsState((state) => state.updateMaxPrice);
-  const maxPrice = useSearchParamsState((state) => state.params.max_price);
-  const maxPriceData = useSearchResultsState((state) => state.maxPrice);
 
-  useEffect(() => {
-    updateMaxPrice(maxPriceData);
-  }, [maxPriceData]);
 
-  useEffect(() => {
-    if (maxPrice === 0) {
-      updateMaxPrice(maxPriceData);
-    }
-  }, [maxPrice]);
+  // const updateMaxPrice = useSearchParamsState((state) => state.updateMaxPrice);
+  // const maxPrice = useSearchParamsState((state) => state.params.max_price);
+  // const maxPriceData = useSearchResultsState((state) => state.maxPrice);
+
+  // useEffect(() => {
+  //   updateMaxPrice(maxPriceData);
+  // }, [maxPriceData]);
+
+  // useEffect(() => {
+  //   if (maxPrice === 0) {
+  //     updateMaxPrice(maxPriceData);
+  //   }
+  // }, [maxPrice]);
 
   return (
     <Box paddingRight="1em">
@@ -46,13 +59,13 @@ export default function PriceFilter(): JSX.Element {
         Price
       </Heading>
       <Text as="h5">
-        Under {convertAndFormatToUserCurrency(maxPrice || 0, currency)}
+        Under {convertAndFormatToUserCurrency(currPrice || 0, currency)}
       </Text>
       <Slider
         onChange={(newPrice: number) => updateMaxPrice(newPrice)}
         min={min}
-        max={maxPriceData}
-        value={maxPrice}
+        max={maxPrice}
+        value={currPrice}
       >
         <SliderTrack>
           <SliderFilledTrack bgColor="var(--muted-text)" />

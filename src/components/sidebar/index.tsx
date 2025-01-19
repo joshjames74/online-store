@@ -14,31 +14,59 @@ import {
   Heading,
   HStack,
   Stack,
-  Text,
   useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
 import ReviewFilter from "./review-filter";
 import PriceFilter from "./price-filter";
 import CategoryFilter from "./category-filter";
-import { useSearchParamsState } from "@/zustand/store";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ThemeContext } from "@/contexts/theme-context";
 import { ControlOutlined } from "@ant-design/icons";
 import SortFilter from "./sort-filter";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, clearMainProductFilters, setMainProductCategory, setMainProductMaxPrice, setMainProductMinReview, setMainProductProductFilter } from "@/redux/store";
+import { ProductFilter } from "@/api/transformers/productSearchTransformer";
+import { selectMainProductFilters } from "@/redux/selectors";
+import { fetchMainProducts } from "@/redux/actions/products";
+
 
 export default function Sidebar(): JSX.Element {
+
   const { theme } = useContext(ThemeContext);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLargerThan800px] = useMediaQuery("(min-width: 800px)");
 
-  const clearParams = useSearchParamsState((state) => state.clearParams);
-  const executeSearch = useSearchParamsState((state) => state.executeSearch);
+  // redux
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const updateMaxPrice = (maxPrice: number) => dispatch(setMainProductMaxPrice(maxPrice));
+  const updateMinReview = (minReview: number) => dispatch(setMainProductMinReview(minReview));
+  const updateCategories = (categories: number[]) => dispatch(setMainProductCategory(categories));
+  const updateProductFilter = (product_filter: ProductFilter) => dispatch(setMainProductProductFilter(product_filter));
+
+  const filters = useSelector(selectMainProductFilters);
+
+  const clearFilters = () => dispatch(clearMainProductFilters());
+  const fetchProducts = () => dispatch(fetchMainProducts());
 
   const handleDelete = () => {
-    clearParams();
-    executeSearch();
+    clearFilters();
+    fetchProducts();
+  };
+
+
+  const RenderFilters = (): JSX.Element => {
+    return (
+    <Stack gap="1em">
+      <SortFilter { ...{ updateProductFilter: updateProductFilter } } />
+      <PriceFilter { ...{ updateMaxPrice: updateMaxPrice, maxPrice: 100000, currPrice: filters.max_price } }/>
+      <ReviewFilter { ...{ updateMinReview: updateMinReview, minReview: filters.min_review }} />
+      <CategoryFilter { ...{ updateCategories: updateCategories, selectedCategories: filters.categories }} />
+    </Stack>
+    )
   };
 
   const sidebar = () => {
@@ -50,12 +78,7 @@ export default function Sidebar(): JSX.Element {
           </Heading>
         </CardHeader>
         <CardBody paddingTop={2} paddingBottom={0} paddingX={0}>
-          <Stack gap="1em">
-            <SortFilter />
-            <PriceFilter />
-            <ReviewFilter />
-            <CategoryFilter />
-          </Stack>
+          <RenderFilters />
         </CardBody>
         <CardFooter paddingTop="1em" paddingX={0}>
           <HStack gap="1em">
@@ -68,7 +91,7 @@ export default function Sidebar(): JSX.Element {
             </Button>
             <Button
               className="primary-button"
-              onClick={executeSearch}
+              onClick={fetchProducts}
               bgColor={`${theme.colors.accent.primary} !important`}
             >
               Search
@@ -102,12 +125,7 @@ export default function Sidebar(): JSX.Element {
               </Heading>
             </DrawerHeader>
             <DrawerBody className="sans-serif">
-              <Stack gap={2}>
-                <SortFilter />
-                <PriceFilter />
-                <ReviewFilter />
-                <CategoryFilter />
-              </Stack>
+              <RenderFilters />
             </DrawerBody>
             <DrawerFooter>
               <HStack gap="1em">
@@ -120,7 +138,7 @@ export default function Sidebar(): JSX.Element {
                 </Button>
                 <Button
                   className="primary-button"
-                  onClick={executeSearch}
+                  onClick={fetchProducts}
                   bgColor={`${theme.colors.accent.primary} !important`}
                 >
                   Search

@@ -1,37 +1,38 @@
 import { Product } from "@prisma/client";
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchSellerProducts } from "../actions/sellerProducts";
+import { ProductWithSeller } from "@/api/services/productService";
+import { fetchMainProducts } from "../../actions/products";
 
-interface SellerProductsState {
-    products: Product[],
+interface MainProductsState {
+    products: ProductWithSeller[],
     isLoading: boolean,
     error: string | null
 };
 
-const initialState: SellerProductsState = {
+const initialState: MainProductsState = {
     products: [],
     isLoading: false,
     error: null
 };
 
-const sellerProductsSlice = createSlice({
-    name: 'sellerProducts',
+const mainProductsSlice = createSlice({
+    name: 'mainProducts',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchSellerProducts.pending, (state) => {
+            .addCase(fetchMainProducts.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(fetchSellerProducts.fulfilled, (state, action) => {
+            .addCase(fetchMainProducts.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.products = action.payload
             })
-            .addCase(fetchSellerProducts.rejected, (state) => {
+            .addCase(fetchMainProducts.rejected, (state) => {
                 state.isLoading = false;
                 state.error = 'Failed to fetch products'
             });
     },
 });
 
-export default sellerProductsSlice;
+export default mainProductsSlice;

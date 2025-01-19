@@ -1,6 +1,6 @@
 import { ProductParams } from "@/api/transformers/productSearchTransformer";
 import { createSlice } from "@reduxjs/toolkit";
-import { setCategories, setMaxPrice, setMinReview, setPageNumber, setPerPage, setProductFilter, setQuery } from "../reducers/productFilter";
+import { setCategories, setMaxPrice, setMinReview, setPageNumber, setPerPage, setProductFilter, setQuery, clearQuery, clearMaxPrice, clearMinReview, clearCategories, clearProductFilter, clearPageNumber, clearPerPage, clearFilters } from "../../reducers/productFilter";
 
 
 export type ProductFilterState = Partial<ProductParams>;
@@ -21,7 +21,15 @@ const createProductFilterSlice = (name: string) => {
             setCategories,
             setProductFilter,
             setPageNumber,
-            setPerPage
+            setPerPage,
+            clearQuery,
+            clearMaxPrice,
+            clearMinReview,
+            clearCategories,
+            clearProductFilter,
+            clearPageNumber,
+            clearPerPage,
+            clearFilters,
         },
     });
 };

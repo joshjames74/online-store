@@ -10,7 +10,7 @@ import {
   Stack,
   useMediaQuery,
 } from "@chakra-ui/react";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import ReviewCard from "./review-card";
 import styles from "./review-grid.module.css";
 import ReviewSummary from "./review-summary";
@@ -22,6 +22,10 @@ import { ThemeContext } from "@/contexts/theme-context";
 import { ReviewWithUser } from "@/api/services/reviewService";
 import { RenderComponentIfLoggedIn } from "../auth/render-conditionally";
 import PageNumberGrid from "../basket/pagination/page-number-grid";
+import { useDispatch, useSelector } from "react-redux";
+import { selectMainReviewFilters, selectMainReviews } from "@/redux/selectors";
+import { AppDispatch, setMainReviewFilter, setMainReviewPageNumber, setMainReviewProductId } from "@/redux/store";
+import { fetchMainReview } from "@/redux/actions/reviews";
 
 export default function ReviewGrid({
   id,
@@ -30,25 +34,32 @@ export default function ReviewGrid({
   id: number;
   score: number;
 }): JSX.Element {
+
   const { theme } = useContext(ThemeContext);
 
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isLessThan600px] = useMediaQuery("(max-width: 600px)");
 
-  const maxPages = useReviewSearchStore((state) => state.maxPages);
-  const params = useReviewSearchStore((state) => state.params);
+
   const clearParams = useReviewSearchStore((state) => state.clearParams);
-  const updateReviewFilter = useReviewSearchStore(
-    (state) => state.updateReviewFilter,
-  );
-  const updateProductId = useReviewSearchStore(
-    (state) => state.updateProductId,
-  );
-  const updatePageNumber = useReviewSearchStore(
-    (state) => state.updatePageNumber,
-  );
-  const reviews = useReviewSearchStore((state) => state.reviews);
-  const isLoading = useReviewSearchStore((state) => state.isLoading);
+
+
+  // redux
+
+  const dispatch = useDispatch<AppDispatch>();
+  const maxPages = 5;
+
+  const results = useSelector(selectMainReviews);
+  const filters = useSelector(selectMainReviewFilters);
+
+  const fetchReviews = () => dispatch(fetchMainReview());
+
+  const updateReviewFilter = (filter: ReviewFilter) => dispatch(setMainReviewFilter(filter));
+  const updateProductId = (id: number) => dispatch(setMainReviewProductId(id));
+  const updatePageNumber = (pageNumber: number) => dispatch(setMainReviewPageNumber(pageNumber));
+
+
+  //
 
   const handleChangeFilter = (filter: number) => {
     updateReviewFilter(filter);
@@ -58,12 +69,12 @@ export default function ReviewGrid({
     setShowForm(!showForm);
   };
 
-  const loadProductId = useMemo(() => {
-    clearParams();
-    updateProductId(id);
-  }, [id]);
+  const pageNumber = filters.pageNumber || 0;
 
-  const pageNumber = params.pageNumber || 0;
+  useEffect(() => {
+    updateProductId(id);
+    fetchReviews();
+  }, []);
 
   return (
     <>
@@ -79,7 +90,7 @@ export default function ReviewGrid({
               <Select
                 className="select"
                 placeholder="Filter By"
-                value={params.review_filter}
+                value={filters.review_filter}
                 onChange={(e) =>
                   handleChangeFilter(parseInt(e.target.value || ""))
                 }
@@ -108,10 +119,10 @@ export default function ReviewGrid({
           </HStack>
 
           <Stack gap="1em" w="full">
-            {isLoading ? (
+            {results.isLoading ? (
               <Spinner />
-            ) : reviews?.length ? (
-              reviews.map((review: ReviewWithUser, index: number) => (
+            ) : results?.reviews?.length ? (
+              results?.reviews.map((review: ReviewWithUser, index: number) => (
                 <ReviewCard {...review} key={index} />
               ))
             ) : (
@@ -121,7 +132,7 @@ export default function ReviewGrid({
                 </CardHeader>
               </Card>
             )}
-            {isLoading ? (
+            {results.isLoading ? (
               <></>
             ) : (
               PageNumberGrid({
